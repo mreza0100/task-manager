@@ -1,0 +1,36 @@
+{
+	"name": "clientp",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"fire": "next dev -p 10000",
+		"debug": "NODE_OPTIONS='--inspect' next dev -p 10000",
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start -p 10000"
+	},
+	"dependencies": {
+		"axios": "^0.19.2",
+		"eslint": "^7.5.0",
+		"font-awesome": "^4.7.0",
+		"formik": "^2.1.4",
+		"next": "9.4.2",
+		"next-redux-wrapper": "^6.0.0",
+		"nprogress": "^0.2.0",
+		"prettier": "^2.0.5",
+		"react": "16.13.1",
+		"react-datepicker2": "^3.2.0",
+		"react-dom": "16.13.1",
+		"react-redux": "^7.2.0",
+		"react-tag-autocomplete": "^5.13.1",
+		"redux": "^4.0.5",
+		"redux-logger": "^3.0.6",
+		"redux-thunk": "^2.3.0",
+		"sass": "^1.26.5",
+		"styled-components": "^5.1.1",
+		"yup": "^0.29.1"
+	},
+	"devDependencies": {
+		"babel-plugin-styled-components": "^1.10.7"
+	}
+}

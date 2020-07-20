@@ -1,0 +1,13 @@
+{
+	// extends: "eslint:recommended",
+	"sourceType": "module",
+	"ecmaFeatures": {
+		"jsx": true
+	},
+	"rules": {
+		"semi": "warn",
+		"quotes": ["error", "double"],
+		"strict": "error"
+	},
+	"env": { "browser": true, "node": true }
+}

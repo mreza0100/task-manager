@@ -1,0 +1,60 @@
+@import "./jalali-date-style.min.scss";
+@import "./animations";
+@import "./react-tags";
+@import "./fonts";
+@import "./bs4";
+// !------------------
+* {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: YB !important;
+	direction: rtl;
+	min-height: "100vm";
+	height: auto;
+	// background-color: #313131;
+	color: black;
+	border-bottom: 1px solid transparent;
+}
+
+a {
+	text-decoration: none;
+	color: unset;
+}
+
+.line {
+	width: 100%;
+	height: 1px;
+	background: #aca4a4;
+	margin: 12px 0;
+}
+
+li {
+	list-style: none;
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+.disable {
+	cursor: wait;
+	opacity: 0.4;
+}
+
+.disable-all {
+	cursor: wait;
+	opacity: 0.4;
+	* {
+		opacity: 0.4;
+	}
+}
+
+.touch-off {
+	pointer-events: none;
+}
+
+#making-color {
+	color: #7be624;
+}
