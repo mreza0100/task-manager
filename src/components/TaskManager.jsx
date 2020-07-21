@@ -1,12 +1,4 @@
-import {
-	flex,
-	butyInputs,
-	prevEnter,
-	changeDateFormat,
-	tagObjToArr,
-	tagArrToObj,
-	editDate,
-} from "../helpers/exports";
+import { flex, butyInputs, prevEnter, changeDateFormat, tagObjToArr, tagArrToObj, editDate } from "../helpers/exports";
 import { getOneAndOverwrite, getOneFromState } from "../redux/actions/tasks";
 import { _USE_API_, APITools } from "../api/index.API";
 import ReactTags from "react-tag-autocomplete";
@@ -21,7 +13,7 @@ import * as yup from "yup";
 // !>>
 export const validation = yup.object({
 	title: yup.string().required().trim(),
-	description: yup.string().trim(),
+	description: yup.string().trim()
 });
 
 async function handleSubmit(data, { dispatch }) {
@@ -30,10 +22,10 @@ async function handleSubmit(data, { dispatch }) {
 		const res = await _USE_API_({
 			isPrivetRoute: true,
 			pendingID: taskID,
-			describe: "saving TaskManaged changes",
+			describe: "saving TaskManaged changes"
 		}).Put({
 			url: "tasks",
-			data,
+			data
 		});
 		if (res.status === 200) dispatch(getOneAndOverwrite({ taskID }));
 	} catch (err) {
@@ -46,7 +38,7 @@ async function handleDeleteTask(taskID) {
 		const res = await _USE_API_({
 			isPrivetRoute: true,
 			pendingID: taskID,
-			describe: "deleting a task",
+			describe: "deleting a task"
 		}).Delete({ data: { id: taskID }, url: "/tasks" });
 		if (res.status === 200) Router.replace("/");
 	} catch (err) {
@@ -55,8 +47,7 @@ async function handleDeleteTask(taskID) {
 }
 
 function handleCancel(taskID) {
-	if (APITools.checkInPendingList(taskID))
-		Router.replace("/", undefined, { shallow: true });
+	if (APITools.checkInPendingList(taskID)) Router.replace("/", undefined, { shallow: true });
 }
 
 export default function TaskManager({ taskID }) {
@@ -67,7 +58,7 @@ export default function TaskManager({ taskID }) {
 		color: initialColor,
 		tags: initalTags,
 		from_date: initaialFromDate,
-		to_date: initaialToDate,
+		to_date: initaialToDate
 	} = dispatch(getOneFromState({ taskID }));
 
 	// hooks
@@ -95,7 +86,7 @@ export default function TaskManager({ taskID }) {
 			initialValues={{
 				title: initialTitle,
 				description: initialDescription,
-				color: initialColor,
+				color: initialColor
 			}}
 			onSubmit={({ title, color, description }, { setSubmitting }) => {
 				setSubmitting(true);
@@ -106,7 +97,7 @@ export default function TaskManager({ taskID }) {
 					tags: tagObjToArr(tags),
 					from_date: changeDateFormat(fromDate),
 					to_date: changeDateFormat(toDate),
-					id: taskID,
+					id: taskID
 				};
 				handleSubmit(sortedData, { dispatch }).finally(() => setSubmitting(false));
 			}}
@@ -119,18 +110,8 @@ export default function TaskManager({ taskID }) {
 						onKeyDown={prevEnter}
 					>
 						<div className="title-color col-md-12 row">
-							<Field
-								type="text"
-								placeholder="سر تیتر"
-								name="title"
-								className="col-11"
-							/>
-							<Field
-								onInput={onColorCahnge}
-								type="color"
-								name="color"
-								className="col-1"
-							/>
+							<Field type="text" placeholder="سر تیتر" name="title" className="col-11" />
+							<Field onInput={onColorCahnge} type="color" name="color" className="col-1" />
 						</div>
 						<Field as="textarea" name="description" placeholder="توضیحات" rows="4" />
 						<StyledDatePickers className="col-md-12">
@@ -167,6 +148,8 @@ export default function TaskManager({ taskID }) {
 								className="btn btn-danger col-sm-1"
 								onClick={() => handleDeleteTask(taskID)}
 								type="button"
+								// TODO: fix btns with disable-all class
+								disabled={false}
 							>
 								حذف <i className="fa fa-trash" />
 							</button>
@@ -195,8 +178,8 @@ const Btns = styled.div(props => {
 		height: "auto",
 		"> button": {
 			padding: "5px",
-			margin: "0 20px",
-		},
+			margin: "0 20px"
+		}
 	};
 });
 
@@ -230,10 +213,10 @@ export const formikStyles = {
 			...flex(),
 			"input[type=color]": {
 				padding: 0,
-				margin: 0,
-			},
-		},
-	},
+				margin: 0
+			}
+		}
+	}
 };
 
 export const StyledDatePickers = styled.div(({}) => {
@@ -245,7 +228,7 @@ export const StyledDatePickers = styled.div(({}) => {
 			justifyContent: "space-between",
 			alignItems: "flex-start",
 			flexDirection: "column",
-			"> div": { paddingTop: "5px" },
-		},
+			"> div": { paddingTop: "5px" }
+		}
 	};
 });

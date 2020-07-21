@@ -25,7 +25,7 @@ Router.onRouteChangeError = () => {
 class App extends NextApp {
 	static async getInitialProps({ Component, ctx }) {
 		return {
-			...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {}),
+			...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {})
 		};
 	}
 	render() {

@@ -6,7 +6,11 @@ export default props => {
 	setTimeout(() => {
 		setHide(true);
 	}, 3000);
-	return <Test hide={hide}>Hello there from me</Test>;
+	return (
+		<>
+			<Test hide={hide}>Hello there from me</Test>
+		</>
+	);
 };
 const Test = styled.h1(({ hide }) => {
 	return {

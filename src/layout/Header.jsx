@@ -18,6 +18,7 @@ const StyledHomeBtn = styled.i(props => {
 		width: "35px",
 		height: "30px",
 		fontSize: "18px",
+		color: "#fff"
 	};
 });
 
@@ -43,7 +44,7 @@ const StyledProfIcon = styled.i(props => {
 		height: "35px",
 		borderRadius: "50%",
 		fontSize: "18px",
-		backgroundColor: "red",
+		backgroundColor: "red"
 	};
 });
 
@@ -52,6 +53,6 @@ const StyledHeader = styled.header(props => {
 		...flex(),
 		height: "50px",
 		width: "100%",
-		backgroundColor: "#212121",
+		backgroundColor: "#212121"
 	};
 });
