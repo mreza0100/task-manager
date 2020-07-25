@@ -18,7 +18,13 @@ const initialValues = {
 };
 
 const validation = yup.object({
-	mobile: yup.string().trim().matches(phoneRegExp, "شماره تلفن وارد شده صحیح نمیباشد").min(11).max(11).required(),
+	mobile: yup
+		.string()
+		.trim()
+		.matches(phoneRegExp, "شماره تلفن وارد شده صحیح نمیباشد")
+		.min(11)
+		.max(11)
+		.required(),
 	code: yup.string().trim().min(4).max(4).required(),
 });
 
@@ -33,7 +39,7 @@ async function handleSubmit(data) {
 	}
 }
 
-export default props => {
+export default function Confirm(props) {
 	return (
 		<RegisterProgress>
 			<Formik
@@ -51,7 +57,10 @@ export default props => {
 								{dataInputs.map(({ name, label, type, auto }) => {
 									const err = touched[name] && errors[name];
 									return (
-										<FieldContainerTag key={name} className={C.FieldContainer}>
+										<FieldContainerTag
+											key={name}
+											className={C.FieldContainer}
+										>
 											<Label err={err}>{err}</Label>
 											<Field
 												name={name}
@@ -72,4 +81,4 @@ export default props => {
 			</Formik>
 		</RegisterProgress>
 	);
-};
+}

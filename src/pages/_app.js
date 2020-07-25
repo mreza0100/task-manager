@@ -52,6 +52,11 @@ class App extends NextApp {
 }
 export default wrapper.withRedux(App);
 
+// import dynamic from "next/dynamic";
+// export default dynamic(() => Promise.resolve(wrapper.withRedux(App)), {
+// 	ssr: false,
+// });
+
 // export function reportWebVitals(metric) {
 // 	console.log(metric);
 // }

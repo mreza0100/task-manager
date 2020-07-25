@@ -7,7 +7,6 @@ import {
 	editDate,
 } from "../helpers/exports";
 import { formikStyles, StyledDatePickers } from "../components/TaskManager";
-import { StyledCheckbox, StyledStar } from "../components/Task";
 import { getProfileAndTasks } from "../redux/actions/profile";
 import { getOneAndOverwrite } from "../redux/actions/tasks";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +17,7 @@ import { _USE_API_ } from "../api/index.API";
 import { Formik, Form, Field } from "formik";
 import { searchData } from "../search-data";
 import { wrapper } from "../redux/store";
-import Task from "../components/Task";
+import Task, { StyledCheckbox, StyledStar } from "../components/Task";
 import moment from "moment-jalaali";
 import DatePicker from "../proxy";
 import { useState } from "react";
@@ -56,7 +55,7 @@ function goToTask({ target }) {
 	Router.push(`/?id=${id}`);
 }
 
-export default function Page() {
+export default function Search(props) {
 	// hooks
 	const [fromDate, setFromDate] = useState(moment());
 	const [toDate, setToDate] = useState(moment());
@@ -76,7 +75,6 @@ export default function Page() {
 			<StyledSavesSearches className="row">
 				<StyledSearchWrapper className="col-sm-5 row">
 					{searchData.map(({ name }, idx) => {
-						console.log(idx);
 						return (
 							<StyledSearch className="col-12 row" key={idx}>
 								<span className="col-8">{name}</span>

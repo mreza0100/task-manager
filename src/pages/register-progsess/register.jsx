@@ -32,7 +32,13 @@ const initialValues = {
 const validation = yup.object({
 	name: yup.string().trim().required(),
 	family: yup.string().trim().required(),
-	mobile: yup.string().matches(phoneRegExp, "Phone number is not valid").min(11).max(11).trim().required(),
+	mobile: yup
+		.string()
+		.matches(phoneRegExp, "Phone number is not valid")
+		.min(11)
+		.max(11)
+		.trim()
+		.required(),
 	email: yup.string().email().trim(),
 	pass: yup.string().trim().min(8).max(32).required(),
 	pass2: yup
@@ -53,7 +59,7 @@ async function handleSubmit(data) {
 	} catch (err) {}
 }
 
-export default function register(props) {
+export default function Register(props) {
 	// TODO: make a nice layout for register login and etc (register => confirm => login)
 	return (
 		<RegisterProgress>
@@ -72,7 +78,10 @@ export default function register(props) {
 							{dataInputs.map(({ name, label, type, auto }) => {
 								const error = touched[name] && errors[name];
 								return (
-									<FieldContainerTag key={name} className={C.FieldContainer}>
+									<FieldContainerTag
+										key={name}
+										className={C.FieldContainer}
+									>
 										<Label err={error}>{error}</Label>
 										<Field
 											name={name}

@@ -1,4 +1,4 @@
-export default function (req, res) {
+export default function GetTasks(req, res) {
 	const data = [];
 	let i;
 	for (i = 1; i < 15; i++) {

@@ -31,7 +31,7 @@ const btnWrapperStyles = {
 
 var isBusy;
 
-export function ask(
+export default function ask(
 	{
 		title: {
 			text: tText,

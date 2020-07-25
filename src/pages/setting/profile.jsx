@@ -18,7 +18,11 @@ const inputData = [
 async function handleSubmit(data, setSubmitting) {
 	setSubmitting(true);
 	try {
-		const res = await _USE_API_({ isPrivetRoute: true, debug: true, describe: "edit profile data" }).Put({
+		const res = await _USE_API_({
+			isPrivetRoute: true,
+			debug: true,
+			describe: "edit profile data",
+		}).Put({
 			url: "/profile",
 			data,
 		});
@@ -29,7 +33,7 @@ async function handleSubmit(data, setSubmitting) {
 	}
 }
 
-export default function profile(props) {
+export default function Profile(props) {
 	const profile = useSelector(state => state.profile);
 	const { email, family, mobile, name } = profile;
 	const [isEditMode, setIsEditmode] = useState(false);
@@ -56,8 +60,13 @@ export default function profile(props) {
 							{inputData.map(({ name, label, type }) => {
 								if (isEditMode)
 									return name !== "mobile" ? (
-										<StyledFieldWrapper key={name} className="col-12 row">
-											<span className="col-12 p-0">{label}:</span>
+										<StyledFieldWrapper
+											key={name}
+											className="col-12 row"
+										>
+											<span className="col-12 p-0">
+												{label}:
+											</span>
 											<Field
 												name={name}
 												type={type}
@@ -67,9 +76,14 @@ export default function profile(props) {
 										</StyledFieldWrapper>
 									) : null;
 								return (
-									<StyledShowWrapper key={name} className="col-12 row">
+									<StyledShowWrapper
+										key={name}
+										className="col-12 row"
+									>
 										<span className="col-5">{label}:</span>
-										<span className="col">{values[name]}</span>
+										<span className="col">
+											{values[name]}
+										</span>
 									</StyledShowWrapper>
 								);
 							})}
@@ -85,14 +99,23 @@ export default function profile(props) {
 											type="button"
 											disabled={isSubmitting}
 										>
-											لغو <i className="fa fa-times p-2" />
+											لغو{" "}
+											<i className="fa fa-times p-2" />
 										</button>
-										<button className="btn btn-success  mt-3" disabled={isSubmitting}>
-											ثبت <i className="fa fa-save p-2" />
+										<button
+											className="btn btn-success  mt-3"
+											disabled={isSubmitting}
+										>
+											ثبت{" "}
+											<i className="fa fa-save p-2" />
 										</button>
 									</>
 								)) || (
-									<button className="btn btn-primary" type="button" onClick={onToggleEdit}>
+									<button
+										className="btn btn-primary"
+										type="button"
+										onClick={onToggleEdit}
+									>
 										ویرایش <i className="fa fa-edit p-2" />
 									</button>
 								)}
@@ -105,9 +128,11 @@ export default function profile(props) {
 	);
 }
 
-export const getServerSideProps = wrapper.getServerSideProps(async ({ store: { dispatch }, req, res }) => {
-	await dispatch(getProfileAndTasks({ req, res }));
-});
+export const getServerSideProps = wrapper.getServerSideProps(
+	async ({ store: { dispatch }, req, res }) => {
+		await dispatch(getProfileAndTasks({ req, res }));
+	},
+);
 
 const StyledFieldWrapper = styled.div(props => {
 	return {

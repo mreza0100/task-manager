@@ -15,7 +15,13 @@ const dataInputs = [
 const initialValues = { mobile: "", password: "" };
 
 const validation = yup.object({
-	mobile: yup.string().trim().min(11).max(11).matches(phoneRegExp, "شماره تلفن وارد شده صحیح نمیباشد").required(),
+	mobile: yup
+		.string()
+		.trim()
+		.min(11)
+		.max(11)
+		.matches(phoneRegExp, "شماره تلفن وارد شده صحیح نمیباشد")
+		.required(),
 	password: yup.string().trim().min(8).required(" پسورد چی پس"),
 });
 
@@ -30,11 +36,12 @@ async function handleSubmit(data) {
 			Router.push("/");
 		}
 	} catch (err) {
-		if (err.response.status === 401) showMsg({ title: { text: "اطلاعات اشتباه" } }, { status: "warning", time: 8 });
+		if (err.response.status === 401)
+			showMsg({ title: { text: "اطلاعات اشتباه" } }, { status: "warning", time: 8 });
 	}
 }
 
-export default function login(props) {
+export default function Login(props) {
 	return (
 		<RegisterProgressLayout>
 			<Formik
@@ -52,9 +59,16 @@ export default function login(props) {
 								{dataInputs.map(({ name, label, type }) => {
 									const err = touched[name] && errors[name];
 									return (
-										<FieldContainerTag key={name} className={C.FieldContainer}>
+										<FieldContainerTag
+											key={name}
+											className={C.FieldContainer}
+										>
 											<Label err={err}>{err}</Label>
-											<Field name={name} type={type} placeholder={label} />
+											<Field
+												name={name}
+												type={type}
+												placeholder={label}
+											/>
 										</FieldContainerTag>
 									);
 								})}

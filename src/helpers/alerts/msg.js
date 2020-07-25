@@ -22,7 +22,7 @@ const wrapperStyles = ({ time, extraStyles = {} }) => ({
 	...extraStyles,
 });
 
-export function showMsg(
+export default function showMsg(
 	// TODO: support multi msgs
 	{
 		title: {
