@@ -1,41 +1,52 @@
-import { flex } from "../helpers/exports";
-import styled from "styled-components";
 import PluseBtn from "../components/PluseBtn";
+import { flex } from "../helpers/exports";
+import { useRouter } from "next/router";
+import styled from "styled-components";
 import Link from "next/link";
 
-function HomeBtn(props) {
+export default function Header({}) {
+	// TODO: fix header make it like menu on setting layout
+	const router = useRouter();
+	const needHomeBtn = router.pathname !== "/";
 	return (
-		<Link href="/">
-			<StyledHomeBtn className="fa fa-home cursor-pointer" />
-		</Link>
+		<StyledHeader className="container row">
+			<Link href="/setting/profile">
+				<StyledProfIcon className="fa fa-user c-p" />
+			</Link>
+			<Link href="/search">
+				<a className="pr-3">جستجو</a>
+			</Link>
+			{needHomeBtn ? (
+				<Link href="/">
+					<StyledHomeBtn className="fa fa-home c-p mr-auto" />
+				</Link>
+			) : (
+				<PluseBtn extraClass="mr-auto" />
+			)}
+		</StyledHeader>
 	);
 }
-// TODO: add exit btn
 
 const StyledHomeBtn = styled.i(props => {
 	return {
 		...flex(),
 		width: "35px",
-		height: "30px",
+		height: "35px",
 		fontSize: "18px",
-		color: "#fff"
+		color: "#fff",
 	};
 });
 
-export default function Header({ isProfPage }) {
-	return (
-		<StyledHeader>
-			<div className="container row justify-content-between">
-				<div>
-					<Link href="/setting/profile">
-						<StyledProfIcon className="fa fa-user cursor-pointer" />
-					</Link>
-				</div>
-				{(isProfPage && <HomeBtn />) || <PluseBtn />}
-			</div>
-		</StyledHeader>
-	);
-}
+const StyledHeader = styled.header(props => {
+	return {
+		...flex(["justifyContent"]),
+		justifyContent: "flex-start",
+		margin: "0 auto 0 auto",
+		height: "50px",
+		width: "100%",
+		backgroundColor: "#212121",
+	};
+});
 
 const StyledProfIcon = styled.i(props => {
 	return {
@@ -44,15 +55,6 @@ const StyledProfIcon = styled.i(props => {
 		height: "35px",
 		borderRadius: "50%",
 		fontSize: "18px",
-		backgroundColor: "red"
-	};
-});
-
-const StyledHeader = styled.header(props => {
-	return {
-		...flex(),
-		height: "50px",
-		width: "100%",
-		backgroundColor: "#212121"
+		backgroundColor: "red",
 	};
 });

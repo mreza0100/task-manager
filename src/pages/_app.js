@@ -10,6 +10,8 @@ import "font-awesome/css/font-awesome.min.css";
 import "nprogress/nprogress.css";
 // general styles include libs font etc...
 import "../styles/general.scss";
+import { ThemeProvider } from "styled-components";
+import useTasksFigure from "../themes/tasksFigure.theme";
 
 Router.onRouteChangeStart = () => {
 	NProgress.start();
@@ -22,16 +24,30 @@ Router.onRouteChangeError = () => {
 };
 
 // !--->>>
+
+function ForUsingHook({ children }) {
+	const tasksFigure = useTasksFigure();
+	return (
+		<ThemeProvider theme={{ TF /*TF for tasksFigure*/: tasksFigure }}>
+			{children}
+		</ThemeProvider>
+	);
+}
+
 class App extends NextApp {
 	static async getInitialProps({ Component, ctx }) {
 		return {
-			...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {})
+			...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {}),
 		};
 	}
 	render() {
 		const { Component, pageProps } = this.props;
 
-		return <Component {...pageProps} />;
+		return (
+			<ForUsingHook>
+				<Component {...pageProps} />
+			</ForUsingHook>
+		);
 	}
 }
 export default wrapper.withRedux(App);

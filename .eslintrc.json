@@ -7,7 +7,9 @@
 	"rules": {
 		"semi": "warn",
 		"quotes": ["error", "double"],
-		"strict": "error"
+		"strict": "error",
+		"no-mixed-spaces-and-tabs": "error",
+		"no-tabs": "off"
 	},
 	"env": { "browser": true, "node": true }
 }

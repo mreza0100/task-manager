@@ -1,16 +1,14 @@
 @keyframes msg {
 	0% {
-		right: -20%;
+		right: -30%;
 	}
-	100% {
+	25% {
 		right: 15%;
 	}
-}
-@keyframes hide-msg {
-	0% {
-		right: 15%;
+	75% {
+		right: 18%;
 	}
 	100% {
-		right: -20%;
+		right: -30%;
 	}
 }

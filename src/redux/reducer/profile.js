@@ -1,13 +1,11 @@
-import { CHANGE_TASKS_FIGURE } from "../type";
+import { CHANGE_TASKS_FIGURE, SET_PROFILE } from "../type";
 
-const initialState = {
-	tasksFigure: "table",
-};
-// TODO: change this to false and dispatch initial with getting API
-export default function (state = initialState, action) {
+export default function (state = {}, action) {
 	switch (action.type) {
 		case CHANGE_TASKS_FIGURE:
 			return { ...state, tasksFigure: action.payload };
+		case SET_PROFILE:
+			return action.payload;
 		default:
 			return state;
 	}

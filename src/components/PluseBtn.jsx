@@ -4,21 +4,17 @@ import { togglePluse } from "../redux/actions/pluse";
 import styled from "styled-components";
 
 export default function PluseBtn({ extraClass }) {
-	extraClass = extraClass ?? "";
-	const dispatch = useDispatch();
-	const isPluseMode = useSelector(state => state.isPluseMode);
-
 	const handleTogglePluseMode = () => dispatch(togglePluse());
-	const msgTitle = isPluseMode
-		? "برای بستن دکمه اسکیپ را فشار دهید"
-		: "برای باز شدن کلیک کنید";
+	const isPluseMode = useSelector(state => state.isPluseMode);
+	const dispatch = useDispatch();
+
 	return (
 		<StyledPluse
 			isPluseMode={isPluseMode}
-			className={`fa fa-${
-				isPluseMode ? "times" : "plus"
-			} cursor-pointer ${extraClass}`}
-			title={msgTitle}
+			className={`fa fa-${isPluseMode ? "times" : "plus"} ${extraClass ?? ""}`}
+			title={
+				isPluseMode ? "برای بستن دکمه اسکیپ را فشار دهید" : "برای باز شدن کلیک کنید"
+			}
 			onClick={handleTogglePluseMode}
 		/>
 	);
@@ -33,6 +29,7 @@ const StyledPluse = styled.i(({ isPluseMode }) => {
 		backgroundColor: isPluseMode ? "red" : "#6b6b50b8",
 		width: "30px",
 		height: "30px",
+		cursor: "pointer",
 		"&:hover": {
 			transform: "scale(1.2)",
 		},

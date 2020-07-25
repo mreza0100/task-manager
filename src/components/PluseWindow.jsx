@@ -1,21 +1,14 @@
-import {
-	transition,
-	flex,
-	prevEnter,
-	changeDateFormat,
-	tagObjToArr,
-	getRandomColor
-} from "../helpers/exports";
+import { transition, flex, prevEnter, changeDateFormat, tagObjToArr, getRandomColor } from "../helpers/exports";
 import { StyledDatePickers, validation } from "./TaskManager";
 import { togglePluse } from "../redux/actions/pluse";
-import { getTasks, getOneTask } from "../redux/actions/tasks";
+import { getOneTask } from "../redux/actions/tasks";
 import ReactTags from "react-tag-autocomplete";
 import PluseBtn from "../components/PluseBtn";
 import { _USE_API_ } from "../api/index.API";
 import { formikStyles } from "./TaskManager";
 import { Formik, Form, Field } from "formik";
 import { useEffect, useState } from "react";
-import { useDispatch, useStore } from "react-redux";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import moment from "moment-jalaali";
 import DatePicker from "../proxy";
@@ -27,30 +20,30 @@ async function handleSubmit(data) {
 			url: "tasks",
 			data
 		})
-		.then((res) => {
+		.then(res => {
 			return res.data.data.item./* taskID=>*/ id;
 		})
-		.catch((err) => {
+		.catch(err => {
 			console.dir(err);
 			return false;
 		});
 }
 
 export default function PluseWindow({ hasPluseBtn }) {
-	const dispatch = useDispatch();
+	const [initialColor, setInitialColor] = useState(getRandomColor());
 	const [firstDate, setFirstDate] = useState(moment());
 	const [secondDate, setSecDate] = useState(moment());
 	const [tags, setTags] = useState([]);
-	const [initialColor, setInitialColor] = useState(getRandomColor());
+	const dispatch = useDispatch();
 
-	const handleAddition = (tag) => setTags([...tags, tag]);
-	const handleDelete = (idx1) => setTags(tags.filter((i, idx2) => idx1 !== idx2));
-	const closeEscape = ({ which }) => which === 27 && dispatch(togglePluse());
+	const handleDelete = idx1 => setTags(tags.filter((i, idx2) => idx1 !== idx2));
+	const closeOnEscape = ({ which }) => which === 27 && dispatch(togglePluse());
+	const handleAddition = tag => setTags([...tags, tag]);
 
 	useEffect(() => {
-		addEventListener("keydown", closeEscape);
+		addEventListener("keydown", closeOnEscape);
 		return () => {
-			removeEventListener("keydown", closeEscape);
+			removeEventListener("keydown", closeOnEscape);
 		};
 	}, []);
 
@@ -76,52 +69,37 @@ export default function PluseWindow({ hasPluseBtn }) {
 						to_date: changeDateFormat(secondDate)
 					};
 					handleSubmit(sortedData)
-						.then((taskID) => {
+						.then(taskID => {
 							if (taskID) dispatch(getOneTask({ taskID }));
 							setInitialColor(getRandomColor());
-							/*if taskID returned from server was not empty alright*/
+							/*if taskID in res from server was not empty alright*/
 						})
 						.finally(() => setSubmitting(false));
 				}}
 			>
 				{({ isSubmitting }) => (
-					<Form
-						className={`container formik-form ${
-							isSubmitting ? "disable-all" : ""
-						}`}
-						onKeyDown={prevEnter}
-					>
+					<Form className="container formik-form" onKeyDown={prevEnter}>
 						<div className="title-color col-md-12 row">
-							<Field
-								type="text"
-								placeholder="سر تیتر"
-								name="title"
-								className="col-11"
-							/>
+							<Field type="text" placeholder="سر تیتر" name="title" className="col-11" />
 							<Field type="color" name="color" className="col-1" />
 						</div>
-						<Field
-							as="textarea"
-							name="description"
-							placeholder="توضیحات"
-							rows="4"
-						/>
+						<Field as="textarea" name="description" placeholder="توضیحات" rows="4" />
 						<StyledDatePickers className="col-12">
 							<div>
-								از تاریخ:
+								<span>از تاریخ:</span>
 								<DatePicker
 									className="d-block m-auto w-100 cursor-pointer"
 									isGregorian={false}
-									onChange={(val) => setFirstDate(val)}
+									onChange={val => setFirstDate(val)}
 									value={firstDate}
 								/>
 							</div>
 							<div>
-								تا تاریخ:
+								<span>تا تاریخ:</span>
 								<DatePicker
 									className="d-block m-auto w-100 cursor-pointer"
 									isGregorian={false}
-									onChange={(val) => setSecDate(val)}
+									onChange={val => setSecDate(val)}
 									value={secondDate}
 								/>
 							</div>
@@ -135,14 +113,13 @@ export default function PluseWindow({ hasPluseBtn }) {
 							autoresize={false}
 							allowNew
 						/>
-						<div className="w-100 d-flex flex-start">
-							<button
-								type="submit"
-								className="btn btn-primary pr-5 pl-5"
-							>
-								ثبت
-							</button>
-						</div>
+						<button
+							type="submit"
+							className="btn btn-primary align-self-end pr-5 pl-5"
+							disabled={isSubmitting}
+						>
+							ثبت
+						</button>
 					</Form>
 				)}
 			</Formik>

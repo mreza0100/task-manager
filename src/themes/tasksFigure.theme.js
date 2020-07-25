@@ -151,5 +151,7 @@ export default function useTasksFigure(props) /*for theme provider*/ {
 			return line;
 		case "table":
 			return table;
+		default:
+			return "line";
 	}
 }

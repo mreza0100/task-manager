@@ -11,7 +11,7 @@
 body {
 	font-family: YB !important;
 	direction: rtl;
-	min-height: "100vm";
+	min-height: 100vh;
 	height: auto;
 	// background-color: #313131;
 	color: black;
@@ -38,6 +38,10 @@ li {
 	cursor: pointer;
 }
 
+.c-p {
+	cursor: pointer;
+}
+
 .disable {
 	cursor: wait;
 	opacity: 0.4;
@@ -53,6 +57,10 @@ li {
 
 .touch-off {
 	pointer-events: none;
+}
+
+.justify-content-evenly {
+	justify-content: space-evenly !important;
 }
 
 #making-color {

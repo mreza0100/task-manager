@@ -4,6 +4,7 @@ import TaskManager, { formikStyles } from "./TaskManager";
 import styled, { useTheme } from "styled-components";
 import { editTask } from "../redux/actions/tasks";
 import { _USE_API_ } from "../api/index.API";
+import showMsg from "../helpers/alerts/msg";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 
@@ -28,29 +29,30 @@ const CheckBox = ({ isDone, taskID }) => {
 	};
 	const { classes } = useTheme().TF;
 	return (
-		<CheckBoxTag
+		<StyledCheckbox
 			onClick={handleSubmit}
 			className={classes.checkBox}
 			opacity={isDone ? 1 : 0}
 		>
 			<i className="fa fa-check" />
-		</CheckBoxTag>
+		</StyledCheckbox>
 	);
 };
 
-const CheckBoxTag = styled.div(({ opacity }) => {
+export const StyledCheckbox = styled.div(({ opacity, extraStyles = {} }) => {
 	return {
 		...flex(),
 		height: "35px",
 		width: "35px",
-		// minWidth: "35px",
 		backgroundColor: "#228a4d5e",
 		borderRadius: "5px",
 		cursor: "pointer",
+		textAlign: "center",
 		"> i": {
 			opacity,
 			...transition(0.3),
 		},
+		...extraStyles,
 	};
 });
 // !CheckBox component
@@ -77,7 +79,7 @@ const Star = ({ isFavorite, taskID }) => {
 	};
 	const { classes } = useTheme().TF;
 	return (
-		<StarTag
+		<StyledStar
 			onClick={handleSubmit}
 			className={`fa fa-star ${classes.star}`}
 			starColor={isFavorite ? "#b7ff07" : "unset"}
@@ -85,15 +87,30 @@ const Star = ({ isFavorite, taskID }) => {
 	);
 };
 
-const StarTag = styled.i(({ starColor: color }) => {
+export const StyledStar = styled.i(({ starColor: color, extraStyles = {} }) => {
 	return {
 		color,
 		padding: "4px",
 		cursor: "pointer",
+		textAlign: "center",
 		...transition(0.3),
+		...extraStyles,
 	};
 });
 // ! Star component
+
+function handleCopy(taskID) {
+	if (copyToClipboard(`${location.origin}/?id=${taskID}`))
+		showMsg(
+			{ title: { text: "با موفقیت کپی شد", nodeName: "h6" } },
+			{ time: 3, status: "success" },
+		);
+	else
+		showMsg(
+			{ title: { text: "مرورگر شما برای این کار قدیمی است" } },
+			{ time: 5, status: "warning" },
+		);
+}
 
 export default function Task({ taskData }) {
 	const { id: taskID, title, color, is_done, is_favorite } = taskData;
@@ -120,7 +137,7 @@ export default function Task({ taskData }) {
 					<i
 						className={`fa fa-clone ${classes.clone}`}
 						title="کپی URL تسک"
-						onClick={() => copyToClipboard(`${location.origin}/?id=${taskID}`)}
+						onClick={() => handleCopy(taskID)}
 					/>
 					<Star isFavorite={is_favorite} taskID={taskID} />
 				</span>

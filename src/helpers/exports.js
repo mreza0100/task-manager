@@ -5,14 +5,16 @@ function transition(time = 0.3) {
 		transition: `${time}s ease-in-out,background-color 
                 ${time}s ease-in-out,border-color 
                 ${time}s ease-in-out,box-shadow 
-                ${time}s ease-in-out;`
+                ${time}s ease-in-out;`,
 	};
 }
 
 function flex(whatIDontWant = []) {
 	let s = { display: "flex" };
 	if (!whatIDontWant.includes("alignItems")) s = { ...s, alignItems: "center" };
-	return !whatIDontWant.includes("justifyContent") ? (s = { ...s, justifyContent: "center" }) : s;
+	return !whatIDontWant.includes("justifyContent")
+		? (s = { ...s, justifyContent: "center" })
+		: s;
 }
 
 const $ = "!important";
@@ -26,14 +28,14 @@ const butyInputs = {
 		transition: "all .2s linear",
 		"&::placeholder": {
 			color: "black",
-			opacity: "1"
+			opacity: "1",
 		},
 		"&:focus": {
 			outline: "none",
 			border: "1px #475993 solid",
-			boxShadow: "3px 3px #475993a4"
-		}
-	}
+			boxShadow: "3px 3px #475993a4",
+		},
+	},
 };
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -46,7 +48,7 @@ function getCookie({ cookies, key = "token" }) {
 	try {
 		return cookies
 			.split("; ")
-			.find((row) => row.startsWith(key))
+			.find(row => row.startsWith(key))
 			.split("=")[1];
 	} catch (err) {
 		return false;
@@ -86,12 +88,12 @@ function editDate(initaialDate) {
 
 function tagObjToArr(tags = []) {
 	// changing [{name:"awd"}] to ['name']
-	return tags.map((i) => i.name);
+	return tags.map(i => i.name);
 }
 
 function tagArrToObj(tags = []) {
-	// changing ['name'] to [{name:"awd"}]
-	return tags.map((i) => ({ name: i }));
+	// changing ['name'] to [{ name:"awd" }]
+	return tags.map(i => ({ name: i }));
 }
 
 function reloadRouter() {
@@ -107,7 +109,12 @@ function serverRedirect({ res, route }) {
 }
 
 function copyToClipboard(text) {
-	navigator.clipboard.writeText(text);
+	try {
+		navigator.clipboard.writeText(text);
+		return true;
+	} catch (err) {
+		return false;
+	}
 	// .then(
 	// 	function () {
 	// 		console.log("Async: Copying to clipboard was successful!");
@@ -118,13 +125,20 @@ function copyToClipboard(text) {
 	// );
 }
 
-function getRandomColor() {
-	var letters = "0123456789ABCDEF";
-	var color = "#";
-	for (var i = 0; i < 6; i++) {
-		color += letters[Math.floor(Math.random() * 16)];
+function getRandomColor(type = "hex") {
+	if (type === "hex") return "#" + Math.floor(Math.random() * 16777215).toString(16);
+	if (type === "rgb") {
+		const num = Math.round(0xffffff * Math.random());
+		return `rgb(${num >> 16}, ${(num >> 8) & 255}, ${num & 255})`;
 	}
-	return color;
+}
+
+function isUndefined(thing) {
+	return typeof thing === "undefined";
+}
+
+function getRandomNumber(min, max) {
+	return Math.random() * (max - min) + min;
 }
 
 export {
@@ -145,5 +159,7 @@ export {
 	reloadRouter,
 	serverRedirect,
 	copyToClipboard,
-	getRandomColor
+	getRandomColor,
+	isUndefined,
+	getRandomNumber,
 };

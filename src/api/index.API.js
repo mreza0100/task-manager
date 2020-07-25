@@ -1,6 +1,7 @@
-import { getCookie, reloadRouter } from "../helpers/exports";
+import { getCookie, reloadRouter, isUndefined } from "../helpers/exports";
 import Router from "next/router";
 import Axios from "axios";
+import showMsg from "../helpers/alerts/msg";
 const dash = "-------";
 const consoleCss = [
 	"width: 400px",
@@ -9,7 +10,7 @@ const consoleCss = [
 	"color: white",
 	"text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3)",
 	"line-height: 40px",
-	"font-weight: bold"
+	"font-weight: bold",
 ].join(";");
 
 const AC /* as APIConfigs */ = {
@@ -23,13 +24,16 @@ const AC /* as APIConfigs */ = {
 	res: false,
 	isPrivetRoute: false,
 	pendingID: false,
+	ignoreStatuses: [],
 	describe() {
 		for (let i = 0; i < 10; i++) {
 			console.error("<<<<<<<<<<<API need a describe<<<<<<<<<<<");
 		}
 		throw Error("<<<<<<<<<<<API need a describe<<<<<<<<<<<");
-	}
+	},
 };
+
+var pendingList;
 
 class API {
 	constructor({
@@ -41,7 +45,8 @@ class API {
 		isPrivetRoute,
 		configs,
 		pendingID,
-		describe
+		describe,
+		ignoreStatuses,
 	}) {
 		this.req = req ?? AC.req;
 		this.res = res ?? AC.res;
@@ -50,14 +55,14 @@ class API {
 		this.baseURL = baseURL ?? AC.baseURL;
 		this.inBrowser = process.browser;
 		this.describe = describe ?? AC.describe();
-		this.isPrivetRoute /*need token*/ =
-			isPrivetRoute ?? AC.isPrivetRoute;
-		this.$HTTP = new Axios.create({
+		this.isPrivetRoute /*need token*/ = isPrivetRoute ?? AC.isPrivetRoute;
+		this.$HTTP = Axios.create({
 			baseURL: this.baseURL,
-			...configs
+			...configs,
 		});
+		this.ignoreStatuses = ignoreStatuses ?? AC.ignoreStatuses;
 		if (this.inBrowser) {
-			if (!window.pendingList) window.pendingList = [];
+			if (!pendingList) pendingList = [];
 			this.pendingID = pendingID ?? AC.pendingID;
 		} else this.pendingID = false;
 	}
@@ -76,10 +81,7 @@ class API {
 			log("has callback ::::::", !!callback);
 			if (!!callback) log("callback ::::::", callback.toString());
 			for (const key in axiosMsg) {
-				if (
-					typeof axiosMsg[key] !== "function" &&
-					key !== "isAxiosError"
-				)
+				if (typeof axiosMsg[key] !== "function" && key !== "isAxiosError")
 					log(`${key} :::::`, axiosMsg[key]);
 			}
 			groupEnd();
@@ -91,15 +93,13 @@ class API {
 	};
 
 	_redirectToLogin() {
-		if (this.inBrowser) return Router.push("/login");
-		this.res.writeHead(302, { Location: "/login" }).end();
+		if (this.inBrowser) return Router.push("/register-progsess/login");
+		this.res.writeHead(302, { Location: "/register-progsess/login" }).end();
 	}
 
 	_getToken() {
 		try {
-			const cookies = this.inBrowser
-				? document.cookie
-				: this.req.headers.cookie;
+			const cookies = this.inBrowser ? document.cookie : this.req.headers.cookie;
 			const token = getCookie({ cookies, key: "token" });
 			if (!token) return this._redirectToLogin();
 			return token;
@@ -110,10 +110,8 @@ class API {
 
 	_globalMiddleware() {
 		if (this.pendingID) {
-			if (window.pendingList.includes(this.pendingID)) {
-				window.pendingList = window.pendingList.filter(
-					(id) => id !== this.pendingID
-				);
+			if (pendingList.includes(this.pendingID)) {
+				pendingList = pendingList.filter(id => id !== this.pendingID);
 			}
 		}
 	}
@@ -126,25 +124,34 @@ class API {
 				url,
 				params,
 				data,
-				callback
+				callback,
 			});
 	};
 
 	_handleErr({ err, url, params, data, callback }) {
 		this._globalMiddleware();
+		if (this.inBrowser && !isUndefined(err.response.status) && this.ignoreStatuses) {
+			if (!this.ignoreStatuses.find(status => status === err.response.status))
+				showMsg(
+					{
+						title: { text: "مشکل شبکه " },
+						body: { text: `status: ${err.response.status}` },
+					},
+					{ status: "warning" },
+				);
+		}
 		if (this.debug)
 			this._debugCenter({
 				axiosMsg: err,
 				url,
 				params,
 				data,
-				callback
+				callback,
 			});
 		try {
 			const status = err.response.status;
 			if (this.isPrivetRoute) {
-				if (status === 404 && this.inBrowser)
-					return reloadRouter();
+				if (status === 404 && this.inBrowser) return reloadRouter();
 				if (status === 401) return this._redirectToLogin();
 			}
 			// TODO: deleting token for 401 status
@@ -154,7 +161,7 @@ class API {
 	}
 
 	_permissionDenied() {
-		console.warn("Permission Denied", window.pendingList);
+		console.warn("Permission Denied", pendingList);
 		return new Promise((resolve, reject) => {
 			reject({ status: 0, msg: "in pendingIDs" });
 		});
@@ -167,38 +174,36 @@ class API {
 
 	_permissionSending() {
 		if (this.pendingID) {
-			if (window.pendingList.includes(this.pendingID)) return false;
-			else window.pendingList.push(this.pendingID);
+			if (pendingList.includes(this.pendingID)) return false;
+			else pendingList.push(this.pendingID);
 		}
 		return true;
 	}
 
-	Get({ url, params, data, callback } = {}) {
+	request({ url, params, data, callback } = {}, method) {
 		if (!this._permissionSending()) return this._permissionDenied();
-		params = this._filterDataBeforSend(params);
+		if (method === "get") params = this._filterDataBeforSend(params);
+		else data = this._filterDataBeforSend(data);
 		return new Promise((resolve, reject) => {
 			this.$HTTP
-				.get(url, {
-					params,
-					data
-				})
-				.then((res) => {
+				.request({ method, url, params, data })
+				.then(res => {
 					this._handleRes({
 						res,
 						url,
 						params,
 						data,
-						callback
+						callback,
 					});
 					resolve(res);
 				})
-				.catch((err) => {
+				.catch(err => {
 					this._handleErr({
 						err,
 						url,
 						params,
 						data,
-						callback
+						callback,
 					});
 					reject(err);
 				})
@@ -206,98 +211,14 @@ class API {
 		});
 	}
 
-	Post({ url, params, data, callback } = {}) {
-		if (!this._permissionSending()) return this._permissionDenied();
-		data = this._filterDataBeforSend(data);
-		return new Promise((resolve, reject) => {
-			this.$HTTP
-				.post(url, null, { data, params })
-				.then((res) => {
-					this._handleRes({
-						res,
-						url,
-						params,
-						data,
-						callback
-					});
-					resolve(res);
-					return res;
-				})
-				.catch((err) => {
-					this._handleErr({
-						err,
-						url,
-						params,
-						data,
-						callback
-					});
-					reject(err);
-				})
-				.finally(callback);
-		});
-	}
-
-	Delete({ url, params, data, callback } = {}) {
-		if (!this._permissionSending()) return this._permissionDenied();
-		data = this._filterDataBeforSend(data);
-		return new Promise((resolve, reject) => {
-			this.$HTTP
-				.delete(url, { data, params })
-				.then((res) => {
-					this._handleRes({
-						res,
-						url,
-						params,
-						data,
-						callback
-					});
-					resolve(res);
-					return res;
-				})
-				.catch((err) => {
-					this._handleErr({
-						err,
-						url,
-						params,
-						data,
-						callback
-					});
-					reject(err);
-				})
-				.finally(callback);
-		});
-	}
-
-	Put({ url, params, data, callback } = {}) {
-		if (!this._permissionSending()) return this._permissionDenied();
-		data = this._filterDataBeforSend(data);
-		return new Promise((resolve, reject) => {
-			this.$HTTP
-				.put(url, null, { data, params })
-				.then((res) => {
-					this._handleRes({
-						res,
-						url,
-						params,
-						data,
-						callback
-					});
-					resolve(res);
-					return res;
-				})
-				.catch((err) => {
-					this._handleErr({
-						err,
-						url,
-						params,
-						data,
-						callback
-					});
-					reject(err);
-				})
-				.finally(callback);
-		});
-	}
+	Get = ({ url, params, data, callback } = {}) =>
+		this.request({ url, params, data, callback }, "get");
+	Post = ({ url, params, data, callback } = {}) =>
+		this.request({ url, params, data, callback }, "post");
+	Delete = ({ url, params, data, callback } = {}) =>
+		this.request({ url, params, data, callback }, "delete");
+	Put = ({ url, params, data, callback } = {}) =>
+		this.request({ url, params, data, callback }, "put");
 }
 
 // ? INITING HOOK
@@ -312,7 +233,8 @@ function _USE_API_({
 	isPrivetRoute,
 	axiosConfigs,
 	pendingID,
-	describe
+	describe,
+	ignoreStatuses,
 } = {}) {
 	return new API({
 		baseURL,
@@ -324,15 +246,16 @@ function _USE_API_({
 		isPrivetRoute,
 		axiosConfigs,
 		pendingID,
-		describe
+		describe,
+		ignoreStatuses,
 	});
 }
 
 class APITools {
 	static checkInPendingList(pendingID) {
 		try {
-			if (window.pendingList.includes(pendingID)) {
-				console.warn(window.pendingList);
+			if (pendingList.includes(pendingID)) {
+				console.warn(pendingList);
 				return false;
 			}
 			return true;
@@ -343,7 +266,7 @@ class APITools {
 }
 
 // $>>> EXPORTS
-export default API;
+export { API };
 export { _USE_API_, APITools };
 
 // this.xhr.interceptors.request.use(configs => {

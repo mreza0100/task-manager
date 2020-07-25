@@ -1,21 +1,20 @@
 import { toggleTasksFigure } from "../redux/actions/profile";
-import { formikStyles } from "../components/TaskManager";
 import { useSelector, useDispatch } from "react-redux";
 import { flex, transition } from "../helpers/exports";
 import styled, { useTheme } from "styled-components";
 import PluseWindow from "../components/PluseWindow";
-import TaskManager from "../components/TaskManager";
-import { getTasks } from "../redux/actions/tasks";
+import TaskManager, { formikStyles } from "../components/TaskManager";
+import { getProfileAndTasks } from "../redux/actions/profile";
 import Router, { useRouter } from "next/router";
 import MainLayout from "../layout/Main.lauout";
 import { wrapper } from "../redux/store";
 import Task from "../components/Task";
 // !--->>
-// TODO: add prettier and ESlint config files
 // TODO: add trash for deleting tasks
 // TODO: add riminder for every task with a comment
-// TODO: add ask and msg page for deleting tasks and stuffs like that
+// TODO: add ask modal for deleting tasks and stuffs like that
 // TODO: add priority [1, 2, 3, 4]
+// TODO: add a routes for all routes insted of string every where
 
 function checkAndPassQuery({ target }) {
 	const id = target.getAttribute("target");
@@ -83,8 +82,8 @@ const TaskManagerWrapper = styled.div(({}) => {
 export default function Home(props) {
 	const dispatch = useDispatch();
 	const isPluseMode = useSelector(state => state.isPluseMode);
-	const handleChangeFigure = e => dispatch(toggleTasksFigure());
-	const TF /*TF for tasksFigure*/ = useSelector(state => state.profile.tasksFigure);
+	const handleChangeFigure = () => dispatch(toggleTasksFigure());
+	const { classes, figure } = useTheme().TF;
 	return (
 		<MainLayout>
 			<div className="container mb-3 w-75">
@@ -92,7 +91,7 @@ export default function Home(props) {
 					تعویض حالت
 				</button>
 			</div>
-			<StyledMain className={TF === "table" ? "container-fluid" : "container"}>
+			<StyledMain className={figure === "table" ? "container-fluid" : "container"}>
 				<TasksList />
 				<StyledWrapper visible={isPluseMode}>
 					{isPluseMode && <PluseWindow hasPluseBtn />}
@@ -104,8 +103,8 @@ export default function Home(props) {
 
 export const getServerSideProps = wrapper.getServerSideProps(
 	async ({ store: { dispatch }, req, res }) => {
-		await dispatch(getTasks({ req, res }));
-	}
+		await dispatch(getProfileAndTasks({ req, res }));
+	},
 );
 
 const StyledWrapper = styled.div(({ visible: v }) => {
