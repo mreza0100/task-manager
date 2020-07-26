@@ -1,6 +1,7 @@
 import create from "./elementFactory";
+import { useSelector } from "react-redux";
 
-const wrapperStyles = ({ time, extraStyles = {} }) => ({
+const wrapperStyles = ({ time, extraStyles = {}, top }) => ({
 	minWidth: "300px",
 	height: "auto",
 	padding: "25px",
@@ -10,7 +11,7 @@ const wrapperStyles = ({ time, extraStyles = {} }) => ({
 	alignItems: "flex-start",
 	borderRadius: "5px",
 	position: "absolute",
-	top: "20px",
+	top,
 	right: "-30%",
 	animationName: "msg",
 	animationDuration: time,
@@ -22,8 +23,10 @@ const wrapperStyles = ({ time, extraStyles = {} }) => ({
 	...extraStyles,
 });
 
+var pendingList = [];
+var inPlay = 0;
+
 export default function showMsg(
-	// TODO: support multi msgs
 	{
 		title: {
 			text: tText,
@@ -43,10 +46,17 @@ export default function showMsg(
 		} = {},
 		html,
 	} = {},
-	{ time = 6, extraStyles = {}, mainAttrs, status } = {},
+	{ time = 6, extraStyles = {}, mainAttrs, status, pendingID } = {},
 	callback,
 ) {
 	if (!process.browser) return void 0;
+	const top = inPlay * 12 + "vh";
+	inPlay++;
+	if (pendingID) {
+		if (pendingList.find(ID => ID === pendingID)) return void 0;
+		else pendingList.push(pendingID);
+	}
+
 	var title, body;
 	if (tText)
 		title = create({
@@ -57,7 +67,6 @@ export default function showMsg(
 			childs: tChilds,
 			props: tProps,
 		});
-	window.x = title.cloneNode(true);
 	if (bText)
 		body = create({
 			nodeName: bNodeName ?? "h6",
@@ -68,7 +77,7 @@ export default function showMsg(
 			props: bProps,
 		});
 	const msg = create({
-		styles: wrapperStyles({ time: time + "s", extraStyles }),
+		styles: wrapperStyles({ time: time + "s", extraStyles, top }),
 		attrs: mainAttrs,
 		childs: [title, body, ...(Array.isArray(html) ? html : [html])],
 	});
@@ -76,7 +85,9 @@ export default function showMsg(
 	if (status !== "none") msg.classList.add(`bg-${status ?? "info"}`);
 	document.body.appendChild(msg);
 	setTimeout(() => {
+		inPlay--;
 		document.body.removeChild(msg);
+		if (pendingID) pendingList = pendingList.filter(ID => ID !== pendingID);
 		if (callback) callback();
 	}, time * 1000);
 }

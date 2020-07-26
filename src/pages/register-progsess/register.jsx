@@ -1,10 +1,11 @@
-import { flex, $, phoneRegExp, transition, butyInputs } from "../../helpers/exports";
+import { flex, $, phoneRegExp, transition, butyInputs, isUndefined } from "../../helpers/exports";
 import { Formik, Form, Field } from "formik";
 import styled from "styled-components";
 import { _USE_API_ } from "../../api/index.API";
 import * as yup from "yup";
 import Router from "next/router";
 import RegisterProgress from "../../layout/RegisterProgress.layout";
+import showMsg from "../../helpers/alerts/msg";
 
 export const C = {
 	FieldContainer: "row w-100 justify-content-center",
@@ -50,23 +51,32 @@ const validation = yup.object({
 async function handleSubmit(data) {
 	try {
 		const res = await _USE_API_({
+			ignoreStatuses: [401],
 			describe: "register user account",
 		}).Post({
 			url: "register",
 			data,
 		});
-		if (res.status === 200) Router.push({ pathname: "/register-progsess/confirm" });
-	} catch (err) {}
+		if (res.status === 200) Router.push("/register-progsess/confirm");
+	} catch (err) {
+		if (!isUndefined(err.response.status)) {
+			if (err.response.status === 401) {
+				showMsg(
+					{ title: { text: "اطلاعات تکراری" } },
+					{ status: "warning", time: 6 },
+				);
+			}
+		}
+	}
 }
 
 export default function Register(props) {
-	// TODO: make a nice layout for register login and etc (register => confirm => login)
 	return (
 		<RegisterProgress>
 			<Formik
 				initialValues={initialValues}
 				onSubmit={({ name, family, mobile, email, pass: password }) => {
-					// ? sorting data for calling handle submit
+					// ? sorting data for calling handleSubmit
 					const sortedData = { name, family, mobile, email, password };
 					handleSubmit(sortedData);
 				}}

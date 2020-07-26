@@ -1,28 +1,29 @@
-import React from "react";
-import NextDocument from "next/document";
-import { ServerStyleSheet as StyledComponentSheets } from "styled-components";
-export default class Document extends NextDocument {
+import Document from "next/document";
+import { ServerStyleSheet } from "styled-components";
+
+export default class MyDocument extends Document {
 	static async getInitialProps(ctx) {
-		const styledComponentSheet = new StyledComponentSheets();
+		const sheet = new ServerStyleSheet();
 		const originalRenderPage = ctx.renderPage;
+
 		try {
 			ctx.renderPage = () =>
 				originalRenderPage({
-					enhanceApp: App => props =>
-						styledComponentSheet.collectStyles(<App {...props} />),
+					enhanceApp: App => props => sheet.collectStyles(<App {...props} />),
 				});
-			const initialProps = await NextDocument.getInitialProps(ctx);
+
+			const initialProps = await Document.getInitialProps(ctx);
 			return {
 				...initialProps,
-				styles: [
-					<React.Fragment key="styles">
+				styles: (
+					<>
 						{initialProps.styles}
-						{styledComponentSheet.getStyleElement()}
-					</React.Fragment>,
-				],
+						{sheet.getStyleElement()}
+					</>
+				),
 			};
 		} finally {
-			styledComponentSheet.seal();
+			sheet.seal();
 		}
 	}
 }

@@ -7,6 +7,7 @@ import {
 	editDate,
 } from "../helpers/exports";
 import { formikStyles, StyledDatePickers } from "../components/TaskManager";
+import Task, { StyledCheckbox, StyledStar } from "../components/Task";
 import { getProfileAndTasks } from "../redux/actions/profile";
 import { getOneAndOverwrite } from "../redux/actions/tasks";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,13 +18,12 @@ import { _USE_API_ } from "../api/index.API";
 import { Formik, Form, Field } from "formik";
 import { searchData } from "../search-data";
 import { wrapper } from "../redux/store";
-import Task, { StyledCheckbox, StyledStar } from "../components/Task";
 import moment from "moment-jalaali";
 import DatePicker from "../proxy";
 import { useState } from "react";
 import Router from "next/router";
 import * as yup from "yup";
-// !>>
+
 export const validation = yup.object({
 	title: yup.string().trim(),
 	description: yup.string().trim(),
@@ -59,7 +59,7 @@ export default function Search(props) {
 	// hooks
 	const [fromDate, setFromDate] = useState(moment());
 	const [toDate, setToDate] = useState(moment());
-	const [tags, setTags] = useState(tagArrToObj());
+	const [tags, setTags] = useState([]);
 	const [isDone, setIsDone] = useState(false);
 	const [isFavorite, setIsFavorite] = useState(false);
 	const tasks = useSelector(state => state.tasks);
@@ -127,7 +127,7 @@ export default function Search(props) {
 											<i className="fa fa-check" />
 										</StyledCheckbox>
 										<StyledStar
-											color={
+											starColor={
 												isFavorite
 													? "#b7ff07"
 													: "unset"
@@ -168,13 +168,16 @@ export default function Search(props) {
 								</StyledDatePickers>
 								<ReactTags
 									tags={tags}
-									handleAddition={handleAddition}
-									handleDelete={handleDelete}
-									placeholder="اضافه کردن تگ(با کلید Enter)"
+									onAddition={handleAddition}
+									onDelete={handleDelete}
+									placeholderText="اضافه کردن تگ(با کلید Enter)"
 									minQueryLength={1}
 									autoresize={false}
 									allowNew
 								/>
+								<button className="btn btn-success mr-auto pr-4 pl-4">
+									جستجو <i className="fa fa-search pr-1" />
+								</button>
 							</Form>
 						);
 					}}
@@ -203,6 +206,7 @@ const StyledSearch = styled.div(props => {
 		marginBottom: "10px",
 		height: "10%",
 		padding: 0,
+		userSelect: "none",
 		"> span": {
 			...flex(["justifyContent"]),
 			justifyContent: "flex-start",

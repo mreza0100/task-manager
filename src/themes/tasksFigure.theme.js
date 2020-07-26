@@ -27,6 +27,7 @@ class generals {
 			backgroundColor,
 			border,
 			...transition(),
+			width: "20%",
 			cursor: "pointer",
 			"&:hover": { opacity: "0.9" },
 			"> span i.fa-clone": {
@@ -121,7 +122,8 @@ class table {
 				...flex(["justifyContent"]),
 				alignSelf: "flex-end",
 				justifyContent: "space-evenly",
-				width: "20%",
+				height: "35px",
+				width: "35%",
 			},
 		},
 	};

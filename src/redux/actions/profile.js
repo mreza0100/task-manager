@@ -16,23 +16,47 @@ export const toggleTasksFigure = payload => (dispatch, getState) => {
 export const setProfile = payload => (dispatch, getState) => {
 	const { name, family, email, userID } = payload;
 	// ! mobile tasksFigure
-	const profileData = { name, family, email, userID, tasksFigure: "table", mobile: "09361719102" };
+	const profileData = {
+		name,
+		family,
+		email,
+		userID,
+		tasksFigure: "table",
+		mobile: "09361719102",
+	};
 	dispatch({ type: SET_PROFILE, payload: profileData });
 };
 
 export const getProfileAndTasks = payload => async (dispatch, getState) => {
 	const { req, res } = payload ?? {};
-	const APIResponse = await _USE_API_({
-		res,
-		req,
-		isPrivetRoute: true,
-		describe: "getting all tasks and profile",
-	}).Get({
-		url: "/profile",
-	});
+	try {
+		const APIResponse = await _USE_API_({
+			res,
+			req,
+			isPrivetRoute: true,
+			describe: "getting all tasks and profile",
+		}).Get({
+			url: "/profile",
+		});
 
-	dispatch({ type: SET_TASKS, payload: APIResponse.data.data.item.tasks });
-	const { name, family, email, id: userID } = APIResponse.data.data.item;
-	// ! mobile tasksFigure
-	dispatch(setProfile({ name, family, email, userID }));
+		dispatch({ type: SET_TASKS, payload: APIResponse.data.data.item.tasks });
+		const { name, family, email, id: userID } = APIResponse.data.data.item;
+		// ! mobile tasksFigure
+		dispatch(setProfile({ name, family, email, userID }));
+	} catch (err) {
+		const APIResponse = await _USE_API_({
+			res,
+			req,
+			isPrivetRoute: false,
+			describe: "getting all tasks and profile FROM INTERNAL SERVER",
+			baseURL: "http://localhost:10000",
+		}).Get({
+			url: "/api/getTasks",
+		});
+
+		dispatch({ type: SET_TASKS, payload: APIResponse.data });
+		// const { name, family, email, id: userID } = APIResponse.data;
+		// ! mobile tasksFigure
+		// dispatch(setProfile({ name, family, email, userID }));
+	}
 };

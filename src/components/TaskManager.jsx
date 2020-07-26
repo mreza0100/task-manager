@@ -18,7 +18,7 @@ import moment from "moment-jalaali";
 import DatePicker from "../proxy";
 import Router from "next/router";
 import * as yup from "yup";
-// !>>
+
 export const validation = yup.object({
 	title: yup.string().required().trim(),
 	description: yup.string().trim(),
@@ -65,6 +65,9 @@ function handleCancel() {
 
 export default function TaskManager({ taskID }) {
 	const dispatch = useDispatch();
+	const taskData = dispatch(getOneFromState({ taskID }));
+	if (!taskData) return null;
+
 	const {
 		title: initialTitle,
 		description: initialDescription,
@@ -72,7 +75,7 @@ export default function TaskManager({ taskID }) {
 		tags: initalTags,
 		from_date: initaialFromDate,
 		to_date: initaialToDate,
-	} = dispatch(getOneFromState({ taskID }));
+	} = taskData;
 
 	// hooks
 	const [fromDate, setFromDate] = useState(moment(editDate(initaialFromDate)));
@@ -93,6 +96,7 @@ export default function TaskManager({ taskID }) {
 			} catch (err) {}
 		};
 	}, []);
+
 	return (
 		<Formik
 			enableReinitialize
@@ -160,8 +164,8 @@ export default function TaskManager({ taskID }) {
 						</StyledDatePickers>
 						<ReactTags
 							tags={tags}
-							handleAddition={handleAddition}
-							handleDelete={handleDelete}
+							onAddition={handleAddition}
+							onDelete={handleDelete}
 							placeholder="اضافه کردن تگ(با کلید Enter)"
 							minQueryLength={1}
 							autoresize={false}

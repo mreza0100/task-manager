@@ -1,4 +1,11 @@
-import { transition, flex, prevEnter, changeDateFormat, tagObjToArr, getRandomColor } from "../helpers/exports";
+import {
+	transition,
+	flex,
+	prevEnter,
+	changeDateFormat,
+	tagObjToArr,
+	getRandomColor,
+} from "../helpers/exports";
 import { StyledDatePickers, validation } from "./TaskManager";
 import { togglePluse } from "../redux/actions/pluse";
 import { getOneTask } from "../redux/actions/tasks";
@@ -18,7 +25,7 @@ async function handleSubmit(data) {
 	return await _USE_API_({ isPrivetRoute: true, describe: "PluseWindow" })
 		.Post({
 			url: "tasks",
-			data
+			data,
 		})
 		.then(res => {
 			return res.data.data.item./* taskID=>*/ id;
@@ -56,7 +63,7 @@ export default function PluseWindow({ hasPluseBtn }) {
 				initialValues={{
 					title: "a",
 					description: "",
-					color: initialColor
+					color: initialColor,
 				}}
 				onSubmit={({ title, color, description }, { setSubmitting }) => {
 					setSubmitting(true);
@@ -66,7 +73,7 @@ export default function PluseWindow({ hasPluseBtn }) {
 						description,
 						tags: tagObjToArr(tags),
 						from_date: changeDateFormat(firstDate),
-						to_date: changeDateFormat(secondDate)
+						to_date: changeDateFormat(secondDate),
 					};
 					handleSubmit(sortedData)
 						.then(taskID => {
@@ -80,10 +87,20 @@ export default function PluseWindow({ hasPluseBtn }) {
 				{({ isSubmitting }) => (
 					<Form className="container formik-form" onKeyDown={prevEnter}>
 						<div className="title-color col-md-12 row">
-							<Field type="text" placeholder="سر تیتر" name="title" className="col-11" />
+							<Field
+								type="text"
+								placeholder="سر تیتر"
+								name="title"
+								className="col-11"
+							/>
 							<Field type="color" name="color" className="col-1" />
 						</div>
-						<Field as="textarea" name="description" placeholder="توضیحات" rows="4" />
+						<Field
+							as="textarea"
+							name="description"
+							placeholder="توضیحات"
+							rows="4"
+						/>
 						<StyledDatePickers className="col-12">
 							<div>
 								<span>از تاریخ:</span>
@@ -106,8 +123,8 @@ export default function PluseWindow({ hasPluseBtn }) {
 						</StyledDatePickers>
 						<ReactTags
 							tags={tags}
-							handleAddition={handleAddition}
-							handleDelete={handleDelete}
+							onAddition={handleAddition}
+							onDelete={handleDelete}
 							placeholder="اضافه کردن تگ(با کلید Enter)"
 							minQueryLength={1}
 							autoresize={false}
@@ -134,6 +151,6 @@ const StyledTaskManager = styled.div(({}) => {
 		width: "100%",
 		height: "auto",
 		...transition(1.5),
-		...formikStyles
+		...formikStyles,
 	};
 });

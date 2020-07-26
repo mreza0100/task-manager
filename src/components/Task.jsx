@@ -55,7 +55,6 @@ export const StyledCheckbox = styled.div(({ opacity, extraStyles = {} }) => {
 		...extraStyles,
 	};
 });
-// !CheckBox component
 
 // ! Star component
 const Star = ({ isFavorite, taskID }) => {
@@ -97,7 +96,6 @@ export const StyledStar = styled.i(({ starColor: color, extraStyles = {} }) => {
 		...extraStyles,
 	};
 });
-// ! Star component
 
 function handleCopy(taskID) {
 	if (copyToClipboard(`${location.origin}/?id=${taskID}`))
@@ -105,6 +103,7 @@ function handleCopy(taskID) {
 			{ title: { text: "با موفقیت کپی شد", nodeName: "h6" } },
 			{ time: 3, status: "success" },
 		);
+	// pendingID: "copy task ID"
 	else
 		showMsg(
 			{ title: { text: "مرورگر شما برای این کار قدیمی است" } },
@@ -114,10 +113,9 @@ function handleCopy(taskID) {
 
 export default function Task({ taskData }) {
 	const { id: taskID, title, color, is_done, is_favorite } = taskData;
-	const router = useRouter();
-	const { id: routerID } = router.query;
+	const { id: routerID } = useRouter().query;
 	const { classes, figure } = useTheme().TF;
-	const isOpenTask = taskID === routerID && figure === "line";
+
 	return (
 		<>
 			<StyledTask
@@ -125,7 +123,7 @@ export default function Task({ taskData }) {
 				backgroundColor={color}
 				className={classes.li}
 				target={taskID}
-				// TODO: change contextMenu
+				// TODO: change contextMenu right click
 			>
 				<span className={classes.firstSpan}>
 					<CheckBox isDone={is_done} taskID={taskID} />
@@ -142,7 +140,7 @@ export default function Task({ taskData }) {
 					<Star isFavorite={is_favorite} taskID={taskID} />
 				</span>
 			</StyledTask>
-			{isOpenTask && (
+			{figure === "line" && taskID === routerID && (
 				<TaskManagerWrapper className="col-md-9">
 					<TaskManager taskID={taskID} />
 				</TaskManagerWrapper>

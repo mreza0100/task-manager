@@ -3,26 +3,40 @@ import { flex } from "../helpers/exports";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { toggleTasksFigure } from "../redux/actions/profile";
 
 export default function Header({}) {
 	// TODO: fix header make it like menu on setting layout
+	const dispatch = useDispatch();
 	const router = useRouter();
-	const needHomeBtn = router.pathname !== "/";
+	const handleChangeFigure = () => dispatch(toggleTasksFigure());
+
 	return (
-		<StyledHeader className="container row">
-			<Link href="/setting/profile">
-				<StyledProfIcon className="fa fa-user c-p" />
-			</Link>
-			<Link href="/search">
-				<a className="pr-3">جستجو</a>
-			</Link>
-			{needHomeBtn ? (
-				<Link href="/">
-					<StyledHomeBtn className="fa fa-home c-p mr-auto" />
+		<StyledHeader className="container-fluid">
+			<div className="container m-auto row">
+				<Link href="/setting/profile">
+					<StyledProfIcon className="fa fa-user c-p" />
 				</Link>
-			) : (
-				<PluseBtn extraClass="mr-auto" />
-			)}
+				<Link href="/search">
+					<a className="pr-3 search">جستجو</a>
+				</Link>
+				{router.pathname === "/" ? (
+					<>
+						<button
+							className="btn btn-primary mr-auto ml-4"
+							onClick={handleChangeFigure}
+						>
+							تعویض حالت
+						</button>
+						<PluseBtn />
+					</>
+				) : (
+					<Link href="/">
+						<StyledHomeBtn className="fa fa-home c-p mr-auto" />
+					</Link>
+				)}
+			</div>
 		</StyledHeader>
 	);
 }
@@ -43,8 +57,11 @@ const StyledHeader = styled.header(props => {
 		justifyContent: "flex-start",
 		margin: "0 auto 0 auto",
 		height: "50px",
-		width: "100%",
 		backgroundColor: "#212121",
+		".search": {
+			color: "#fff",
+			fontSize: "18px",
+		},
 	};
 });
 
