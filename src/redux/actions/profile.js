@@ -21,7 +21,7 @@ export const setProfile = payload => (dispatch, getState) => {
 		family,
 		email,
 		userID,
-		tasksFigure: "table",
+		tasksFigure: "line",
 		mobile: "09361719102",
 	};
 	dispatch({ type: SET_PROFILE, payload: profileData });
@@ -38,6 +38,8 @@ export const getProfileAndTasks = payload => async (dispatch, getState) => {
 		}).Get({
 			url: "/profile",
 		});
+		console.log(APIResponse.data);
+		console.log(APIResponse.data.data.tasks);
 
 		dispatch({ type: SET_TASKS, payload: APIResponse.data.data.item.tasks });
 		const { name, family, email, id: userID } = APIResponse.data.data.item;

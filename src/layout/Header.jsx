@@ -21,6 +21,9 @@ export default function Header({}) {
 				<Link href="/search">
 					<a className="pr-3 search">جستجو</a>
 				</Link>
+				<Link href="/finished">
+					<a className="pr-3 done">تمام شده ها</a>
+				</Link>
 				{router.pathname === "/" ? (
 					<>
 						<button
@@ -41,9 +44,8 @@ export default function Header({}) {
 	);
 }
 
-const StyledHomeBtn = styled.i(props => {
+const StyledHomeBtn = styled.a(props => {
 	return {
-		...flex(),
 		width: "35px",
 		height: "35px",
 		fontSize: "18px",
@@ -58,9 +60,13 @@ const StyledHeader = styled.header(props => {
 		margin: "0 auto 0 auto",
 		height: "50px",
 		backgroundColor: "#212121",
-		".search": {
-			color: "#fff",
-			fontSize: "18px",
+		color: "#fff",
+		a: {
+			...flex(),
+			textDecoration: "none",
+			"&:hover": {
+				color: "#c2ceb8",
+			},
 		},
 	};
 });

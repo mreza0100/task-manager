@@ -61,12 +61,12 @@ export default wrapper.withRedux(App);
 // 	console.log(metric);
 // }
 // *--->>>- temporarily
-import { _USE_API_ } from "../api/index.API";
-if (process.browser)
-	window.delete_kon = mobile => {
-		_USE_API_({ describe: "deliting a user" }).Post({
-			url: "delete_kon",
-			params: { mobile },
-		});
-	};
+// import { _USE_API_ } from "../api/index.API";
+// if (process.browser)
+// 	window.delete_kon = mobile => {
+// 		_USE_API_({ describe: "deliting a user" }).Post({
+// 			url: "delete_kon",
+// 			params: { mobile },
+// 		});
+// 	};
 // *--->>>- temporarily

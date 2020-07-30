@@ -7,7 +7,7 @@ import { getProfileAndTasks } from "../redux/actions/profile";
 import Router from "next/router";
 import MainLayout from "../layout/Main.lauout";
 import { wrapper } from "../redux/store";
-import Task from "../components/Task";
+import Task, { StyledCheckbox } from "../components/Task";
 import { useEffect, useState } from "react";
 import showMsg from "../helpers/alerts/msg";
 
@@ -30,6 +30,12 @@ export default function Home(props) {
 	const tasks = useSelector(state => state.tasks);
 	const { classes, figure } = useTheme().TF;
 	const [routerID, setRouterID] = useState();
+	const [showDones, setShowDones] = useState(false);
+
+	const filtredTasks = () => {
+		if (showDones) return tasks.filter(task => !task.is_done);
+		return tasks;
+	};
 
 	useEffect(() => {
 		setRouterID(Router.query.id);
@@ -49,24 +55,32 @@ export default function Home(props) {
 	return (
 		<MainLayout>
 			<StyledMain className={figure === "table" ? "container-fluid" : "container"}>
+				<StyledOptions>
+					<p>فقط تمام شده ها را نشان بده :</p>
+					<StyledCheckbox
+						onClick={() => setShowDones(!showDones)}
+						opacity={showDones ? 1 : 0}
+					>
+						<i className="fa fa-check" />
+					</StyledCheckbox>
+				</StyledOptions>
 				{tasks.length ? (
 					<>
+						<StyledUl className={classes.ul} onClick={checkAndPassQuery}>
+							{filtredTasks().map(task => {
+								return <Task taskData={task} key={task.id} />;
+							})}
+						</StyledUl>
 						{figure === "table" && routerID && (
 							// if routerID was undefined no id query is passed then no task for showing
 							<TaskManagerWrapper>
 								<TaskManager taskID={routerID} />
 							</TaskManagerWrapper>
 						)}
-						<StyledUl className={classes.ul} onClick={checkAndPassQuery}>
-							{tasks.map(task => {
-								return <Task taskData={task} key={task.id} />;
-							})}
-						</StyledUl>
 					</>
 				) : (
 					<PluseWindow />
 				)}
-
 				<StyledWrapper visible={isPluseMode}>
 					{isPluseMode && <PluseWindow hasPluseBtn />}
 				</StyledWrapper>
@@ -80,6 +94,20 @@ export const getServerSideProps = wrapper.getServerSideProps(
 		await dispatch(getProfileAndTasks({ req, res }));
 	},
 );
+
+const StyledOptions = styled.div(({}) => {
+	return {
+		...flex(["justifyContent"]),
+		justifyContent: "flex-start",
+		width: "100%",
+		marginTop: "10px",
+		"> p": {
+			color: "black",
+			fontSize: 16,
+			margin: 0,
+		},
+	};
+});
 
 const StyledUl = styled.ul(({ theme }) => {
 	const general = {};
