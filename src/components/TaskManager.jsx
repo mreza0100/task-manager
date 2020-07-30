@@ -121,7 +121,16 @@ export default function TaskManager({ taskID }) {
 		>
 			{({ isSubmitting, setSubmitting }) => {
 				return (
-					<Form className="container formik-form" onKeyDown={prevEnter}>
+					<Form
+						className="container formik-form"
+						onKeyDown={e => {
+							if (
+								(e.charCode || e.keyCode) === 13 &&
+								e.target.nodeName !== "TEXTAREA"
+							)
+								e.preventDefault();
+						}}
+					>
 						<div className="title-color col-md-12 row">
 							<Field
 								type="text"

@@ -8,7 +8,7 @@ import Router from "next/router";
 import MainLayout from "../layout/Main.lauout";
 import { wrapper } from "../redux/store";
 import Task from "../components/Task";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import showMsg from "../helpers/alerts/msg";
 
 // TODO: add trash for deleting tasks
@@ -48,20 +48,39 @@ export default function Home(props) {
 
 	return (
 		<MainLayout>
-			<StyledMain className={figure === "table" ? "container-fluid" : "container"}>
+			<StyledMain className={classes.main}>
 				{tasks.length ? (
 					<>
 						{figure === "table" && routerID && (
-							// if routerID was undefined no id query is passed then no task for showing
+							// if routerID was undefined no id query is passed then there is no task for showing
 							<TaskManagerWrapper>
 								<TaskManager taskID={routerID} />
 							</TaskManagerWrapper>
 						)}
-						<StyledUl className={classes.ul} onClick={checkAndPassQuery}>
+						{/* <StyledUl className={classes.ul} onClick={checkAndPassQuery}>
 							{tasks.map(task => {
 								return <Task taskData={task} key={task.id} />;
 							})}
-						</StyledUl>
+						</StyledUl> */}
+
+						{useMemo(() => {
+							console.log(22);
+							return (
+								<StyledUl
+									className={classes.ul}
+									onClick={checkAndPassQuery}
+								>
+									{tasks.map(task => {
+										return (
+											<Task
+												taskData={task}
+												key={task.id}
+											/>
+										);
+									})}
+								</StyledUl>
+							);
+						}, [tasks, figure])}
 					</>
 				) : (
 					<PluseWindow />

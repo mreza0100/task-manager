@@ -49,6 +49,7 @@ class generals {
 class line {
 	static figure = "line";
 	static classes = {
+		main: "container",
 		ul: "row",
 		checkBox: "col-sm-1",
 		star: "col-5",
@@ -86,6 +87,7 @@ class line {
 class table {
 	static figure = "table";
 	static classes = {
+		main: "container-fluid",
 		ul: "",
 		checkBox: "",
 		star: "",
