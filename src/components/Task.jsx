@@ -13,27 +13,28 @@ const CheckBox = ({ isDone, taskID }) => {
 	const dispatch = useDispatch();
 	const handleSubmit = async () => {
 		try {
-			const res = await _USE_API_({
+			dispatch(editTask({ newTask: { id: taskID, is_done: !isDone } }));
+			await _USE_API_({
 				isPrivetRoute: true,
-				pendingID: taskID,
 				describe: "toggle CheckBox",
 			}).Put({
 				data: { is_done: !isDone, id: taskID },
 				url: "/tasks",
 			});
-			if (res.status === 200)
-				dispatch(editTask({ newTask: { id: taskID, is_done: !isDone } }));
 		} catch (err) {
-			console.dir(err);
+			showMsg(
+				{
+					title: { text: "مشکل شبکه" },
+					body: { text: "درخواست انجام نشد" },
+				},
+				{ status: "danger" }
+			);
+			dispatch(editTask({ newTask: { id: taskID, is_done: isDone } }));
 		}
 	};
 	const { classes } = useTheme().TF;
 	return (
-		<StyledCheckbox
-			onClick={handleSubmit}
-			className={classes.checkBox}
-			opacity={isDone ? 1 : 0}
-		>
+		<StyledCheckbox onClick={handleSubmit} className={classes.checkBox} opacity={isDone ? 1 : 0}>
 			<i className="fa fa-check" />
 		</StyledCheckbox>
 	);
@@ -61,19 +62,23 @@ const Star = ({ isFavorite, taskID }) => {
 	const dispatch = useDispatch();
 	const handleSubmit = async () => {
 		try {
-			const res = await _USE_API_({
+			dispatch(editTask({ newTask: { id: taskID, is_favorite: !isFavorite } }));
+			await _USE_API_({
 				isPrivetRoute: true,
-				pendingID: taskID,
 				describe: "toggle isFavorite",
 			}).Put({
 				data: { is_favorite: !isFavorite, id: taskID },
 				url: "/tasks",
 			});
-			if (res.status === 200) {
-				dispatch(editTask({ newTask: { id: taskID, is_favorite: !isFavorite } }));
-			}
 		} catch (err) {
-			console.dir(err);
+			showMsg(
+				{
+					title: { text: "مشکل شبکه" },
+					body: { text: "درخواست انجام نشد" },
+				},
+				{ status: "danger" }
+			);
+			dispatch(editTask({ newTask: { id: taskID, is_favorite: isFavorite } }));
 		}
 	};
 	const { classes } = useTheme().TF;
@@ -99,16 +104,9 @@ export const StyledStar = styled.i(({ starColor: color, extraStyles = {} }) => {
 
 function handleCopy(taskID) {
 	if (copyToClipboard(`${location.origin}/?id=${taskID}`))
-		showMsg(
-			{ title: { text: "با موفقیت کپی شد", nodeName: "h6" } },
-			{ time: 3, status: "success" },
-		);
+		showMsg({ title: { text: "با موفقیت کپی شد", nodeName: "h6" } }, { time: 3, status: "success" });
 	// pendingID: "copy task ID"
-	else
-		showMsg(
-			{ title: { text: "مرورگر شما برای این کار قدیمی است" } },
-			{ time: 5, status: "warning" },
-		);
+	else showMsg({ title: { text: "مرورگر شما برای این کار قدیمی است" } }, { time: 5, status: "warning" });
 }
 
 export default function Task({ taskData }) {
@@ -141,7 +139,7 @@ export default function Task({ taskData }) {
 				</span>
 			</StyledTask>
 			{figure === "line" && taskID === routerID && (
-				<TaskManagerWrapper className="col-md-9">
+				<TaskManagerWrapper className="col-9">
 					<TaskManager taskID={taskID} />
 				</TaskManagerWrapper>
 			)}

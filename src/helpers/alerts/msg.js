@@ -1,10 +1,9 @@
 import create from "./elementFactory";
-import { useSelector } from "react-redux";
 
 const wrapperStyles = ({ time, extraStyles = {}, top }) => ({
-	minWidth: "300px",
+	minWidth: "200px",
 	height: "auto",
-	padding: "25px",
+	padding: "15px",
 	display: "flex",
 	flexDirection: "column",
 	justifyContent: "space-evenly",
@@ -47,10 +46,10 @@ export default function showMsg(
 		html,
 	} = {},
 	{ time = 6, extraStyles = {}, mainAttrs, status, pendingID } = {},
-	callback,
+	callback
 ) {
 	if (!process.browser) return void 0;
-	const top = inPlay * 12 + "vh";
+	const top = inPlay * 70 + "px";
 	inPlay++;
 	if (pendingID) {
 		if (pendingList.find(ID => ID === pendingID)) return void 0;

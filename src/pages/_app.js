@@ -27,17 +27,18 @@ Router.onRouteChangeError = () => {
 
 function ForUsingHook({ children }) {
 	const tasksFigure = useTasksFigure();
-	return (
-		<ThemeProvider theme={{ TF /*TF for tasksFigure*/: tasksFigure }}>
-			{children}
-		</ThemeProvider>
-	);
+	return <ThemeProvider theme={{ TF /*TF for tasksFigure*/: tasksFigure }}>{children}</ThemeProvider>;
 }
 
 class App extends NextApp {
 	static async getInitialProps({ Component, ctx }) {
+		const { pathname, query } = ctx;
 		return {
-			...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {}),
+			pageProps: {
+				...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {}),
+				pathname,
+				query,
+			},
 		};
 	}
 	render() {
@@ -61,12 +62,12 @@ export default wrapper.withRedux(App);
 // 	console.log(metric);
 // }
 // *--->>>- temporarily
-import { _USE_API_ } from "../api/index.API";
-if (process.browser)
-	window.delete_kon = mobile => {
-		_USE_API_({ describe: "deliting a user" }).Post({
-			url: "delete_kon",
-			params: { mobile },
-		});
-	};
+// import { _USE_API_ } from "../api/index.API";
+// if (process.browser)
+// 	window.delete_kon = mobile => {
+// 		_USE_API_({ describe: "deliting a user" }).Post({
+// 			url: "delete_kon",
+// 			params: { mobile },
+// 		});
+// 	};
 // *--->>>- temporarily

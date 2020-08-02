@@ -8,11 +8,14 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { useState } from "react";
 
+// TODO: validation schema
+// TODO: filter data for mobile
+
 const inputData = [
-	{ name: "name", label: "نام", type: "text" },
-	{ name: "family", label: "نام خانوادگی", type: "text" },
-	{ name: "mobile", label: "شماره همراه", type: "text" },
-	{ name: "email", label: "ایمیل", type: "email" },
+	{ name: "name", label: "نام", type: "text", editable: true },
+	{ name: "family", label: "نام خانوادگی", type: "text", editable: true },
+	{ name: "mobile", label: "شماره همراه", type: "text", editable: false },
+	{ name: "email", label: "ایمیل", type: "email", editable: true },
 ];
 
 async function handleSubmit(data, setSubmitting) {
@@ -28,18 +31,19 @@ async function handleSubmit(data, setSubmitting) {
 		});
 		if (res.status === 200) reloadRouter();
 	} catch (err) {
+		console.dir(err);
 	} finally {
 		setSubmitting(false);
 	}
 }
 
 export default function Profile(props) {
-	const profile = useSelector(state => state.profile);
-	const { email, family, mobile, name } = profile;
-	const [isEditMode, setIsEditmode] = useState(false);
-	const onToggleEdit = () => {
-		setIsEditmode(!isEditMode);
-	};
+	const { email, family, mobile, name } = useSelector(state => state.profile);
+	console.log(email, family, mobile, name);
+	const [editMode, setEditmode] = useState(false);
+
+	const onToggleEditMode = () => setEditmode(!editMode);
+
 	return (
 		<SettingLayout>
 			<Formik
@@ -54,67 +58,50 @@ export default function Profile(props) {
 					handleSubmit(sortedData, setSubmitting);
 				}}
 			>
-				{({ errors, values, resetForm, isSubmitting }) => {
+				{({ resetForm, isSubmitting }) => {
 					return (
 						<Form className="row mt-0 mr-auto ml-auto text-right">
-							{inputData.map(({ name, label, type }) => {
-								if (isEditMode)
-									return name !== "mobile" ? (
-										<StyledFieldWrapper
-											key={name}
-											className="col-12 row"
-										>
-											<span className="col-12 p-0">
-												{label}:
-											</span>
-											<Field
-												name={name}
-												type={type}
-												placeholder={label}
-												className="col-12"
-											/>
-										</StyledFieldWrapper>
-									) : null;
+							{inputData.map(({ name, label, type, editable }) => {
 								return (
-									<StyledShowWrapper
-										key={name}
-										className="col-12 row"
-									>
-										<span className="col-5">{label}:</span>
-										<span className="col">
-											{values[name]}
+									<StyledFieldWrapper key={name} className="col-12 row p-0">
+										<span className="col-2 p-0 mt-auto mb-auto">
+											{label}:
 										</span>
-									</StyledShowWrapper>
+										<Field
+											name={name}
+											type={type}
+											className="col-8"
+											disabled={!editMode || !editable}
+										/>
+									</StyledFieldWrapper>
 								);
 							})}
-							<div className="w-100 d-flex justify-content-end mt-2">
-								{(isEditMode && (
+							<div className="col-12 row justify-content-end align-items-center mt-2 p-0">
+								{editMode ? (
 									<>
 										<button
-											className="btn btn-warning  mt-3 ml-3"
+											className="btn btn-secondary ml-3"
 											onClick={() => {
-												onToggleEdit();
+												onToggleEditMode();
 												resetForm();
 											}}
 											type="button"
 											disabled={isSubmitting}
 										>
-											لغو{" "}
-											<i className="fa fa-times p-2" />
+											لغو <i className="fa fa-times p-2" />
 										</button>
 										<button
-											className="btn btn-success  mt-3"
+											className="btn btn-success"
 											disabled={isSubmitting}
 										>
-											ثبت{" "}
-											<i className="fa fa-save p-2" />
+											ثبت <i className="fa fa-save p-2" />
 										</button>
 									</>
-								)) || (
+								) : (
 									<button
 										className="btn btn-primary"
 										type="button"
-										onClick={onToggleEdit}
+										onClick={onToggleEditMode}
 									>
 										ویرایش <i className="fa fa-edit p-2" />
 									</button>
@@ -128,42 +115,19 @@ export default function Profile(props) {
 	);
 }
 
-export const getServerSideProps = wrapper.getServerSideProps(
-	async ({ store: { dispatch }, req, res }) => {
-		await dispatch(getProfileAndTasks({ req, res }));
-	},
-);
+Profile.getInitialProps = async ({ store: { dispatch }, req, res }) => {
+	await dispatch(getProfileAndTasks({ req, res }));
+};
 
 const StyledFieldWrapper = styled.div(props => {
 	return {
 		...butyInputs,
 		marginBottom: "8px",
+		"input[disabled]": {
+			opacity: 0.7,
+		},
 	};
 });
-
-const StyledShowWrapper = styled.div(props => {
-	return {
-		textAlign: "right",
-		fontSize: "20px",
-		margin: "10px 0",
-	};
-});
-
-// const StyledShow = styled.div(props => {
-// 	return {
-// 		...flex(["justifyContent"]),
-// 		width: "100%",
-// 		textAlign: "right",
-// 		margin: "25px 0",
-// 		fontSize: "20px",
-// 		"> span": {
-// 			background: "#1c443d27",
-// 		},
-// 	};
-// });
-
-// TODO: validation schema
-// TODO: filter data for mobile
 
 /* 
 email: "mrez9090@gmail.com"

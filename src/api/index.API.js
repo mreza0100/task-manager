@@ -14,8 +14,7 @@ const consoleCss = [
 ].join(";");
 
 const AC /* as APIConfigs */ = {
-	baseURL: "http://5.63.9.72:7575/v1/",
-	// baseURL: "http://localhost:8000",
+	baseURL: "http://5.63.9.74:7575/v1/",
 	dispatch: false,
 	getState: false,
 	debug: false,
@@ -130,7 +129,7 @@ class API {
 
 	_handleErr({ err, url, params, data, callback }) {
 		this._globalMiddleware();
-		if (this.inBrowser && !isUndefined(err.response.status) && this.ignoreStatuses) {
+		if (this.inBrowser && !isUndefined(err.response) && this.ignoreStatuses) {
 			if (!this.ignoreStatuses.find(status => status === err.response.status))
 				showMsg(
 					{
@@ -211,14 +210,10 @@ class API {
 		});
 	}
 
-	Get = ({ url, params, data, callback } = {}) =>
-		this.request({ url, params, data, callback }, "get");
-	Post = ({ url, params, data, callback } = {}) =>
-		this.request({ url, params, data, callback }, "post");
-	Delete = ({ url, params, data, callback } = {}) =>
-		this.request({ url, params, data, callback }, "delete");
-	Put = ({ url, params, data, callback } = {}) =>
-		this.request({ url, params, data, callback }, "put");
+	Get = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "get");
+	Post = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "post");
+	Delete = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "delete");
+	Put = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "put");
 }
 
 // ? INITING HOOK

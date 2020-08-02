@@ -63,6 +63,15 @@ li {
 	justify-content: space-evenly !important;
 }
 
+button[disabled],
+input[disabled] {
+	cursor: not-allowed;
+}
+
+i.fa-clone {
+	cursor: copy;
+}
+
 #making-color {
 	color: #7be624;
 }

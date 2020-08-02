@@ -3,6 +3,7 @@ import { flex } from "../helpers/exports";
 import styled from "styled-components";
 import Router from "next/router";
 import Link from "next/link";
+import { StyledLi } from "./Setting.layout";
 
 const menuData = [
 	{
@@ -37,10 +38,13 @@ export default function RegisterProgress({ children }) {
 			<div className="col-sm-3">
 				<StyledUl>
 					{menuData.map(({ route, label, isComponent, jsx }) => {
-						if (isComponent) return jsx({});
+						if (isComponent) return jsx();
+						const selectedMe = path === route;
+						const borderRight = `5px solid ${selectedMe ? "blue" : "transparent"}`;
+
 						return (
 							<Link href={route} key={route}>
-								<StyledLi selectedMe={path === route}>
+								<StyledLi selectedMe={selectedMe} extraStyles={{ borderRight }}>
 									{label}
 								</StyledLi>
 							</Link>
@@ -62,31 +66,14 @@ const ChildrenConteiner = styled.div(props => {
 	};
 });
 
-const StyledLi = styled.li(({ selectedMe: s }) => {
-	return {
-		width: "100%",
-		...flex(["justifyContent"]),
-		cursor: "pointer",
-		padding: "4% 3%",
-		height: "60px",
-		borderRight: `5px solid ${s ? "blue" : "transparent"}`,
-		"&: hover": {
-			color: "blue",
-		},
-	};
-});
-
 const StyledUl = styled.ul(props => {
 	return {
 		...flex(),
 		flexDirection: "column",
-		textAlign: "right",
 		width: "100%",
-		height: "auto",
-		border: "0.5px solid black",
-		"> li + li": {
-			borderTop: "0.5px solid black",
-		},
+		border: "1px solid #e1e4e8",
+		borderRadius: "6px",
+		userSelect: "none",
 	};
 });
 

@@ -13,7 +13,7 @@ import ReactTags from "react-tag-autocomplete";
 import { Formik, Form, Field } from "formik";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import moment from "moment-jalaali";
 import DatePicker from "../proxy";
 import Router from "next/router";
@@ -81,18 +81,21 @@ export default function TaskManager({ taskID }) {
 	const [fromDate, setFromDate] = useState(moment(editDate(initaialFromDate)));
 	const [toDate, setToDate] = useState(moment(editDate(initaialToDate)));
 	const [tags, setTags] = useState(tagArrToObj(initalTags));
+	const { figure } = useTheme().TF;
 
 	// functions
 	const handleAddition = tag => setTags([...tags, tag]);
 	const handleDelete = idx1 => setTags(tags.filter((i, idx2) => idx1 !== idx2));
 	const onColorCahnge = ({ target: { value } }) => {
-		document.querySelector(`li[target='${taskID}']`).style.backgroundColor = value;
+		document.querySelector(
+			`li[target='${taskID}'] span + span`
+		).style.backgroundImage = `linear-gradient(90deg, ${value}, transparent)`;
 	};
 
 	useEffect(() => {
 		return () => {
 			try {
-				document.querySelector(`li[target='${taskID}']`).removeAttribute("style");
+				document.querySelector(`li[target='${taskID}'] span + span`).removeAttribute("style");
 			} catch (err) {}
 		};
 	}, []);
@@ -121,16 +124,7 @@ export default function TaskManager({ taskID }) {
 		>
 			{({ isSubmitting, setSubmitting }) => {
 				return (
-					<Form
-						className="container formik-form"
-						onKeyDown={e => {
-							if (
-								(e.charCode || e.keyCode) === 13 &&
-								e.target.nodeName !== "TEXTAREA"
-							)
-								e.preventDefault();
-						}}
-					>
+					<Form className="container formik-form" onKeyDown={prevEnter}>
 						<div className="title-color col-md-12 row">
 							<Field
 								type="text"
@@ -145,12 +139,7 @@ export default function TaskManager({ taskID }) {
 								className="col-1"
 							/>
 						</div>
-						<Field
-							as="textarea"
-							name="description"
-							placeholder="توضیحات"
-							rows="4"
-						/>
+						<Field as="textarea" name="description" placeholder="توضیحات" rows="4" />
 						<StyledDatePickers className="col-md-12">
 							<div>
 								از تاریخ:
@@ -183,16 +172,14 @@ export default function TaskManager({ taskID }) {
 						<Btns className="row w-100">
 							<button
 								className="btn btn-danger col-sm-1"
-								onClick={() =>
-									handleDeleteTask(taskID, { setSubmitting })
-								}
+								onClick={() => handleDeleteTask(taskID, { setSubmitting })}
 								type="button"
 								disabled={isSubmitting}
 							>
 								حذف <i className="fa fa-trash" />
 							</button>
 							<button
-								className="btn btn-warning col-sm-1"
+								className="btn btn-secondary col-sm-1"
 								onClick={handleCancel}
 								type="button"
 								disabled={isSubmitting}

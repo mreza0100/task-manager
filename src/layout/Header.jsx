@@ -24,7 +24,7 @@ export default function Header({}) {
 				{router.pathname === "/" ? (
 					<>
 						<button
-							className="btn btn-primary mr-auto ml-4"
+							className="btn btn-secondary mr-auto ml-4"
 							onClick={handleChangeFigure}
 						>
 							تعویض حالت
@@ -41,9 +41,8 @@ export default function Header({}) {
 	);
 }
 
-const StyledHomeBtn = styled.i(props => {
+const StyledHomeBtn = styled.a(props => {
 	return {
-		...flex(),
 		width: "35px",
 		height: "35px",
 		fontSize: "18px",
@@ -58,9 +57,13 @@ const StyledHeader = styled.header(props => {
 		margin: "0 auto 0 auto",
 		height: "50px",
 		backgroundColor: "#212121",
-		".search": {
-			color: "#fff",
-			fontSize: "18px",
+		color: "#fff",
+		a: {
+			...flex(),
+			textDecoration: "none",
+			"&:hover": {
+				color: "#c2ceb8",
+			},
 		},
 	};
 });

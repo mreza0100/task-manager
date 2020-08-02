@@ -1,11 +1,4 @@
-import {
-	flex,
-	prevEnter,
-	changeDateFormat,
-	tagObjToArr,
-	tagArrToObj,
-	editDate,
-} from "../helpers/exports";
+import { flex, prevEnter, changeDateFormat, tagObjToArr, tagArrToObj, editDate } from "../helpers/exports";
 import { formikStyles, StyledDatePickers } from "../components/TaskManager";
 import Task, { StyledCheckbox, StyledStar } from "../components/Task";
 import { getProfileAndTasks } from "../redux/actions/profile";
@@ -24,7 +17,7 @@ import { useState } from "react";
 import Router from "next/router";
 import * as yup from "yup";
 
-export const validation = yup.object({
+const validation = yup.object({
 	title: yup.string().trim(),
 	description: yup.string().trim(),
 });
@@ -108,10 +101,7 @@ export default function Search(props) {
 				>
 					{({ isSubmitting, setSubmitting }) => {
 						return (
-							<Form
-								className="formik-form col-sm-5"
-								onKeyDown={prevEnter}
-							>
+							<Form className="formik-form col-sm-5" onKeyDown={prevEnter}>
 								<div className="title-color col-12 row">
 									<Field
 										className="col-sm-8"
@@ -127,14 +117,8 @@ export default function Search(props) {
 											<i className="fa fa-check" />
 										</StyledCheckbox>
 										<StyledStar
-											starColor={
-												isFavorite
-													? "#b7ff07"
-													: "unset"
-											}
-											onClick={() =>
-												setIsFavorite(!isFavorite)
-											}
+											starColor={isFavorite ? "#b7ff07" : "unset"}
+											onClick={() => setIsFavorite(!isFavorite)}
 										>
 											<i className="fa fa-star" />
 										</StyledStar>
@@ -193,11 +177,9 @@ export default function Search(props) {
 	);
 }
 
-export const getServerSideProps = wrapper.getServerSideProps(
-	async ({ store: { dispatch }, req, res }) => {
-		await dispatch(getProfileAndTasks({ req, res }));
-	},
-);
+export const getServerSideProps = wrapper.getServerSideProps(async ({ store: { dispatch }, req, res }) => {
+	await dispatch(getProfileAndTasks({ req, res }));
+});
 
 const StyledSearch = styled.div(props => {
 	return {

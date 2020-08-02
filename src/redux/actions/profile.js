@@ -21,7 +21,7 @@ export const setProfile = payload => (dispatch, getState) => {
 		family,
 		email,
 		userID,
-		tasksFigure: "table",
+		tasksFigure: "line",
 		mobile: "09361719102",
 	};
 	dispatch({ type: SET_PROFILE, payload: profileData });

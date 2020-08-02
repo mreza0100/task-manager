@@ -15,7 +15,7 @@
 		"font-awesome": "^4.7.0",
 		"formik": "^2.1.5",
 		"next": "^9.4.4",
-		"next-redux-wrapper": "^6.0.0",
+		"next-redux-wrapper": "^6.0.2",
 		"nprogress": "^0.2.0",
 		"prettier": "^2.0.5",
 		"react": "16.13.1",

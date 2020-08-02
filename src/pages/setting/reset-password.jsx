@@ -15,7 +15,13 @@ import * as yup from "yup";
 export const step_1 = {
 	dataInputs: [{ name: "mobile", label: "شماره همراه", type: "text", auto: "on" }],
 	validation: yup.object({
-		mobile: yup.string().trim().matches(phoneRegExp, "شماره تلفن وارد شده صحیح نمیباشد").min(11).max(11).required(),
+		mobile: yup
+			.string()
+			.trim()
+			.matches(phoneRegExp, "شماره تلفن وارد شده صحیح نمیباشد")
+			.min(11)
+			.max(11)
+			.required(),
 	}),
 	async handleSubmit(data) {
 		try {
@@ -30,7 +36,10 @@ export const step_1 = {
 		} catch (err) {
 			console.dir(err);
 			if (!isUndefined(err.response) && err.response.status === 401)
-				showMsg({ title: { text: "این شماره در سیستم ثبت نشده است" } }, { time: 6, status: "warning" });
+				showMsg(
+					{ title: { text: "این شماره در سیستم ثبت نشده است" } },
+					{ time: 6, status: "warning" }
+				);
 			return 0;
 		}
 	},
@@ -59,7 +68,13 @@ export const step_2 = {
 		},
 	],
 	validation: yup.object({
-		mobile: yup.string().trim().matches(phoneRegExp, "شماره تلفن وارد شده صحیح نمیباشد").min(11).max(11).required(),
+		mobile: yup
+			.string()
+			.trim()
+			.matches(phoneRegExp, "شماره تلفن وارد شده صحیح نمیباشد")
+			.min(11)
+			.max(11)
+			.required(),
 		activisionCode: yup
 			.number()
 			.test("len", "Must be exactly 4 characters", val => (val ? val.toString().length === 4 : true))
@@ -92,7 +107,7 @@ export const step_2 = {
 						body: { text: "در حال برگشت به صفحه ورود" },
 					},
 					{ time: 3, status: "success" },
-					backToLogin,
+					backToLogin
 				);
 			}
 		} catch (err) {
@@ -101,7 +116,7 @@ export const step_2 = {
 					{
 						title: { text: "کد اشتباه است" },
 					},
-					{ time: 8, status: "warning" },
+					{ time: 8, status: "warning" }
 				);
 			}
 		} finally {
@@ -122,7 +137,10 @@ export default function ResetPassword(props) {
 		handleSubmit(sortedData)
 			.then(status => {
 				if (status === 200) {
-					showMsg({ title: { text: "کد با موفقیت به دستگاه شما ارسال شد" } }, { time: 3, status: "success" });
+					showMsg(
+						{ title: { text: "کد با موفقیت به دستگاه شما ارسال شد" } },
+						{ time: 3, status: "success" }
+					);
 					setStep(2);
 				}
 			})
@@ -168,7 +186,10 @@ export default function ResetPassword(props) {
 								{dataInputs.map(({ name, label, type, auto }) => {
 									const err = touched[name] && errors[name];
 									return (
-										<FieldContainerTag key={name} className={C.FieldContainer}>
+										<FieldContainerTag
+											key={name}
+											className={C.FieldContainer}
+										>
 											<Label htmlFor={name} err={err}>
 												{err}
 											</Label>
@@ -181,7 +202,11 @@ export default function ResetPassword(props) {
 										</FieldContainerTag>
 									);
 								})}
-								<button className={C.btnSubmit} disabled={isSubmitting} type="submit">
+								<button
+									className={C.btnSubmit}
+									disabled={isSubmitting}
+									type="submit"
+								>
 									ثبت
 								</button>
 							</Form>
@@ -193,6 +218,6 @@ export default function ResetPassword(props) {
 	);
 }
 
-export const getServerSideProps = wrapper.getServerSideProps(async ({ store: { dispatch }, req, res }) => {
+ResetPassword.getInitialProps = async ({ store: { dispatch }, req, res }) => {
 	await dispatch(getProfileAndTasks({ req, res }));
-});
+};

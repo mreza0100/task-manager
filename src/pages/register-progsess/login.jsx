@@ -1,4 +1,4 @@
-import { phoneRegExp, setCookie } from "../../helpers/exports";
+import { phoneRegExp, setCookie, isUndefined } from "../../helpers/exports";
 import { FieldContainerTag, Label, C } from "./register";
 import { _USE_API_ } from "../../api/index.API";
 import showMsg from "../../helpers/alerts/msg";
@@ -36,7 +36,7 @@ async function handleSubmit(data) {
 			Router.push("/");
 		}
 	} catch (err) {
-		if (err.response.status === 401)
+		if (!isUndefined(err.response) && err.response.status === 401)
 			showMsg({ title: { text: "اطلاعات اشتباه" } }, { status: "warning", time: 8 });
 	}
 }

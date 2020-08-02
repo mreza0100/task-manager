@@ -15,7 +15,7 @@ function handleLogout() {
 			btn1: { attrs: { class: "btn btn-warning pr-4 pl-4" } },
 			btn2: { attrs: { class: "btn btn-success pr-4 pl-4" } },
 		},
-		{ status: "danger" },
+		{ status: "danger" }
 	)
 		.then(ok => {
 			if (ok) {
@@ -24,7 +24,7 @@ function handleLogout() {
 				showMsg(
 					{ title: { text: "برگشت به صفحه ورود" } },
 					{ time: 3, status: "warning" },
-					backToLogin,
+					backToLogin
 				);
 			} else {
 			}
@@ -38,13 +38,13 @@ const menuData = [
 	{
 		isComponent: true,
 		jsx: ({ name, family }) => (
-			<ProfItem className="row" key="profile">
+			<StyledProf className="row" key="profile">
 				<i className="fa fa-user col-2" />
 				<span className="col-7">
 					<h6>{name}</h6>
 					<p>{family}</p>
 				</span>
-			</ProfItem>
+			</StyledProf>
 		),
 	},
 	{
@@ -114,7 +114,7 @@ const LogoutItem = styled.li(props => {
 	};
 });
 
-const ProfItem = styled.li(props => {
+const StyledProf = styled.li(props => {
 	return {
 		width: "100%",
 		...flex(["justifyContent"]),
@@ -141,19 +141,20 @@ const ProfItem = styled.li(props => {
 	};
 });
 
-const StyledLi = styled.li(({ selectedMe: s }) => {
+export const StyledLi = styled.li(({ selectedMe: s, extraStyles = {} }) => {
 	return {
 		width: "100%",
 		...flex(["justifyContent"]),
-		cursor: "pointer",
-		padding: "4% 3%",
-		height: "60px",
+		color: "#1b1f23",
+		cursor: s ? "default" : "pointer",
+		padding: "12px 16px",
+		fontSize: "14px",
 		borderRight: `5px solid ${s ? "red" : "transparent"}`,
-		borderTop: "0.5px solid black",
-		// borderBottom: "0.5px solid black",
-		"&: hover": {
-			color: "blue",
+		borderTop: "1px solid #eaecef",
+		"&:hover": {
+			backgroundColor: "#f6f8fa",
 		},
+		...extraStyles,
 	};
 });
 
@@ -161,10 +162,10 @@ const StyledUl = styled.ul(props => {
 	return {
 		...flex(),
 		flexDirection: "column",
-		textAlign: "right",
 		width: "100%",
-		height: "auto",
-		border: "0.5px solid black",
+		border: "1px solid #e1e4e8",
+		borderRadius: "6px",
+		userSelect: "none",
 	};
 });
 

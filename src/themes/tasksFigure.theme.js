@@ -24,7 +24,7 @@ class generals {
 		const { figure } = useTheme().TF;
 		const border = figure === "table" && isSelectedTask ? "2px solid black" : "unset";
 		return {
-			backgroundColor,
+			backgroundColor: "#212121",
 			border,
 			...transition(),
 			width: "20%",
@@ -42,6 +42,9 @@ class generals {
 					boxShadow: "1px 1px 5px white",
 				},
 			},
+			"span + span": {
+				backgroundImage: `linear-gradient(90deg, ${backgroundColor}, transparent)`,
+			},
 		};
 	}
 }
@@ -49,15 +52,15 @@ class generals {
 class line {
 	static figure = "line";
 	static classes = {
-		main: "container",
-		ul: "row",
+		main: "container row m-auto",
+		ul: "col-12 row",
 		checkBox: "col-sm-1",
 		star: "col-5",
 		clone: "col-4",
-		li: "col-md-10 row",
+		li: "col-10 row",
 		firstSpan: "col-sm-3 row",
 		info: "col-sm-8",
-		secendSpan: "col-sm-2 row",
+		secendSpan: "col-sm-2 row p-0",
 	};
 	static styles = {
 		StyledP: {
@@ -72,7 +75,6 @@ class line {
 			justifyContent: "space-between",
 			height: "50px",
 			margin: "8px 0",
-			padding: "5px",
 			"> span": {
 				...flex(["justifyContent"]),
 				justifyContent: "space-evenly",
@@ -88,7 +90,7 @@ class table {
 	static figure = "table";
 	static classes = {
 		main: "container-fluid",
-		ul: "",
+		ul: "mt-3",
 		checkBox: "",
 		star: "",
 		li: "col-4",
@@ -114,7 +116,7 @@ class table {
 			maxWidth: "30%",
 			minHeight: "100px",
 			margin: "8px 5px",
-			padding: "5px",
+			padding: "5px 5px 0 0",
 			"> span": {
 				...flex(),
 				justifyContent: "flex-start",
@@ -130,6 +132,12 @@ class table {
 		},
 	};
 }
+
+const none = {
+	figure: "",
+	classes: {},
+	styles: {},
+};
 
 // styled components
 export const StyledP = styled.p(({ theme, isDone }) => {
@@ -148,7 +156,7 @@ export const StyledTask = styled.li(({ theme, backgroundColor, isSelectedTask })
 	};
 });
 
-export default function useTasksFigure(props) /*for theme provider*/ {
+export default function useTasksFigure(props) /*for _app*/ {
 	const figure = useSelector(state => state.profile.tasksFigure);
 	switch (figure) {
 		case "line":
@@ -156,6 +164,6 @@ export default function useTasksFigure(props) /*for theme provider*/ {
 		case "table":
 			return table;
 		default:
-			return "line";
+			return none;
 	}
 }
