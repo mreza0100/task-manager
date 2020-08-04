@@ -1,9 +1,8 @@
-import { getProfileAndTasks } from "../../redux/actions/profile";
-import { flex, reloadRouter, butyInputs } from "../../helpers/exports";
+import { getProfileData } from "../../redux/actions/profile";
+import { reloadRouter, butyInputs } from "../../helpers/exports";
 import SettingLayout from "../../layout/Setting.layout";
 import { _USE_API_ } from "../../api/index.API";
 import { Formik, Form, Field } from "formik";
-import { wrapper } from "../../redux/store";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { useState } from "react";
@@ -39,7 +38,7 @@ async function handleSubmit(data, setSubmitting) {
 
 export default function Profile(props) {
 	const { email, family, mobile, name } = useSelector(state => state.profile);
-	console.log(email, family, mobile, name);
+	// console.log(email, family, mobile, name);
 	const [editMode, setEditmode] = useState(false);
 
 	const onToggleEditMode = () => setEditmode(!editMode);
@@ -116,7 +115,7 @@ export default function Profile(props) {
 }
 
 Profile.getInitialProps = async ({ store: { dispatch }, req, res }) => {
-	await dispatch(getProfileAndTasks({ req, res }));
+	await dispatch(getProfileData({ req, res }));
 };
 
 const StyledFieldWrapper = styled.div(props => {

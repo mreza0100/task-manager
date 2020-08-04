@@ -32,12 +32,9 @@ function ForUsingHook({ children }) {
 
 class App extends NextApp {
 	static async getInitialProps({ Component, ctx }) {
-		const { pathname, query } = ctx;
 		return {
 			pageProps: {
 				...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {}),
-				pathname,
-				query,
 			},
 		};
 	}

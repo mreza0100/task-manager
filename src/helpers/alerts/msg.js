@@ -48,6 +48,7 @@ export default function showMsg(
 	{ time = 6, extraStyles = {}, mainAttrs, status, pendingID } = {},
 	callback
 ) {
+	// TODO: pendingList not working currectly
 	if (!process.browser) return void 0;
 	const top = inPlay * 70 + "px";
 	inPlay++;

@@ -56,11 +56,11 @@ class line {
 		ul: "col-12 row",
 		checkBox: "col-sm-1",
 		star: "col-5",
-		clone: "col-4",
+		clone: "col-5",
 		li: "col-10 row",
 		firstSpan: "col-sm-3 row",
 		info: "col-sm-8",
-		secendSpan: "col-sm-2 row p-0",
+		secendSpan: "col-sm-2 row p-0 justify-content-end",
 	};
 	static styles = {
 		StyledP: {
@@ -87,6 +87,7 @@ class line {
 }
 
 class table {
+	// TODO: add classes for table figure!!!
 	static figure = "table";
 	static classes = {
 		main: "container-fluid",
@@ -157,7 +158,7 @@ export const StyledTask = styled.li(({ theme, backgroundColor, isSelectedTask })
 });
 
 export default function useTasksFigure(props) /*for _app*/ {
-	const figure = useSelector(state => state.profile.tasksFigure);
+	const figure = useSelector(state => state.profile.tasks_figure);
 	switch (figure) {
 		case "line":
 			return line;

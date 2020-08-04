@@ -1,11 +1,10 @@
 import { FieldContainerTag, Label, C } from "../../pages/register-progsess/register";
 import { phoneRegExp, deleteCookie, isUndefined } from "../../helpers/exports";
-import { getProfileAndTasks } from "../../redux/actions/profile";
+import { getProfileData } from "../../redux/actions/profile";
 import SettingLayout from "../../layout/Setting.layout";
 import { _USE_API_ } from "../../api/index.API";
 import showMsg from "../../helpers/alerts/msg";
 import { Formik, Form, Field } from "formik";
-import { wrapper } from "../../redux/store";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import Router from "next/router";
@@ -219,5 +218,5 @@ export default function ResetPassword(props) {
 }
 
 ResetPassword.getInitialProps = async ({ store: { dispatch }, req, res }) => {
-	await dispatch(getProfileAndTasks({ req, res }));
+	await dispatch(getProfileData({ req, res }));
 };

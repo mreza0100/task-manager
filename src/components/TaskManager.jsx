@@ -76,7 +76,6 @@ export default function TaskManager({ taskID }) {
 		from_date: initaialFromDate,
 		to_date: initaialToDate,
 	} = taskData;
-
 	// hooks
 	const [fromDate, setFromDate] = useState(moment(editDate(initaialFromDate)));
 	const [toDate, setToDate] = useState(moment(editDate(initaialToDate)));

@@ -1,5 +1,5 @@
 import TaskManager, { formikStyles } from "../components/TaskManager";
-import { getProfileAndTasks } from "../redux/actions/profile";
+import { getProfileData } from "../redux/actions/profile";
 import Task, { StyledCheckbox } from "../components/Task";
 import { flex, transition } from "../helpers/exports";
 import { useEffect, useState, useMemo } from "react";
@@ -8,8 +8,8 @@ import PluseWindow from "../components/PluseWindow";
 import MainLayout from "../layout/Main.lauout";
 import showMsg from "../helpers/alerts/msg";
 import { useSelector } from "react-redux";
-import { wrapper } from "../redux/store";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
+import { getTasks } from "../redux/actions/tasks";
 
 // TODO: add trash for deleting tasks
 // TODO: add riminder for every task with a comment
@@ -28,12 +28,12 @@ function checkAndPassQuery({ target }) {
 export default function Home(props) {
 	// hooks
 	const isPluseMode = useSelector(state => state.isPluseMode);
+	const [showNotDones, setShowNotDones] = useState(false);
 	const tasks = useSelector(state => state.tasks);
 	const { classes, figure } = useTheme().TF;
-	const [routerID, setRouterID] = useState();
-	const [showNotDones, setShowNotDones] = useState(false);
+	const router = useRouter();
 	// functions
-	const filtredTasks = () => {
+	const getFiltredTasks = () => {
 		if (!Array.isArray(tasks))
 			return [
 				/*just to be cation*/
@@ -51,9 +51,8 @@ export default function Home(props) {
 			if (selectedTask.is_done !== showNotDones) return Router.push("/");
 		}
 	};
-
+	const { id: routerID } = router.query;
 	useEffect(() => {
-		setRouterID(Router.query.id);
 		if (routerID && !tasks.find(task => task.id === routerID)) {
 			Router.replace("/");
 			showMsg(
@@ -62,14 +61,14 @@ export default function Home(props) {
 					body: { text: "احتمالا این تسک فبلا حذف شده است" },
 					html: "<p>شما دیگر قادر به استفاده از این تسک نیستید</p>",
 				},
-				{ status: "danger", pendingID: "task query id 404" }
+				{ status: "danger", pendingID: "task query 404" }
 			);
 		}
-	});
+	}, [routerID]);
 	const UlMemo = useMemo(() => {
 		return (
 			<StyledUl className={classes.ul} onClick={checkAndPassQuery}>
-				{filtredTasks().map(task => {
+				{getFiltredTasks().map(task => {
 					return <Task taskData={task} key={task.id} />;
 				})}
 			</StyledUl>
@@ -79,14 +78,14 @@ export default function Home(props) {
 	return (
 		<MainLayout>
 			<StyledMain className={classes.main}>
-				<StyledOptions className="col-10">
-					<p className="mt-auto mb-auto">فقط تمام نشده ها را نشان بده :</p>
-					<StyledCheckbox onClick={onChangeFilter} opacity={showNotDones ? 1 : 0}>
-						<i className="fa fa-check" />
-					</StyledCheckbox>
-				</StyledOptions>
 				{tasks.length ? (
 					<>
+						<StyledOptions className="col-10">
+							<p className="mt-auto mb-auto">فقط تمام نشده ها را نشان بده :</p>
+							<StyledCheckbox onClick={onChangeFilter} opacity={showNotDones ? 1 : 0}>
+								<i className="fa fa-check" />
+							</StyledCheckbox>
+						</StyledOptions>
 						{figure === "table" && routerID && (
 							// if routerID was undefined no id query is passed then there is no task for showing
 							<TaskManagerWrapper>
@@ -96,7 +95,9 @@ export default function Home(props) {
 						{UlMemo}
 					</>
 				) : (
-					<PluseWindow />
+					<div className="w-75 m-auto">
+						<PluseWindow />
+					</div>
 				)}
 				<StyledWrapper visible={isPluseMode}>
 					{isPluseMode && <PluseWindow hasPluseBtn />}
@@ -107,7 +108,8 @@ export default function Home(props) {
 }
 
 Home.getInitialProps = async ({ store: { dispatch }, req, res }) => {
-	await dispatch(getProfileAndTasks({ req, res }));
+	await dispatch(getProfileData({ req, res }));
+	await dispatch(getTasks({ req, res }));
 };
 
 const StyledOptions = styled.div(({}) => {
@@ -124,17 +126,13 @@ const StyledOptions = styled.div(({}) => {
 	};
 });
 
-const StyledUl = styled.ul(({ theme }) => {
+const StyledUl = styled.ul(({ theme, children }) => {
+	const general = { ...(children.length === 0 ? { border: "1px black solid", minHeight: "100px" } : {}) };
 	switch (theme.TF.figure) {
 		case "line":
-			return { ...flex() };
+			return { ...general, ...flex() };
 		case "table":
-			return {
-				...flex(),
-				width: "100%",
-				minHeight: "100px",
-				flexWrap: "wrap",
-			};
+			return { ...general, ...flex(), width: "100%", minHeight: "100px", flexWrap: "wrap" };
 	}
 });
 

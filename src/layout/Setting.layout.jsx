@@ -1,12 +1,12 @@
 import { flex, deleteCookie } from "../helpers/exports";
-import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import showMsg from "../helpers/alerts/msg";
 import ask from "../helpers/alerts/ask";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import Header from "./Header";
 import Link from "next/link";
+import { useMemo } from "react";
 
 function handleLogout() {
 	ask(
@@ -76,22 +76,22 @@ const menuData = [
 function Menu(props) {
 	// TODO: make a component for prof img header and here
 	const { name, family } = useSelector(state => state.profile);
-	const [path, setPath] = useState();
-	useEffect(() => {
-		setPath(Router.pathname);
-	}, []);
-	return (
-		<StyledUl>
-			{menuData.map(({ route, label, isComponent, jsx }) => {
-				if (isComponent) return jsx({ name, family });
-				return (
-					<Link href={route} key={route}>
-						<StyledLi selectedMe={path === route}>{label}</StyledLi>
-					</Link>
-				);
-			})}
-		</StyledUl>
-	);
+	const router = useRouter();
+	const url = router.route;
+	return useMemo(() => {
+		return (
+			<StyledUl>
+				{menuData.map(({ route, label, isComponent, jsx }) => {
+					if (isComponent) return jsx({ name, family });
+					return (
+						<Link href={route} key={route}>
+							<StyledLi selectedMe={url === route}>{label}</StyledLi>
+						</Link>
+					);
+				})}
+			</StyledUl>
+		);
+	}, [name, family, url]);
 }
 
 const LogoutItem = styled.li(props => {

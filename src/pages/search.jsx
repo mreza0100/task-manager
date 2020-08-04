@@ -1,8 +1,7 @@
 import { flex, prevEnter, changeDateFormat, tagObjToArr, tagArrToObj, editDate } from "../helpers/exports";
 import { formikStyles, StyledDatePickers } from "../components/TaskManager";
 import Task, { StyledCheckbox, StyledStar } from "../components/Task";
-import { getProfileAndTasks } from "../redux/actions/profile";
-import { getOneAndOverwrite } from "../redux/actions/tasks";
+import { getOneAndOverwrite, getTasks } from "../redux/actions/tasks";
 import { useDispatch, useSelector } from "react-redux";
 import styled, { useTheme } from "styled-components";
 import ReactTags from "react-tag-autocomplete";
@@ -178,7 +177,7 @@ export default function Search(props) {
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(async ({ store: { dispatch }, req, res }) => {
-	await dispatch(getProfileAndTasks({ req, res }));
+	await dispatch(getTasks({ req, res }));
 });
 
 const StyledSearch = styled.div(props => {

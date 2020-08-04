@@ -136,7 +136,7 @@ class API {
 						title: { text: "مشکل شبکه " },
 						body: { text: `status: ${err.response.status}` },
 					},
-					{ status: "warning" },
+					{ status: "warning" }
 				);
 		}
 		if (this.debug)
