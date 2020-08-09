@@ -217,6 +217,6 @@ export default function ResetPassword(props) {
 	);
 }
 
-ResetPassword.getInitialProps = async ({ store: { dispatch }, req, res }) => {
-	await dispatch(getProfileData({ req, res }));
+ResetPassword.getInitialProps = async ({ store: { dispatch, getState }, req, res }) => {
+	await dispatch(getProfileData({ req, res, fields: ["mobile", "name", "family"] }));
 };

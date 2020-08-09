@@ -63,6 +63,11 @@ const menuData = [
 		route: "/setting/customize",
 	},
 	{
+		isComponent: false,
+		label: "مخاطبین",
+		route: "/setting/people",
+	},
+	{
 		isComponent: true,
 		jsx: () => (
 			<LogoutItem className="row p-3" key="logout" onClick={handleLogout}>
@@ -169,21 +174,24 @@ const StyledUl = styled.ul(props => {
 	};
 });
 
-export default function SettingLayout(props) {
+export default function SettingLayout({ children, extraClass }) {
 	return (
 		<>
 			<Header />
-			<StyledMain className="container row justify-content-between">
+			<StyledMain className="container-fluid row">
 				<div className="col-sm-3">
 					<Menu />
 				</div>
-				<div className="col-sm-8">{props.children}</div>
+				<div className={`col-sm-8 ${extraClass || ""}`}>{children}</div>
 			</StyledMain>
 		</>
 	);
 }
+
 const StyledMain = styled.main(props => {
 	return {
+		justifyContent: "space-between",
+		height: "auto",
 		margin: "20px auto 0 auto",
 	};
 });

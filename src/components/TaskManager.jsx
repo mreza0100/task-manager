@@ -13,7 +13,7 @@ import ReactTags from "react-tag-autocomplete";
 import { Formik, Form, Field } from "formik";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import styled, { useTheme } from "styled-components";
+import styled from "styled-components";
 import moment from "moment-jalaali";
 import DatePicker from "../proxy";
 import Router from "next/router";
@@ -80,7 +80,6 @@ export default function TaskManager({ taskID }) {
 	const [fromDate, setFromDate] = useState(moment(editDate(initaialFromDate)));
 	const [toDate, setToDate] = useState(moment(editDate(initaialToDate)));
 	const [tags, setTags] = useState(tagArrToObj(initalTags));
-	const { figure } = useTheme().TF;
 
 	// functions
 	const handleAddition = tag => setTags([...tags, tag]);

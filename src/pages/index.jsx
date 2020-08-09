@@ -5,11 +5,11 @@ import { flex, transition } from "../helpers/exports";
 import { useEffect, useState, useMemo } from "react";
 import styled, { useTheme } from "styled-components";
 import PluseWindow from "../components/PluseWindow";
+import { getTasks } from "../redux/actions/tasks";
+import Router, { useRouter } from "next/router";
 import MainLayout from "../layout/Main.lauout";
 import showMsg from "../helpers/alerts/msg";
 import { useSelector } from "react-redux";
-import Router, { useRouter } from "next/router";
-import { getTasks } from "../redux/actions/tasks";
 
 // TODO: add trash for deleting tasks
 // TODO: add riminder for every task with a comment
@@ -21,8 +21,28 @@ function checkAndPassQuery({ target }) {
 	const id = target.getAttribute("target");
 	if (target.nodeName !== "LI" /*and has a valid target att*/ || !id) return;
 	if (Router.query.id === id /* if clicked on opened task just close it */)
-		Router.replace("/", undefined, { shallow: true });
-	else Router.replace(`/?id=${id}`, undefined, { shallow: true });
+		return Router.replace("/", undefined, { shallow: true });
+	Router.replace(`/?id=${id}`, undefined, { shallow: true });
+}
+import { useDispatch } from "react-redux";
+import { changeTasksFigure } from "../redux/actions/profile";
+import PluseBtn from "../components/PluseBtn";
+
+function HeaderComponent(props) {
+	const dispatch = useDispatch();
+	const tasksFigure = useSelector(state => state.profile.tasks_figure);
+	const handleChangeFigure = () => {
+		const figure = tasksFigure === "line" ? "table" : "line";
+		dispatch(changeTasksFigure({ figure }));
+	};
+	return (
+		<>
+			<button className="btn btn-secondary mr-auto ml-4" onClick={handleChangeFigure}>
+				تعویض حالت
+			</button>
+			<PluseBtn />
+		</>
+	);
 }
 
 export default function Home(props) {
@@ -76,7 +96,7 @@ export default function Home(props) {
 	}, [tasks, figure, showNotDones]);
 
 	return (
-		<MainLayout>
+		<MainLayout HeaderComponent={HeaderComponent}>
 			<StyledMain className={classes.main}>
 				{tasks.length ? (
 					<>

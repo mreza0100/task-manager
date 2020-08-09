@@ -1,54 +1,97 @@
-import PluseBtn from "../components/PluseBtn";
 import { flex } from "../helpers/exports";
-import { useRouter } from "next/router";
 import styled from "styled-components";
 import Link from "next/link";
-import { useDispatch } from "react-redux";
-import { toggleTasksFigure } from "../redux/actions/profile";
+import { useRouter } from "next/router";
+import { useMemo } from "react";
 
-export default function Header({}) {
-	// TODO: fix header make it like menu on setting layout
-	const dispatch = useDispatch();
-	const router = useRouter();
-	const handleChangeFigure = () => dispatch(toggleTasksFigure());
+const navData = [
+	{
+		isComponent: false,
+		route: "/setting/profile",
+		text: "پروفایل",
+		font: "fa fa-user",
+		className: "prof",
+	},
+	{
+		isComponent: false,
+		route: "/search",
+		text: "جستجو",
+		font: "fa fa-search",
+	},
+	{
+		isComponent: false,
+		route: "/",
+		text: "صفحه اصلی",
+		font: "fa fa-home",
+	},
+];
 
+function Nav(props) {
+	const { pathname } = useRouter();
+	return useMemo(
+		() => (
+			<StyledNav>
+				{navData.map(({ route, text, font, className, isComponent, jsx }) => {
+					if (isComponent) return jsx();
+					return (
+						<Link href={route} key={route}>
+							<StyledH6 className={className || null} selectedMe={pathname === route}>
+								{text}
+								<i className={font || null} />
+							</StyledH6>
+						</Link>
+					);
+				})}
+			</StyledNav>
+		),
+		[pathname]
+	);
+}
+
+const StyledH6 = styled.h6(({ selectedMe }) => {
+	return {
+		color: selectedMe ? "red" : "#fff",
+		...flex(["justifyContent"]),
+		justifyContent: "space-evenly",
+		minWidth: "85px",
+		cursor: "pointer",
+		transition: "color 0.3s",
+		fontSize: "14px",
+		margin: 0,
+		"&:hover": { color: "red" },
+		"> i": {
+			...flex(),
+		},
+		"&.prof": {
+			fontSize: "16px",
+			i: {
+				fontSize: "18px",
+			},
+		},
+	};
+});
+
+const StyledNav = styled.nav(props => {
+	return {
+		...flex(["justifyContent"]),
+		justifyContent: "space-evenly",
+		minWidth: "260px",
+		// "> h6.prof": {
+		// 	fontSize: "18px",
+		// },
+	};
+});
+
+export default function Header({ HeaderComponent }) {
 	return (
 		<StyledHeader className="container-fluid">
 			<div className="container m-auto row">
-				<Link href="/setting/profile">
-					<StyledProfIcon className="fa fa-user c-p" />
-				</Link>
-				<Link href="/search">
-					<a className="pr-3 search">جستجو</a>
-				</Link>
-				{router.pathname === "/" ? (
-					<>
-						<button
-							className="btn btn-secondary mr-auto ml-4"
-							onClick={handleChangeFigure}
-						>
-							تعویض حالت
-						</button>
-						<PluseBtn />
-					</>
-				) : (
-					<Link href="/">
-						<StyledHomeBtn className="fa fa-home c-p mr-auto" />
-					</Link>
-				)}
+				<Nav />
+				{!!HeaderComponent && <HeaderComponent />}
 			</div>
 		</StyledHeader>
 	);
 }
-
-const StyledHomeBtn = styled.a(props => {
-	return {
-		width: "35px",
-		height: "35px",
-		fontSize: "18px",
-		color: "#fff",
-	};
-});
 
 const StyledHeader = styled.header(props => {
 	return {
@@ -58,23 +101,5 @@ const StyledHeader = styled.header(props => {
 		height: "50px",
 		backgroundColor: "#212121",
 		color: "#fff",
-		a: {
-			...flex(),
-			textDecoration: "none",
-			"&:hover": {
-				color: "#c2ceb8",
-			},
-		},
-	};
-});
-
-const StyledProfIcon = styled.i(props => {
-	return {
-		...flex(),
-		width: "35px",
-		height: "35px",
-		borderRadius: "50%",
-		fontSize: "18px",
-		backgroundColor: "red",
 	};
 });

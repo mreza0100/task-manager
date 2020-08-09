@@ -1,9 +1,9 @@
 import Header from "./Header";
 
-export default function MainLauout({ children }) {
+export default function MainLauout({ children, HeaderComponent }) {
 	return (
 		<>
-			<Header />
+			<Header HeaderComponent={HeaderComponent} />
 			{children}
 		</>
 	);

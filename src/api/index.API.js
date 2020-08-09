@@ -139,6 +139,15 @@ class API {
 					{ status: "warning" }
 				);
 		}
+		if (isUndefined(err.response)) {
+			showMsg(
+				{
+					title: { text: "مشکل شبکه " },
+					body: { text: "احتمالا اتصال شما مشکل دارد" },
+				},
+				{ status: "danger" }
+			);
+		}
 		if (this.debug)
 			this._debugCenter({
 				axiosMsg: err,

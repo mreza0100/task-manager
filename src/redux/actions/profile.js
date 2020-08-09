@@ -1,39 +1,47 @@
-import { CHANGE_TASKS_FIGURE, SET_PROFILE } from "../type";
+import { EDIT_PROFILE, SET_PROFILE } from "../type";
 import { _USE_API_ } from "../../api/index.API";
 
-export const changeTasksFigure = payload => (dispatch, getState) => {
-	const { figure } = payload;
-	if (!figure) throw new Error("figure is undifined");
-	dispatch({ type: CHANGE_TASKS_FIGURE, payload: figure });
-};
+export const changeTasksFigure = payload => async (dispatch, getState) => {
+	const { figure: tasks_figure } = payload;
+	dispatch({ type: EDIT_PROFILE, payload: { tasks_figure } });
 
-export const toggleTasksFigure = payload => (dispatch, getState) => {
-	const { tasks_figure } = getState().profile;
-	const figure = tasks_figure === "table" ? "line" : "table";
-	dispatch({ type: CHANGE_TASKS_FIGURE, payload: figure });
+	try {
+		await _USE_API_({
+			describe: "changing tasksFigure",
+			isPrivetRoute: true,
+		}).Put({
+			url: "/profile",
+			data: { tasks_figure },
+		});
+	} catch (err) {
+		const { tasks_figure: currentFigure } = getState().profile;
+		const tasks_figure = currentFigure === "line" ? "table" : "line";
+		dispatch({ type: EDIT_PROFILE, payload: { tasks_figure } });
+	}
 };
 
 export const getProfileData = payload => async (dispatch, getState) => {
-	const { req, res, whatIWant } = payload ?? { whatIWant: [] };
+	const { req, res, fields } = payload ?? { fields: [] };
 	try {
 		const APIResponse = await _USE_API_({
 			res,
 			req,
 			isPrivetRoute: true,
-			describe: "getting all tasks and profile",
+			describe: "getting profile data",
+			debug: false,
 		}).Get({
 			url: "/profile",
-			params: whatIWant,
+			params: { fields: JSON.stringify(fields) },
 		});
-		// name,
-		// family,
-		// email,
-		// userID,
-		// ! mobile,
-		// ! tasksFigure
-		APIResponse.data.data.item["tasks_figure"] = "line";
+		if (APIResponse.data.data.item.people) delete APIResponse.data.data.item.people;
 		dispatch({ type: SET_PROFILE, payload: APIResponse.data.data.item });
 	} catch (err) {
 		throw Error("NEtwork Error>>: ", err);
 	}
+	// name,
+	// family,
+	// email,
+	// userID,
+	// mobile,
+	// tasksFigure
 };
