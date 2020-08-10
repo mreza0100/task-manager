@@ -181,7 +181,7 @@ const StyledWrapper = styled.div(({ visible: v }) => {
 		opacity: v ? 1 : 0,
 		pointerEvents: v ? "unset" : "none",
 		borderRadius: "10px 10px 0px 0px",
-		backgroundColor: "#6F9283",
+		backgroundColor: "#286B89",
 	};
 });
 

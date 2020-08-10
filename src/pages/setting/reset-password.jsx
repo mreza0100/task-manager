@@ -1,5 +1,5 @@
 import { FieldContainerTag, Label, C } from "../../pages/register-progsess/register";
-import { phoneRegExp, deleteCookie, isUndefined } from "../../helpers/exports";
+import { phoneRegExp, deleteCookie, isUndefined, flex } from "../../helpers/exports";
 import { getProfileData } from "../../redux/actions/profile";
 import SettingLayout from "../../layout/Setting.layout";
 import { _USE_API_ } from "../../api/index.API";
@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 import Router from "next/router";
 import * as yup from "yup";
+import styled from "styled-components";
 // !--
 
 export const step_1 = {
@@ -160,14 +161,14 @@ export default function ResetPassword(props) {
 
 	return (
 		<SettingLayout>
-			<div className="w-50 row justify-content-between m-auto">
-				<span className={`c-p ${step === 1 ? "text-danger" : ""}`} onClick={e => setStep(1)}>
+			<StyledBtnSteps>
+				<span className={step === 1 ? "text-danger" : null} onClick={e => setStep(1)}>
 					مرحله اول
 				</span>
-				<span className={`c-p ${step === 2 ? "text-danger" : ""}`} onClick={e => setStep(2)}>
+				<span className={step === 2 ? "text-danger" : null} onClick={e => setStep(2)}>
 					مرحله دوم
 				</span>
-			</div>
+			</StyledBtnSteps>
 			<Formik
 				initialValues={{
 					mobile: initialMobile,
@@ -220,3 +221,14 @@ export default function ResetPassword(props) {
 ResetPassword.getInitialProps = async ({ store: { dispatch, getState }, req, res }) => {
 	await dispatch(getProfileData({ req, res, fields: ["mobile", "name", "family"] }));
 };
+const StyledBtnSteps = styled.div(props => {
+	return {
+		...flex(["justifyContent"]),
+		justifyContent: "space-between",
+		width: "50%",
+		margin: "0 auto 0 auto",
+		"> span": {
+			cursor: "pointer",
+		},
+	};
+});

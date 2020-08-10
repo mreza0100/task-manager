@@ -14,7 +14,7 @@ const navData = [
 	},
 	{
 		isComponent: false,
-		route: "/search",
+		route: "/dashboard",
 		text: "جستجو",
 		font: "fa fa-search",
 	},
@@ -28,8 +28,8 @@ const navData = [
 
 function Nav(props) {
 	const { pathname } = useRouter();
-	return useMemo(
-		() => (
+	return useMemo(() => {
+		return (
 			<StyledNav>
 				{navData.map(({ route, text, font, className, isComponent, jsx }) => {
 					if (isComponent) return jsx();
@@ -43,18 +43,17 @@ function Nav(props) {
 					);
 				})}
 			</StyledNav>
-		),
-		[pathname]
-	);
+		);
+	}, [pathname]);
 }
 
 const StyledH6 = styled.h6(({ selectedMe }) => {
 	return {
 		color: selectedMe ? "red" : "#fff",
+		cursor: selectedMe ? "default" : "pointer",
 		...flex(["justifyContent"]),
 		justifyContent: "space-evenly",
 		minWidth: "85px",
-		cursor: "pointer",
 		transition: "color 0.3s",
 		fontSize: "14px",
 		margin: 0,
@@ -87,7 +86,7 @@ export default function Header({ HeaderComponent }) {
 		<StyledHeader className="container-fluid">
 			<div className="container m-auto row">
 				<Nav />
-				{!!HeaderComponent && <HeaderComponent />}
+				{HeaderComponent && <HeaderComponent />}
 			</div>
 		</StyledHeader>
 	);
@@ -99,7 +98,7 @@ const StyledHeader = styled.header(props => {
 		justifyContent: "flex-start",
 		margin: "0 auto 0 auto",
 		height: "50px",
-		backgroundColor: "#212121",
+		backgroundColor: "#040507",
 		color: "#fff",
 	};
 });

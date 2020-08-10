@@ -154,7 +154,7 @@ const TaskManagerWrapper = styled.li(props => {
 		width: "100%",
 		height: "auto",
 		padding: "20px 0",
-		backgroundColor: "#28596157",
+		backgroundColor: "#bbbbbb",
 		overflow: "hidden",
 		position: "relative",
 		bottom: "8px",

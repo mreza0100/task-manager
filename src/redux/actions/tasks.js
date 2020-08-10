@@ -4,21 +4,20 @@ import { SET_TASKS, SET_TASK } from "../type";
 export const getTasks = payload => async (dispatch, getState) => {
 	const { req, res } = payload ?? {};
 
-	const APIResponse = await _USE_API_({
-		// baseURL: "http://localhost:10000",
-		res,
-		req,
-		isPrivetRoute: true,
-		describe: "getting all tasks from server",
-	}).Get({
-		// url: "/api/getTasks",
-		url: "/tasks",
-	});
-	dispatch({
-		// payload: APIResponse.data,
-		type: SET_TASKS,
-		payload: APIResponse.data.data.list,
-	});
+	try {
+		const APIResponse = await _USE_API_({
+			res,
+			req,
+			isPrivetRoute: true,
+			describe: "getting all tasks from server",
+		}).Get({ url: "/tasks" });
+		if (APIResponse.status === 200) {
+			const payload = APIResponse.data.data.list;
+			dispatch({ type: SET_TASKS, payload });
+		}
+	} catch (err) {
+		console.dir(err);
+	}
 };
 
 export const editTask = payload => (dispatch, getState) => {
@@ -56,13 +55,7 @@ export const getOneAndOverwrite = payload => async (dispatch, getState) => {
 
 export const getOneFromState = payload => (dispatch, getState) => {
 	const { taskID } = payload;
-	const { tasks } = getState();
-	return tasks.find(task => task.id === taskID);
-};
-
-export const shock = payload => (dispatch, getState) => {
-	const { tasks } = getState();
-	dispatch({ type: SET_TASKS, payload: tasks });
+	return getState().tasks.find(task => task.id === taskID);
 };
 
 export const getOneTask = payload => async (dispatch, getState) => {

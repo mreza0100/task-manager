@@ -1,11 +1,4 @@
-import {
-	transition,
-	flex,
-	prevEnter,
-	changeDateFormat,
-	tagObjToArr,
-	getRandomColor,
-} from "../helpers/exports";
+import { transition, flex, prevEnter, changeDateFormat, tagObjToArr, getRandomColor } from "../helpers/exports";
 import { StyledDatePickers, validation } from "./TaskManager";
 import { togglePluse } from "../redux/actions/pluse";
 import { getOneTask } from "../redux/actions/tasks";
@@ -21,23 +14,26 @@ import moment from "moment-jalaali";
 import DatePicker from "../proxy";
 // !>>
 
-async function handleSubmit(data) {
-	return await _USE_API_({ isPrivetRoute: true, describe: "PluseWindow" })
+async function handleSubmit(data, { dispatch, setSubmitting }) {
+	setSubmitting(true);
+	await _USE_API_({ isPrivetRoute: true, describe: "PluseWindow" })
 		.Post({
 			url: "tasks",
 			data,
 		})
 		.then(res => {
-			return res.data.data.item./* taskID=>*/ id;
+			const taskID = res.data.data.item.id;
+			if (taskID) dispatch(getOneTask({ taskID }));
 		})
 		.catch(err => {
 			console.dir(err);
-			return false;
+		})
+		.finally(() => {
+			setSubmitting(false);
 		});
 }
 
 export default function PluseWindow({ hasPluseBtn }) {
-	const [initialColor, setInitialColor] = useState(getRandomColor());
 	const [firstDate, setFirstDate] = useState(moment());
 	const [secondDate, setSecDate] = useState(moment());
 	const [tags, setTags] = useState([]);
@@ -63,10 +59,9 @@ export default function PluseWindow({ hasPluseBtn }) {
 				initialValues={{
 					title: "a",
 					description: "",
-					color: initialColor,
+					color: "#454F4F",
 				}}
 				onSubmit={({ title, color, description }, { setSubmitting }) => {
-					setSubmitting(true);
 					const sortedData = {
 						title,
 						color,
@@ -75,13 +70,7 @@ export default function PluseWindow({ hasPluseBtn }) {
 						from_date: changeDateFormat(firstDate),
 						to_date: changeDateFormat(secondDate),
 					};
-					handleSubmit(sortedData)
-						.then(taskID => {
-							if (taskID) dispatch(getOneTask({ taskID }));
-							setInitialColor(getRandomColor());
-							/*if taskID in res from server was not empty alright*/
-						})
-						.finally(() => setSubmitting(false));
+					handleSubmit(sortedData, { dispatch, setSubmitting });
 				}}
 			>
 				{({ isSubmitting }) => (
@@ -95,12 +84,7 @@ export default function PluseWindow({ hasPluseBtn }) {
 							/>
 							<Field type="color" name="color" className="col-1" />
 						</div>
-						<Field
-							as="textarea"
-							name="description"
-							placeholder="توضیحات"
-							rows="4"
-						/>
+						<Field as="textarea" name="description" placeholder="توضیحات" rows="4" />
 						<StyledDatePickers className="col-12">
 							<div>
 								<span>از تاریخ:</span>
@@ -125,7 +109,7 @@ export default function PluseWindow({ hasPluseBtn }) {
 							tags={tags}
 							onAddition={handleAddition}
 							onDelete={handleDelete}
-							placeholder="اضافه کردن تگ(با کلید Enter)"
+							placeholderText="اضافه کردن تگ(با کلید Enter)"
 							minQueryLength={1}
 							autoresize={false}
 							allowNew

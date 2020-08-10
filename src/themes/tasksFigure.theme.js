@@ -24,12 +24,13 @@ class generals {
 		const { figure } = useTheme().TF;
 		const border = figure === "table" && isSelectedTask ? "2px solid black" : "unset";
 		return {
-			backgroundColor: "#212121",
+			backgroundColor: "#454F4F",
 			border,
 			...transition(),
 			width: "20%",
 			cursor: "pointer",
-			"&:hover": { opacity: "0.9" },
+			opacity: "0.95",
+			"&:hover": { opacity: 1 },
 			"> span i.fa-clone": {
 				borderRadius: "5px",
 				padding: "6px",

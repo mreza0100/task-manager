@@ -94,7 +94,7 @@ export default function TaskManager({ taskID }) {
 		return () => {
 			try {
 				document.querySelector(`li[target='${taskID}'] span + span`).removeAttribute("style");
-			} catch (err) {}
+			} catch (e) {}
 		};
 	}, []);
 
@@ -162,7 +162,7 @@ export default function TaskManager({ taskID }) {
 							tags={tags}
 							onAddition={handleAddition}
 							onDelete={handleDelete}
-							placeholder="اضافه کردن تگ(با کلید Enter)"
+							placeholderText="اضافه کردن تگ(با کلید Enter)"
 							minQueryLength={1}
 							autoresize={false}
 							allowNew
