@@ -1,4 +1,4 @@
-import { addPeople, getPeople, deleteContact } from "../../redux/actions/people";
+import { addPeople, getPeople, deleteContact, editContact } from "../../redux/actions/people";
 import { butyInputs, flex, phoneRegExp } from "../../helpers/exports";
 import { getProfileData } from "../../redux/actions/profile";
 import SettingLayout from "../../layout/Setting.layout";
@@ -71,11 +71,14 @@ function Modal({ people, id }) {
 	const { mobile, name } = people.find(contact => contact.id === id);
 	const router = useRouter();
 	const onCancel = () => router.replace(router.pathname, undefined, { shallow: true });
+	const dispatch = useDispatch();
 
-	const onSubmit = data => {};
 	const initialValues = {
 		name,
 		mobile,
+	};
+	const onSubmit = data => {
+		dispatch(editContact({ data, id }));
 	};
 	return (
 		<StyledModalWrapper className="container-fluid row">
@@ -85,7 +88,7 @@ function Modal({ people, id }) {
 				initialValues={initialValues}
 				extraBtnClass="btn-success"
 			/>
-			<button className="btn btn-secondary" onClick={onCancel}>
+			<button className="btn btn-secondary" onClick={onCancel} type="button">
 				لغو
 			</button>
 		</StyledModalWrapper>
@@ -98,7 +101,7 @@ const StyledModalWrapper = styled.div(props => {
 		justifyContent: "space-evenly",
 		flexDirection: "column",
 		minHeight: "120px",
-		width: "100%",
+		width: "45%",
 		height: "max-content",
 		position: "absolute",
 		top: 10,
@@ -122,9 +125,8 @@ export default function People(props) {
 	const people = useSelector(state => state.people);
 	const router = useRouter();
 
-	const onDelete = id => {
-		dispatch(deleteContact(id));
-	};
+	const onDelete = id => dispatch(deleteContact({ contactID: id }));
+
 	const setQuery = id => {
 		scrollTo({
 			top: 0,

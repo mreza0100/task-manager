@@ -12,9 +12,7 @@ function transition(time = 0.3) {
 function flex(whatIDontWant = []) {
 	let s = { display: "flex" };
 	if (!whatIDontWant.includes("alignItems")) s = { ...s, alignItems: "center" };
-	return !whatIDontWant.includes("justifyContent")
-		? (s = { ...s, justifyContent: "center" })
-		: s;
+	return !whatIDontWant.includes("justifyContent") ? (s = { ...s, justifyContent: "center" }) : s;
 }
 
 const $ = "!important";

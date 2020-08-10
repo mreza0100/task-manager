@@ -36,7 +36,28 @@ export const deleteContact = payload => async (dispatch, getState) => {
 	const { contactID } = payload;
 	const data = { id: contactID };
 	try {
-		const res = _USE_API_({ describe: "deleting a contact", isPrivetRoute: true, debug: true }).Delete({
+		const res = await _USE_API_({
+			describe: "deleting a contact",
+			isPrivetRoute: true,
+			debug: true,
+		}).Delete({
+			url: "/people",
+			data,
+		});
+		if (res.status === 200) reloadRouter();
+	} catch (err) {
+		console.dir(err);
+	}
+};
+
+export const editContact = payload => async (dispatch, getState) => {
+	const data = payload;
+	try {
+		const res = await _USE_API_({
+			describe: "deleting a contact",
+			isPrivetRoute: true,
+			debug: true,
+		}).Put({
 			url: "/people",
 			data,
 		});

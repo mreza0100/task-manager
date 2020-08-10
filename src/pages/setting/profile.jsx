@@ -38,7 +38,6 @@ async function handleSubmit(data, setSubmitting) {
 
 export default function Profile(props) {
 	const { email, family, mobile, name } = useSelector(state => state.profile);
-	// console.log(email, family, mobile, name);
 	const [editMode, setEditmode] = useState(false);
 
 	const onToggleEditMode = () => setEditmode(!editMode);
@@ -53,6 +52,7 @@ export default function Profile(props) {
 					mobile,
 				}}
 				onSubmit={(data, { setSubmitting }) => {
+					delete data.mobile;
 					const sortedData = { ...data };
 					handleSubmit(sortedData, setSubmitting);
 				}}
