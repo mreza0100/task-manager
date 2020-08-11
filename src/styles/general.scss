@@ -71,9 +71,17 @@ input[disabled] {
 i.fa-clone {
 	cursor: copy;
 }
+
 .justify-constent-evenly {
 	justify-content: space-evenly;
 }
+
+.flex {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
 #making-color {
 	color: #7be624;
 }
