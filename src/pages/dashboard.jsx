@@ -1,4 +1,4 @@
-import { flex, butyInputs, changeDateFormat, tagObjToArr } from "../helpers/exports";
+import { flex, butyInputs, changeDateFormat, tagObjToArr, reloadRouter } from "../helpers/exports";
 import MainLayout from "../layout/Main.lauout";
 import ReactTags from "react-tag-autocomplete";
 import { _USE_API_ } from "../api/index.API";
@@ -8,6 +8,18 @@ import styled from "styled-components";
 import moment from "moment-jalaali";
 import DatePicker from "../proxy";
 import * as yup from "yup";
+
+async function handleSubmit(data) {
+	try {
+		const res = await _USE_API_({ describe: "save a task query", isPrivetRoute: true, debug: true }).Post({
+			data,
+			url: "/save_task_query",
+		});
+		if (res.status === 200 && res.data.data.item.id) reloadRouter();
+	} catch (err) {
+		console.dir(err);
+	}
+}
 
 const typeDateData = [
 	{
@@ -28,20 +40,20 @@ const typeDateData = [
 ];
 
 const validation = yup.object({
-	searchName: yup.string().required().trim(),
-	amount: yup.number(),
+	name: yup.string().required().trim(),
+	amount: yup.number().min(1),
 });
 const initialValues = {
-	searchName: "test",
-	amount: 0,
+	name: "test",
+	amount: 1,
 };
 
 export default function Dashboard({}) {
 	// hooks
-	const [typeTime, setTypeTime] = useState(null); // pass, now, future
+	const [typeTime, setTypeTime] = useState("future"); // pass, now, future
 	const [from, setFrom] = useState("now"); // if === "now" {"now"} else === "custom" then fromDate must be selected
 	const [fromDate, setFromDate] = useState(moment());
-	const [typeDate, setTypeDate] = useState(null); // from_date, to_date
+	const [typeDate, setTypeDate] = useState("from_date"); // from_date, to_date
 	const [tags, setTags] = useState([]);
 
 	//functions
@@ -50,31 +62,32 @@ export default function Dashboard({}) {
 	const onSubmit = data => {
 		const _tags = tagObjToArr(tags);
 		if (typeTime === "now") {
-			delete data.amount;
+			const name = data.name;
 			var sortedData = {
-				type_date: typeDate,
+				time: typeTime,
 				tags: _tags,
-				...data,
+				name,
 			};
 		} else {
 			var sortedData = {
-				...data,
+				time: typeTime,
 				tags: _tags,
-				time: from === "now" ? "now" : changeDateFormat(fromDate),
+				from: from === "now" ? "now" : changeDateFormat(fromDate),
 				type_date: typeDate,
+				...data,
 			};
 		}
-		console.log(sortedData);
+		handleSubmit(sortedData);
 	};
-
 	return (
 		<MainLayout>
 			<StyledManager className="bg-secondary container" typeTime={typeTime}>
 				<Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validation}>
-					{({}) => {
+					{({ errors, values }) => {
+						console.log(values);
 						return (
 							<Form className="w-75 formik-form">
-								<Field placeholder="نام جست و جو" type="text" name="searchName" />
+								<Field placeholder="نام جست و جو" type="text" name="name" />
 								<StyledTypeDate id="#type_time">
 									<h6>انتخاب بازه زمانی</h6>
 									<ul className="container row justify-constent-evenly w-100">
@@ -159,6 +172,7 @@ export default function Dashboard({}) {
 								<button className="btn btn-success" type="submit">
 									ثبت
 								</button>
+								{JSON.stringify(errors)}
 							</Form>
 						);
 					}}
