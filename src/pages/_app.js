@@ -12,6 +12,7 @@ import "nprogress/nprogress.css";
 import "../styles/general.scss";
 import { ThemeProvider } from "styled-components";
 import useTasksFigure from "../themes/tasksFigure.theme";
+import styleHelpers from "../helpers/style-helpers";
 
 Router.onRouteChangeStart = () => {
 	NProgress.start();
@@ -27,7 +28,11 @@ Router.onRouteChangeError = () => {
 
 function ForUsingHook({ children }) {
 	const tasksFigure = useTasksFigure();
-	return <ThemeProvider theme={{ TF /*TF for tasksFigure*/: tasksFigure }}>{children}</ThemeProvider>;
+	return (
+		<ThemeProvider theme={{ H /*H for helpers*/: styleHelpers }}>
+			<ThemeProvider theme={{ TF /*TF for tasksFigure*/: tasksFigure }}>{children}</ThemeProvider>
+		</ThemeProvider>
+	);
 }
 
 class App extends NextApp {

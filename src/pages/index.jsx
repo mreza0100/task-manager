@@ -45,7 +45,7 @@ function HeaderComponent(props) {
 	);
 }
 
-export default function Home(props) {
+export default function Index(props) {
 	// hooks
 	const isPluseMode = useSelector(state => state.isPluseMode);
 	const [showNotDones, setShowNotDones] = useState(false);
@@ -54,11 +54,8 @@ export default function Home(props) {
 	const router = useRouter();
 	// functions
 	const getFiltredTasks = () => {
-		if (!Array.isArray(tasks))
-			return [
-				/*just to be cation*/
-			];
 		if (showNotDones) return tasks.filter(task => !task.is_done);
+		if (false) return [...tasks.filter(t => t.is_favorite), ...tasks.filter(t => !t.is_favorite)];
 		return tasks;
 	};
 	const onChangeFilter = () => {
@@ -127,7 +124,7 @@ export default function Home(props) {
 	);
 }
 
-Home.getInitialProps = async ({ store: { dispatch }, req, res }) => {
+Index.getInitialProps = async ({ store: { dispatch }, req, res }) => {
 	await dispatch(getProfileData({ req, res }));
 	await dispatch(getTasks({ req, res }));
 };

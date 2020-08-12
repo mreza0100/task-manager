@@ -1,14 +1,14 @@
-import { flex, butyInputs, changeDateFormat, tagObjToArr, reloadRouter } from "../helpers/exports";
+import { flex, changeDateFormat, tagObjToArr, reloadRouter } from "../helpers/exports";
 import MainLayout from "../layout/Main.lauout";
 import ReactTags from "react-tag-autocomplete";
 import { _USE_API_ } from "../api/index.API";
 import { Formik, Form, Field } from "formik";
-import { useState, useEffect } from "react";
 import styled from "styled-components";
 import moment from "moment-jalaali";
 import DatePicker from "../proxy";
+import { useState } from "react";
 import * as yup from "yup";
-
+// TODO: clean this shiti mess after all :(
 async function handleSubmit(data) {
 	try {
 		const res = await _USE_API_({ describe: "save a task query", isPrivetRoute: true, debug: true }).Post({
@@ -39,9 +39,12 @@ const typeDateData = [
 	},
 ];
 
-const validation = yup.object({
+const normalValidation = yup.object({
 	name: yup.string().required().trim(),
-	amount: yup.number().min(1),
+	amount: yup.number().required().min(1),
+});
+const specialValidation = yup.object({
+	name: yup.string().required().trim(),
 });
 const initialValues = {
 	name: "test",
@@ -50,9 +53,9 @@ const initialValues = {
 
 export default function Dashboard({}) {
 	// hooks
-	const [typeTime, setTypeTime] = useState("future"); // pass, now, future
+	const [time, setTime] = useState("future"); // pass, now, future
 	const [from, setFrom] = useState("now"); // if === "now" {"now"} else === "custom" then fromDate must be selected
-	const [fromDate, setFromDate] = useState(moment());
+	const [fromDate, setFromDate] = useState(moment()); // if from !== "now" this must be selected and send for server
 	const [typeDate, setTypeDate] = useState("from_date"); // from_date, to_date
 	const [tags, setTags] = useState([]);
 
@@ -60,18 +63,17 @@ export default function Dashboard({}) {
 	const handleAddition = tag => setTags([...tags, tag]);
 	const handleDelete = idx1 => setTags(tags.filter((i, idx2) => idx1 !== idx2));
 	const onSubmit = data => {
-		const _tags = tagObjToArr(tags);
-		if (typeTime === "now") {
+		if (time === "now") {
 			const name = data.name;
 			var sortedData = {
-				time: typeTime,
-				tags: _tags,
+				time,
+				tags: tagObjToArr(tags),
 				name,
 			};
 		} else {
 			var sortedData = {
-				time: typeTime,
-				tags: _tags,
+				time,
+				tags: tagObjToArr(tags),
 				from: from === "now" ? "now" : changeDateFormat(fromDate),
 				type_date: typeDate,
 				...data,
@@ -81,8 +83,12 @@ export default function Dashboard({}) {
 	};
 	return (
 		<MainLayout>
-			<StyledManager className="bg-secondary container" typeTime={typeTime}>
-				<Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validation}>
+			<StyledManager className="bg-secondary container" typeTime={time}>
+				<Formik
+					initialValues={initialValues}
+					onSubmit={onSubmit}
+					validationSchema={time === "now" ? specialValidation : normalValidation}
+				>
 					{({ errors, values }) => {
 						console.log(values);
 						return (
@@ -95,8 +101,8 @@ export default function Dashboard({}) {
 											return (
 												<StyledTypeDateLi
 													className={c}
-													onClick={() => setTypeTime(type)}
-													selectedMe={type === typeTime}
+													onClick={() => setTime(type)}
+													selectedMe={type === time}
 													key={text}
 												>
 													{text}
@@ -172,7 +178,6 @@ export default function Dashboard({}) {
 								<button className="btn btn-success" type="submit">
 									ثبت
 								</button>
-								{JSON.stringify(errors)}
 							</Form>
 						);
 					}}
@@ -210,33 +215,31 @@ const notAllowed = {
 };
 
 const StyledManager = styled.div(({ typeTime }) => {
+	const denied = typeTime === "now" ? notAllowed : {};
 	return {
 		...flex(),
 		height: "max-content",
 		padding: "20px 0",
 		color: "#fff",
-		".react-tags__search-wrapper > input": {
-			padding: "5px 8px",
-		},
 		".color-red": {
 			color: "red",
 		},
 		h6: { fontSize: 18 },
 		"#type_time": {},
 		"#amount": {
-			...(typeTime === "now" ? notAllowed : {}),
+			...denied,
 			...flex(["justifyContent"]),
 			justifyContent: "space-evenly",
 		},
 		"#from": {
-			...(typeTime === "now" ? notAllowed : {}),
+			...denied,
 			span: {
 				cursor: "pointer",
 			},
 			".datepicker-input": {},
 		},
 		"#type_date": {
-			...(typeTime === "now" ? notAllowed : {}),
+			...denied,
 			span: {
 				cursor: "pointer",
 			},

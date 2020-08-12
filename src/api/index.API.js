@@ -55,7 +55,7 @@ class API {
 		this.inBrowser = process.browser;
 		this.describe = describe ?? AC.describe();
 		this.isPrivetRoute /*need token*/ = isPrivetRoute ?? AC.isPrivetRoute;
-		this.$HTTP = Axios.create({
+		this.$XHR = Axios.create({
 			baseURL: this.baseURL,
 			...configs,
 		});
@@ -193,7 +193,7 @@ class API {
 		if (method === "get") params = this._filterDataBeforSend(params);
 		else data = this._filterDataBeforSend(data);
 		return new Promise((resolve, reject) => {
-			this.$HTTP
+			this.$XHR
 				.request({ method, url, params, data })
 				.then(res => {
 					this._handleRes({
@@ -221,8 +221,8 @@ class API {
 
 	Get = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "get");
 	Post = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "post");
-	Delete = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "delete");
 	Put = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "put");
+	Delete = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "delete");
 }
 
 // ? INITING HOOK

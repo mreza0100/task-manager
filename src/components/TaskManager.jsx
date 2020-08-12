@@ -36,7 +36,10 @@ async function handleSubmit(data, { dispatch, setSubmitting }) {
 			url: "tasks",
 			data,
 		});
-		if (res.status === 200) dispatch(getOneAndOverwrite({ taskID }));
+		if (res.status === 200) {
+			dispatch(getOneAndOverwrite({ taskID }));
+			Router.replace("/");
+		}
 	} catch (err) {
 		console.dir(err);
 	} finally {

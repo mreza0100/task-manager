@@ -1,5 +1,3 @@
-const a = 22123;
-console.log(a);
-const Page = () => <div>{a}</div>;
-
-export default Page;
+export default function Test() {
+	return null;
+}

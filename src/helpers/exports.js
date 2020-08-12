@@ -1,18 +1,12 @@
 import Router from "next/router";
+import $CACH from "./cash";
 
 function transition(time = 0.3) {
-	return {
-		transition: `${time}s ease-in-out,background-color 
-                ${time}s ease-in-out,border-color 
-                ${time}s ease-in-out,box-shadow 
-                ${time}s ease-in-out;`,
-	};
+	return $CACH("transition", time);
 }
 
 function flex(whatIDontWant = []) {
-	let s = { display: "flex" };
-	if (!whatIDontWant.includes("alignItems")) s = { ...s, alignItems: "center" };
-	return !whatIDontWant.includes("justifyContent") ? (s = { ...s, justifyContent: "center" }) : s;
+	return $CACH("flex", whatIDontWant);
 }
 
 const $ = "!important";
@@ -105,22 +99,24 @@ function serverRedirect({ res, route }) {
 	if (route[0] !== "/") route = "/" + route;
 	res.writeHead(302, { Location: route }).end();
 }
-
 function copyToClipboard(text) {
 	try {
 		navigator.clipboard.writeText(text);
 		return true;
-	} catch (err) {
-		return false;
+	} catch (err1) {
+		try {
+			const input = document.createElement("textarea");
+			input.innerHTML = text;
+			document.body.appendChild(input);
+			input.select();
+			const result = document.execCommand("copy");
+			document.body.removeChild(input);
+			return result;
+		} catch (err2) {
+			console.dir(err2);
+			return false;
+		}
 	}
-	// .then(
-	// 	function () {
-	// 		console.log("Async: Copying to clipboard was successful!");
-	// 	},
-	// 	function (err) {
-	// 		console.error("Async: Could not copy text: ", err);
-	// 	}
-	// );
 }
 
 function getRandomColor(type = "hex") {

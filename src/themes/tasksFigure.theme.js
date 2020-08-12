@@ -135,12 +135,6 @@ class table {
 	};
 }
 
-const none = {
-	figure: "",
-	classes: {},
-	styles: {},
-};
-
 // styled components
 export const StyledP = styled.p(({ theme, isDone }) => {
 	const { styles } = theme.TF;
@@ -166,6 +160,10 @@ export default function useTasksFigure(props) /*for _app*/ {
 		case "table":
 			return table;
 		default:
-			return none;
+			return {
+				figure: "",
+				classes: {},
+				styles: {},
+			};
 	}
 }

@@ -147,7 +147,7 @@ export default function Task({ taskData }) {
 	);
 }
 
-const TaskManagerWrapper = styled.li(props => {
+const TaskManagerWrapper = styled.li(({}) => {
 	return {
 		...flex(),
 		flexDirection: "column",
