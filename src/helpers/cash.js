@@ -1,7 +1,6 @@
 const cashedData = {};
 const { stringify: str, parse } = JSON;
 export default function $CASH(funcName) {
-	if (funcName === "flex") console.log(22);
 	const args = Object.values(arguments).slice(1);
 	const cash = cashedData[funcName];
 	const possiblyResult = cash[str(args)];
@@ -27,20 +26,21 @@ const functions = {
 	},
 	test(a, b) {
 		console.log("not cached!!");
-		return /*<<PURE*/ a + b;
+		return /*<<PURE*/ a ** b;
 	},
 };
 (() => Object.keys(functions).map(func => (cashedData[func] = {})))();
 
-// (function () { /*test*/
-// 	if (!process.browser) return "pashmak";
-// 	const args = [200002002000002000000000, 200002000000];
-// 	for (let i = 0; i < 100; i++) {
-// 		console.time();
-// 		$CASH("test", ...args);
-// 		console.timeEnd();
-// 	}
-// })();
+(function () {
+	/*test*/
+	if (!process.browser) return "pashmak";
+	const args = [10000, 100000];
+	for (let i = 0; i < 10; i++) {
+		console.time();
+		$CASH("test", ...args);
+		console.timeEnd();
+	}
+})();
 
 // const cash = {};
 // function sumArray(arr, num) {
