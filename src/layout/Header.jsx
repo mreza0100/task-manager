@@ -81,7 +81,7 @@ const StyledNav = styled.nav(props => {
 	};
 });
 
-export default function Header({ HeaderComponent }) {
+export default function Header({ children: HeaderComponent }) {
 	return (
 		<StyledHeader className="container-fluid">
 			<div className="container m-auto row">

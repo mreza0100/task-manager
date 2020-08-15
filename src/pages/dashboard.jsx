@@ -6,8 +6,38 @@ import { Formik, Form, Field } from "formik";
 import styled from "styled-components";
 import moment from "moment-jalaali";
 import DatePicker from "../proxy";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as yup from "yup";
+
+async function getQueriesData() {
+	try {
+		const res = await _USE_API_({
+			describe: "get all queries",
+			isPrivetRoute: true,
+			debug: true,
+		}).Get({ url: "dashboard" });
+		return res;
+	} catch (err) {
+		console.dir(err);
+	}
+}
+
+function ShowQueries(props) {
+	if (!process.browser) return <h1>Loading...</h1>;
+	const [shouldUpdate, setShouldUpdate] = useState(true);
+	const [data, setData] = useState(null);
+	useEffect(() => {
+		if (shouldUpdate) {
+			// getQueriesData().then(res => {
+			// setData(res.data.data.list[0]);
+			// console.log(res.data.data.list[0].test);
+			// });
+		}
+		setShouldUpdate(false);
+	}, [shouldUpdate]);
+	return <h1>awd</h1>;
+}
+
 // TODO: clean this shiti mess after all :(
 async function handleSubmit(data) {
 	try {
@@ -43,54 +73,62 @@ const normalValidation = yup.object({
 	name: yup.string().required().trim(),
 	amount: yup.number().required().min(1),
 });
-const specialValidation = yup.object({
+const timeEqualNowValidation = yup.object({
 	name: yup.string().required().trim(),
 });
+
 const initialValues = {
 	name: "test",
 	amount: 1,
 };
 
-export default function Dashboard({}) {
+export default function Dashboard() {
 	// hooks
 	const [time, setTime] = useState("future"); // pass, now, future
 	const [from, setFrom] = useState("now"); // if === "now" {"now"} else === "custom" then fromDate must be selected
 	const [fromDate, setFromDate] = useState(moment()); // if from !== "now" this must be selected and send for server
 	const [typeDate, setTypeDate] = useState("from_date"); // from_date, to_date
+	const [timePoint, setTimePoint] = useState("to");
 	const [tags, setTags] = useState([]);
 
 	//functions
 	const handleAddition = tag => setTags([...tags, tag]);
 	const handleDelete = idx1 => setTags(tags.filter((i, idx2) => idx1 !== idx2));
-	const onSubmit = data => {
+
+	const onSubmit = ({ name, amount }) => {
+		var sortedData;
+		const _tags = tags.length ? tagObjToArr(tags) : null;
 		if (time === "now") {
-			const name = data.name;
-			var sortedData = {
+			sortedData = {
 				time,
-				tags: tagObjToArr(tags),
+				tags: _tags,
 				name,
 			};
 		} else {
-			var sortedData = {
+			sortedData = {
+				name,
+				amount,
 				time,
-				tags: tagObjToArr(tags),
+				tags: _tags,
 				from: from === "now" ? "now" : changeDateFormat(fromDate),
 				type_date: typeDate,
-				...data,
+				time_point: timePoint,
 			};
 		}
+		for (const i in sortedData) if (sortedData[i] === null) delete sortedData[i];
 		handleSubmit(sortedData);
 	};
+
 	return (
 		<MainLayout>
 			<StyledManager className="bg-secondary container" typeTime={time}>
 				<Formik
 					initialValues={initialValues}
 					onSubmit={onSubmit}
-					validationSchema={time === "now" ? specialValidation : normalValidation}
+					validationSchema={time === "now" ? timeEqualNowValidation : normalValidation}
 				>
-					{({ errors, values }) => {
-						console.log(values);
+					{({ errors, values, handleChange: HC }) => {
+						// console.log(values);
 						return (
 							<Form className="w-75 formik-form">
 								<Field placeholder="نام جست و جو" type="text" name="name" />
@@ -113,13 +151,18 @@ export default function Dashboard({}) {
 								</StyledTypeDate>
 								<div id="amount" className="row">
 									<span className="col-2">میزان (روز):</span>
-									<Field className="col-8" type="number" name="amount" />
+									<Field
+										className="col-8"
+										type="number"
+										name="amount"
+										onChange={e => e.target.value > 0 && HC(e)}
+									/>
 								</div>
 								<div id="from" className="row justify-content-evenly">
 									<h6 className="col-12 text-center mt-2 mb-2">انتخاب زمان</h6>
 									<span
 										className={`col-2 text-center ${
-											from === "now" ? "color-red" : ""
+											from === "now" && "red"
 										}`}
 										onClick={() => setFrom("now")}
 									>
@@ -127,7 +170,7 @@ export default function Dashboard({}) {
 									</span>
 									<span
 										className={`col-2 text-center ${
-											from === "custom" ? "color-red" : ""
+											from === "custom" && "red"
 										}`}
 										onClick={() => setFrom("custom")}
 									>
@@ -151,7 +194,7 @@ export default function Dashboard({}) {
 									</h6>
 									<span
 										className={`col-2 flex ${
-											typeDate === "from_date" ? "color-red" : ""
+											typeDate === "from_date" && "red"
 										}`}
 										onClick={() => setTypeDate("from_date")}
 									>
@@ -159,11 +202,34 @@ export default function Dashboard({}) {
 									</span>
 									<span
 										className={`col-2 flex ${
-											typeDate === "to_date" ? "color-red" : ""
+											typeDate === "to_date" && "red"
 										}`}
 										onClick={() => setTypeDate("to_date")}
 									>
 										زمان پایان
+									</span>
+								</div>
+								<div id="time_point" className="row mb-2 justify-content-evenly">
+									<h6 className="col-12 mt-2 flex">time point</h6>
+									<span
+										className={`col-2 flex ${timePoint === "to" && "red"}`}
+										onClick={() => setTimePoint("to")}
+									>
+										to
+									</span>
+									<span
+										className={`col-2 flex ${timePoint === "in" && "red"}`}
+										onClick={() => setTimePoint("in")}
+									>
+										in
+									</span>
+									<span
+										className={`col-2 flex ${
+											timePoint === "after" && "red"
+										}`}
+										onClick={() => setTimePoint("after")}
+									>
+										after
 									</span>
 								</div>
 								<ReactTags
@@ -183,6 +249,7 @@ export default function Dashboard({}) {
 					}}
 				</Formik>
 			</StyledManager>
+			<ShowQueries />
 		</MainLayout>
 	);
 }
@@ -221,7 +288,7 @@ const StyledManager = styled.div(({ typeTime }) => {
 		height: "max-content",
 		padding: "20px 0",
 		color: "#fff",
-		".color-red": {
+		".red": {
 			color: "red",
 		},
 		h6: { fontSize: 18 },
@@ -239,6 +306,12 @@ const StyledManager = styled.div(({ typeTime }) => {
 			".datepicker-input": {},
 		},
 		"#type_date": {
+			...denied,
+			span: {
+				cursor: "pointer",
+			},
+		},
+		"#time_point": {
 			...denied,
 			span: {
 				cursor: "pointer",

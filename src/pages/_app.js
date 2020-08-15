@@ -1,3 +1,4 @@
+// import initExtraPrototypes from "../helpers/extra-prototypes";
 import NextApp from "next/app";
 // Router for NProgress
 import Router from "next/router";

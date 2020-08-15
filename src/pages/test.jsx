@@ -1,3 +1,5 @@
+import $CASH from "../helpers/cash";
+
 export default function Test() {
-	return null;
+	return <hi>Hi</hi>;
 }
