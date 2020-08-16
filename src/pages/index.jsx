@@ -1,15 +1,16 @@
+import { getProfileData, changeTasksFigure } from "../redux/actions/profile";
 import TaskManager, { formikStyles } from "../components/TaskManager";
-import { getProfileData } from "../redux/actions/profile";
 import Task, { StyledCheckbox } from "../components/Task";
+import { useSelector, useDispatch } from "react-redux";
 import { flex, transition } from "../helpers/exports";
-import { useEffect, useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import styled, { useTheme } from "styled-components";
 import PluseWindow from "../components/PluseWindow";
 import { getTasks } from "../redux/actions/tasks";
 import Router, { useRouter } from "next/router";
 import MainLayout from "../layout/Main.lauout";
+import PluseBtn from "../components/PluseBtn";
 import showMsg from "../helpers/alerts/msg";
-import { useSelector } from "react-redux";
 
 // TODO: add trash for deleting tasks
 // TODO: add riminder for every task with a comment
@@ -20,13 +21,13 @@ import { useSelector } from "react-redux";
 function checkAndPassQuery({ target }) {
 	const id = target.getAttribute("target");
 	if (target.nodeName !== "LI" /*and has a valid target att*/ || !id) return;
-	if (Router.query.id === id /* if clicked on opened task just close it */)
-		return Router.replace("/", undefined, { shallow: true });
-	Router.replace(`/?id=${id}`, undefined, { shallow: true });
+	if (Router.query.id === id) {
+		// if clicked on opened task just close it
+		Router.replace("/", undefined, { shallow: true });
+	} else {
+		Router.replace(`/?id=${id}`, undefined, { shallow: true });
+	}
 }
-import { useDispatch } from "react-redux";
-import { changeTasksFigure } from "../redux/actions/profile";
-import PluseBtn from "../components/PluseBtn";
 
 function HeaderComponent(props) {
 	const dispatch = useDispatch();
@@ -54,9 +55,10 @@ export default function Index(props) {
 	const router = useRouter();
 	// functions
 	const getFiltredTasks = () => {
-		if (showNotDones) return tasks.filter(task => !task.is_done);
-		if (false) return [...tasks.filter(t => t.is_favorite), ...tasks.filter(t => !t.is_favorite)];
-		return tasks;
+		var _tasks = [...tasks];
+		if (showNotDones) _tasks = _tasks.filter(task => !task.is_done);
+		// if (false) _tasks = [..._tasks.filter(t => t.is_favorite), ..._tasks.filter(t => !t.is_favorite)];
+		return _tasks;
 	};
 	const onChangeFilter = () => {
 		setShowNotDones(!showNotDones);

@@ -1,4 +1,4 @@
-// import initExtraPrototypes from "../helpers/extra-prototypes";
+// import "../helpers/extra-prototypes";
 import NextApp from "next/app";
 // Router for NProgress
 import Router from "next/router";
@@ -14,6 +14,9 @@ import "../styles/general.scss";
 import { ThemeProvider } from "styled-components";
 import useTasksFigure from "../themes/tasksFigure.theme";
 import styleHelpers from "../helpers/style-helpers";
+// !----
+import "react-modern-calendar-datepicker/lib/DatePicker.css";
+// !----
 
 Router.onRouteChangeStart = () => {
 	NProgress.start();
@@ -64,13 +67,3 @@ export default wrapper.withRedux(App);
 // export function reportWebVitals(metric) {
 // 	console.log(metric);
 // }
-// *--->>>- temporarily
-// import { _USE_API_ } from "../api/index.API";
-// if (process.browser)
-// 	window.delete_kon = mobile => {
-// 		_USE_API_({ describe: "deliting a user" }).Post({
-// 			url: "delete_kon",
-// 			params: { mobile },
-// 		});
-// 	};
-// *--->>>- temporarily

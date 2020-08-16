@@ -33,10 +33,9 @@ export const getProfileData = payload => async (dispatch, getState) => {
 			url: "/profile",
 			params: { fields: JSON.stringify(fields) },
 		});
-		if (APIResponse.data.data.item.people) delete APIResponse.data.data.item.people;
 		dispatch({ type: SET_PROFILE, payload: APIResponse.data.data.item });
 	} catch (err) {
-		throw Error("NEtwork Error>>: ", err);
+		// throw Error("NEtwork Error>>: ", err);
 	}
 	// name,
 	// family,

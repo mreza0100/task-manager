@@ -3,9 +3,6 @@ const { cashedData, functions } = (function init(functions, initialCash) {
 	this.cashedData = initialCash;
 	this.functions = functions;
 	Object.keys(this.functions).forEach(func => (this.cashedData[func] = {}));
-	// functions.forEach(key => {
-	// 	this.cashedData[key] = {};
-	// });
 })(
 	{
 		flex(whatIDontWant) {
