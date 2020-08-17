@@ -1,14 +1,20 @@
-{
-	"list": [
-		{
-			"name": "query_1",
-			"queryID": "2637w48726",
-			"tasks": [{}, {}]
-		},
-		{
-			"name": "query_2",
-			"queryID": "2637w12348726",
-			"tasks": [{}, {}]
-		}
-	]
-}
+[
+	{
+		"list": [
+			{
+				"queryData": {
+					"name": "query_1",
+					"queryID": "2637w48726"
+				},
+				"tasks": [{}, {}]
+			},
+			{
+				"queryData": {
+					"name": "query_1",
+					"queryID": "2637w48726"
+				},
+				"tasks": [{}, {}]
+			}
+		]
+	}
+]

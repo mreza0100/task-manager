@@ -1,4 +1,4 @@
-// import initExtraPrototypes from "../helpers/extra-prototypes";
+import "../helpers/extra-prototypes";
 import NextApp from "next/app";
 // Router for NProgress
 import Router from "next/router";
@@ -13,7 +13,7 @@ import "nprogress/nprogress.css";
 import "../styles/general.scss";
 import { ThemeProvider } from "styled-components";
 import useTasksFigure from "../themes/tasksFigure.theme";
-import styleHelpers from "../helpers/style-helpers";
+// import styleHelpers from "../helpers/style-helpers";
 
 Router.onRouteChangeStart = () => {
 	NProgress.start();
@@ -30,9 +30,9 @@ Router.onRouteChangeError = () => {
 function ForUsingHook({ children }) {
 	const tasksFigure = useTasksFigure();
 	return (
-		<ThemeProvider theme={{ H /*H for helpers*/: styleHelpers }}>
-			<ThemeProvider theme={{ TF /*TF for tasksFigure*/: tasksFigure }}>{children}</ThemeProvider>
-		</ThemeProvider>
+		// <ThemeProvider theme={{ H /*H for helpers*/: styleHelpers }}>
+		<ThemeProvider theme={{ TF /*TF for tasksFigure*/: tasksFigure }}>{children}</ThemeProvider>
+		// </ThemeProvider>
 	);
 }
 
@@ -46,7 +46,6 @@ class App extends NextApp {
 	}
 	render() {
 		const { Component, pageProps } = this.props;
-
 		return (
 			<ForUsingHook>
 				<Component {...pageProps} />

@@ -2,6 +2,7 @@ const { cashedData, functions } = (function init(functions, initialCash) {
 	if (!new.target) return new init(functions, initialCash);
 	this.cashedData = initialCash;
 	this.functions = functions;
+	console.log("in $cash");
 	Object.keys(this.functions).forEach(func => (this.cashedData[func] = {}));
 	// functions.forEach(key => {
 	// 	this.cashedData[key] = {};
