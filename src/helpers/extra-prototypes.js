@@ -1,4 +1,3 @@
-console.log("initing");
 (prototypeData => {
 	prototypeData.forEach(({ target, options, key, value }) => {
 		Object.defineProperty(target, key, {

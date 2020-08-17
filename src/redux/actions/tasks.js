@@ -16,7 +16,7 @@ export const getTasks = payload => async (dispatch, getState) => {
 			dispatch({ type: SET_TASKS, payload });
 		}
 	} catch (err) {
-		console.dir(err);
+		// console.dir(err);
 	}
 };
 

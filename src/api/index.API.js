@@ -1,4 +1,4 @@
-import { getCookie, reloadRouter, isUndefined } from "../helpers/exports";
+import { getCookie, reloadRouter, isUndefined, serverRedirect } from "../helpers/exports";
 import Router from "next/router";
 import Axios from "axios";
 import showMsg from "../helpers/alerts/msg";
@@ -24,6 +24,8 @@ const AC /* as APIConfigs */ = {
 	isPrivetRoute: false,
 	pendingID: false,
 	ignoreStatuses: [],
+	kickOn401: true,
+	logError: false,
 	describe() {
 		for (let i = 0; i < 10; i++) {
 			console.error("<<<<<<<<<<<API need a describe<<<<<<<<<<<");
@@ -32,7 +34,7 @@ const AC /* as APIConfigs */ = {
 	},
 };
 
-var pendingList;
+var pendingList = [];
 
 class API {
 	constructor({
@@ -46,6 +48,8 @@ class API {
 		pendingID,
 		describe,
 		ignoreStatuses,
+		kickOn401,
+		logError,
 	}) {
 		this.req = req ?? AC.req;
 		this.res = res ?? AC.res;
@@ -60,13 +64,14 @@ class API {
 			...configs,
 		});
 		this.ignoreStatuses = ignoreStatuses ?? AC.ignoreStatuses;
+		this.kickOn401 = kickOn401 ?? AC.kickOn401;
+		this.logError = logError ?? AC.logError;
 		if (this.inBrowser) {
-			if (!pendingList) pendingList = [];
 			this.pendingID = pendingID ?? AC.pendingID;
 		} else this.pendingID = false;
 	}
 
-	_debugCenter = ({ axiosMsg, url, params, data, callback }) => {
+	_debugCenter = ({ res, url, params, data, callback }) => {
 		try {
 			const { warn, log, group, groupEnd, dir } = console;
 			const msg = `%c${dash}MSG from debug center->debug : [[${this.debug}]] detailes : [[${this.details}]]${dash}`;
@@ -79,12 +84,12 @@ class API {
 			log("your data ::::::", data);
 			log("has callback ::::::", !!callback);
 			if (!!callback) log("callback ::::::", callback.toString());
-			for (const key in axiosMsg) {
-				if (typeof axiosMsg[key] !== "function" && key !== "isAxiosError")
-					log(`${key} :::::`, axiosMsg[key]);
+			for (const key in res) {
+				if (typeof res[key] !== "function" && key !== "isAxiosError")
+					log(`${key} :::::`, res[key]);
 			}
 			groupEnd();
-			if (this.details) dir(axiosMsg);
+			if (this.details) dir(res);
 		} catch (err) {
 			console.warn(`${dash}INTERNAL ERROR WHILE DIBAGING${dash}`);
 			console.warn(err);
@@ -93,33 +98,33 @@ class API {
 
 	_redirectToLogin() {
 		if (this.inBrowser) return Router.push("/register-progsess/login");
-		this.res.writeHead(302, { Location: "/register-progsess/login" }).end();
+		serverRedirect({ res: this.res, route: "/register-progsess/login" });
 	}
 
 	_getToken() {
 		try {
 			const cookies = this.inBrowser ? document.cookie : this.req.headers.cookie;
 			const token = getCookie({ cookies, key: "token" });
-			if (!token) return this._redirectToLogin();
+			if (!token) {
+				console.log("there was no token >>> calling _redirectToLogin");
+				return this._redirectToLogin();
+			}
 			return token;
 		} catch (err) {
 			return this._redirectToLogin();
 		}
 	}
 
-	_globalMiddleware() {
-		if (this.pendingID) {
-			if (pendingList.includes(this.pendingID)) {
-				pendingList = pendingList.filter(id => id !== this.pendingID);
-			}
+	_afterGetResponse() {
+		if (this.pendingID && pendingList.includes(this.pendingID)) {
+			pendingList = pendingList.filter(id => id !== this.pendingID);
 		}
 	}
 
 	_handleRes = ({ res, url, params, data, callback }) => {
-		this._globalMiddleware();
 		if (this.debug)
 			this._debugCenter({
-				axiosMsg: res,
+				res,
 				url,
 				params,
 				data,
@@ -128,7 +133,6 @@ class API {
 	};
 
 	_handleErr({ err, url, params, data, callback }) {
-		this._globalMiddleware();
 		if (this.inBrowser && !isUndefined(err.response) && this.ignoreStatuses) {
 			if (!this.ignoreStatuses.find(status => status === err.response.status))
 				showMsg(
@@ -140,6 +144,7 @@ class API {
 				);
 		}
 		if (isUndefined(err.response)) {
+			// if err.response was undefined internet is disconnected
 			showMsg(
 				{
 					title: { text: "مشکل شبکه " },
@@ -150,7 +155,7 @@ class API {
 		}
 		if (this.debug)
 			this._debugCenter({
-				axiosMsg: err,
+				res: err,
 				url,
 				params,
 				data,
@@ -160,11 +165,11 @@ class API {
 			const status = err.response.status;
 			if (this.isPrivetRoute) {
 				if (status === 404 && this.inBrowser) return reloadRouter();
-				if (status === 401) return this._redirectToLogin();
+				if (status === 401 && !this.kickOn401) return this._redirectToLogin();
 			}
 			// TODO: deleting token for 401 status
 		} catch (reason) {
-			console.dir(err);
+			if (this.logError) console.dir(err);
 		}
 	}
 
@@ -196,6 +201,7 @@ class API {
 			this.$XHR
 				.request({ method, url, params, data })
 				.then(res => {
+					this._afterGetResponse();
 					this._handleRes({
 						res,
 						url,
@@ -206,6 +212,7 @@ class API {
 					resolve(res);
 				})
 				.catch(err => {
+					this._afterGetResponse();
 					this._handleErr({
 						err,
 						url,
