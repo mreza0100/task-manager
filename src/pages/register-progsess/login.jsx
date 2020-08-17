@@ -25,7 +25,7 @@ const validation = yup.object({
 	password: yup.string().trim().min(8).required(" پسورد چی پس"),
 });
 
-async function handleSubmit(data) {
+export async function handleSubmit(data) {
 	try {
 		const res = await _USE_API_({ describe: "login user", ignoreStatuses: [401] }).Post({
 			url: "login",
