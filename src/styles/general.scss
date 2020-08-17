@@ -16,7 +16,11 @@ body {
 	height: auto;
 	// background-color: #313131;
 	color: black;
-	border-bottom: 1px solid transparent;
+	height: 100%;
+}
+
+#__next {
+	height: 100%;
 }
 
 a {

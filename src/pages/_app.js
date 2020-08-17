@@ -11,7 +11,6 @@ import "nprogress/nprogress.css";
 // general styles include libs font etc...
 import "../styles/general.scss";
 import { ThemeProvider } from "styled-components";
-import useTasksFigure from "../themes/tasksFigure.theme";
 // style helpers in styled components props
 import styleHelpers from "../helpers/style-helpers";
 
@@ -28,12 +27,7 @@ Router.onRouteChangeError = () => {
 // !--->>>
 
 function ForUsingHook({ children }) {
-	const tasksFigure = useTasksFigure();
-	return (
-		<ThemeProvider theme={{ H /*H for helpers*/: styleHelpers }}>
-			<ThemeProvider theme={{ TF /*TF for tasksFigure*/: tasksFigure }}>{children}</ThemeProvider>
-		</ThemeProvider>
-	);
+	return <ThemeProvider theme={styleHelpers}>{children}</ThemeProvider>;
 }
 
 class App extends NextApp {
