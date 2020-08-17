@@ -10,16 +10,14 @@
 		"start": "next start -p 10000"
 	},
 	"dependencies": {
-		"@zeit/next-css": "^1.0.1",
 		"axios": "^0.19.2",
-		"eslint": "^7.5.0",
 		"font-awesome": "^4.7.0",
 		"formik": "^2.1.5",
 		"next": "^9.4.4",
+		"next-images": "^1.4.1",
 		"next-redux-wrapper": "^6.0.2",
 		"nprogress": "^0.2.0",
 		"react": "16.13.1",
-		"react-datepicker2": "^3.3.4",
 		"react-dom": "16.13.1",
 		"react-modern-calendar-datepicker": "^3.1.6",
 		"react-redux": "^7.2.0",

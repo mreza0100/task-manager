@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Header from "./Header";
 
-export default function MainLauout({ children, HeaderComponent }) {
+export default function MainLauout({ children }) {
 	return (
 		<Wrapper>
 			<Header />
@@ -9,10 +9,12 @@ export default function MainLauout({ children, HeaderComponent }) {
 		</Wrapper>
 	);
 }
+
 const Wrapper = styled.div(({ theme: { flex } }) => {
 	return {
-		...flex(["justifyContent"]),
+		...flex(["justifyContent", "alignItems"]),
 		justifyContent: "space-between",
-		height: "100%",
+		alignItems: "initial",
+		minHeight: "100vh",
 	};
 });

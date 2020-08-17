@@ -1,9 +1,10 @@
 @import "./jalali-date-style.min.scss";
 @import "./animations";
 @import "./react-tags";
+@import "./css-reset";
 @import "./calendar";
 @import "./fonts";
-@import "./bs4";
+// @import "./bs4";
 // !------------------
 * {
 	box-sizing: border-box;
@@ -16,10 +17,6 @@ body {
 	height: auto;
 	// background-color: #313131;
 	color: black;
-	height: 100%;
-}
-
-#__next {
 	height: 100%;
 }
 

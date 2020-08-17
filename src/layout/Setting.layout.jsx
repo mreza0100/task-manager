@@ -1,12 +1,12 @@
 import { flex, deleteCookie } from "../helpers/exports";
-import { useSelector } from "react-redux";
-import styled from "styled-components";
-import showMsg from "../helpers/alerts/msg";
-import ask from "../helpers/alerts/ask";
 import Router, { useRouter } from "next/router";
+import showMsg from "../helpers/alerts/msg";
+import { useSelector } from "react-redux";
+import ask from "../helpers/alerts/ask";
+import styled from "styled-components";
+import { useMemo } from "react";
 import Header from "./Header";
 import Link from "next/link";
-import { useMemo } from "react";
 
 function handleLogout() {
 	ask(

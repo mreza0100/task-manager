@@ -26,8 +26,17 @@ function flex(whatIDontWant = []) {
 	return $CACH("flex", whatIDontWant);
 }
 
+const $blue = "#5460FE";
+const $blueTxt = "#6FA0F1";
+const $white = "#FFFFFF";
+const $black = "#54698D";
+
 export default {
 	flex,
 	butyInputs,
 	transition,
+	$blue,
+	$blueTxt,
+	$white,
+	$black,
 };
