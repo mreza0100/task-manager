@@ -60,7 +60,7 @@ const StyledUl = styled.ul(({ theme: { flex, $blue, $white } }) => {
 		"> #top-header": {
 			...flex(),
 			width: "100%",
-			height: "50px",
+			height: "70px",
 			background: $blue,
 			border: "1px solid #DDDFFF",
 		},

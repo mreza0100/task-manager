@@ -30,6 +30,7 @@ const $blue = "#5460FE";
 const $blueTxt = "#6FA0F1";
 const $white = "#FFFFFF";
 const $black = "#54698D";
+const $bolderBlue = "#424DE4";
 
 export default {
 	flex,
@@ -39,4 +40,5 @@ export default {
 	$blueTxt,
 	$white,
 	$black,
+	$bolderBlue,
 };

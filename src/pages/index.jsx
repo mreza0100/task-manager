@@ -4,11 +4,14 @@ import { getTasks } from "../redux/actions/tasks";
 import MainLayout from "../layout/Main.lauout";
 import styled from "styled-components";
 import Task from "../components/Task";
+
 // import TaskManager, { formikStyles } from "../components/TaskManager";
 // import { useState, useEffect, useMemo } from "react";
 // import PluseWindow from "../components/PluseWindow";
 // import Router, { useRouter } from "next/router";
 // import showMsg from "../helpers/alerts/msg";
+
+// TODO: plus
 
 function TaskList() {
 	const tasks = useSelector(({ tasks }) => tasks);
@@ -54,7 +57,7 @@ export default function Index() {
 						</div>
 					</TopContents>
 				</Section>
-				<Section extraStyles={{ marginBottom: 30 }}>
+				<Section extraStyles={{ marginBottom: 20 }}>
 					<PluseTaskBtn>
 						<img src="plus.svg" />
 						<h4>افزودن تسک ...</h4>
@@ -68,8 +71,12 @@ export default function Index() {
 		</MainLayout>
 	);
 }
+Index.getInitialProps = async ({ store: { dispatch }, req, res }) => {
+	await dispatch(getProfileData({ req, res }));
+	await dispatch(getTasks({ req, res }));
+};
 
-const PluseTaskBtn = styled.div(({ theme: { flex, $blue, $white } }) => {
+const PluseTaskBtn = styled.div(({ theme: { flex, $bolderBlue, $white } }) => {
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "flex-start",
@@ -77,10 +84,10 @@ const PluseTaskBtn = styled.div(({ theme: { flex, $blue, $white } }) => {
 		minHeight: "50px",
 		borderRadius: 4,
 		color: $white,
-		backgroundColor: $blue,
+		backgroundColor: $bolderBlue,
 		cursor: "pointer",
 		"> img": {
-			padding: "0 13px",
+			padding: "0 15px",
 		},
 	};
 });
@@ -91,12 +98,15 @@ const TopContents = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
 		justifyContent: "space-between",
 		width: "100%",
 		height: "50px",
+		padding: "15px",
 		"> h1": {
 			...flex(["justifyContent"]),
-			justifyContent: "space-evenly",
 			color: $black,
 			whiteSpace: "nowrap",
 			width: "17%",
+			"> img": {
+				marginLeft: "15px",
+			},
 		},
 		"> div#fields": {
 			...flex(["justifyContent"]),
@@ -149,17 +159,19 @@ const TopContents = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
 
 const Section = styled.section(({ extraStyles }) => {
 	return {
-		width: "93%",
+		width: "100%",
 		height: "max-content",
 		marginBottom: 10,
 		...extraStyles,
 	};
 });
 
-const Aside = styled.aside(props => {
+const Aside = styled.aside(({ theme: { flex, $white } }) => {
 	return {
 		width: "400px",
-		borderRight: "1px red solid",
+		padding: "20px",
+		borderRight: "1px solid #E4EAF0",
+		backgroundColor: $white,
 	};
 });
 
@@ -168,12 +180,8 @@ const Main = styled.main(({ theme: { flex } }) => {
 		...flex(["justifyContent"]),
 		justifyContent: "flex-start",
 		flexDirection: "column",
-		width: "100%",
+		flex: 1,
+		padding: 20,
 		backgroundColor: "#F5F6FA",
 	};
 });
-
-Index.getInitialProps = async ({ store: { dispatch }, req, res }) => {
-	await dispatch(getProfileData({ req, res }));
-	await dispatch(getTasks({ req, res }));
-};

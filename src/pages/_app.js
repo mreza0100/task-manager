@@ -13,6 +13,7 @@ import "../styles/general.scss";
 import { ThemeProvider } from "styled-components";
 // style helpers in styled components props
 import styleHelpers from "../helpers/style-helpers";
+import Head from "next/head";
 
 Router.onRouteChangeStart = () => {
 	NProgress.start();
@@ -26,7 +27,7 @@ Router.onRouteChangeError = () => {
 
 // !--->>>
 
-function ForUsingHook({ children }) {
+function ForUsingHooks({ children }) {
 	return <ThemeProvider theme={styleHelpers}>{children}</ThemeProvider>;
 }
 
@@ -41,9 +42,14 @@ class App extends NextApp {
 	render() {
 		const { Component, pageProps } = this.props;
 		return (
-			<ForUsingHook>
-				<Component {...pageProps} />
-			</ForUsingHook>
+			<>
+				<Head>
+					<link rel="shortcut icon" href="miz-logo.svg" />
+				</Head>
+				<ForUsingHooks>
+					<Component {...pageProps} />
+				</ForUsingHooks>
+			</>
 		);
 	}
 }
