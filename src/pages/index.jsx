@@ -1,5 +1,5 @@
 import { getProfileData } from "../redux/actions/profile";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { getTasks } from "../redux/actions/tasks";
 import MainLayout from "../layout/Main.lauout";
 import styled from "styled-components";
@@ -43,12 +43,10 @@ export default function Index() {
 						<div id="fields">
 							<div>
 								<span>مرتب سازی</span>
-								<img src="down-arrow.svg" />
 								<div className="menu"></div>
 							</div>
 							<div>
 								<span>فیلتر</span>
-								<img src="down-arrow.svg" />
 								<div className="menu">
 									<span>awd</span>
 									<span>awd</span>
@@ -85,7 +83,13 @@ const PluseTaskBtn = styled.div(({ theme: { flex, $bolderBlue, $white } }) => {
 		borderRadius: 4,
 		color: $white,
 		backgroundColor: $bolderBlue,
+		margin: "0",
+		fontSize: "16px",
 		cursor: "pointer",
+		"> h4": {
+			fontSize: "16px",
+			margin: 0,
+		},
 		"> img": {
 			padding: "0 15px",
 		},
@@ -98,14 +102,14 @@ const TopContents = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
 		justifyContent: "space-between",
 		width: "100%",
 		height: "50px",
-		padding: "15px",
 		"> h1": {
 			...flex(["justifyContent"]),
 			color: $black,
 			whiteSpace: "nowrap",
 			width: "17%",
+			fontSize: "16px",
 			"> img": {
-				marginLeft: "15px",
+				padding: "0 15px",
 			},
 		},
 		"> div#fields": {
@@ -113,7 +117,7 @@ const TopContents = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
 			justifyContent: "space-between",
 			width: "30%",
 			"> div": {
-				...flex(["justifyContent"]),
+				...flex(),
 				minWidth: "40%",
 				minHeight: "30px",
 				borderRadius: "4px",
@@ -124,9 +128,7 @@ const TopContents = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
 				position: "relative",
 				padding: "0 10px",
 				cursor: "pointer",
-				"> img": {
-					transition: "all 0.4s",
-				},
+				"> span": { margin: "0 auto 0 auto" },
 				"> div.menu": {
 					position: "absolute",
 					backgroundColor: "red",
@@ -148,11 +150,11 @@ const TopContents = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
 						opacity: 1,
 						pointerEvents: "unset",
 					},
-					img: {
-						transform: "rotate(180deg)",
-					},
 				},
 			},
+		},
+		"> ul": {
+			padding: 0,
 		},
 	};
 });
@@ -181,7 +183,7 @@ const Main = styled.main(({ theme: { flex } }) => {
 		justifyContent: "flex-start",
 		flexDirection: "column",
 		flex: 1,
-		padding: 20,
+		padding: "0 20px",
 		backgroundColor: "#F5F6FA",
 	};
 });

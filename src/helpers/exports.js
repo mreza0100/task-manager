@@ -135,6 +135,10 @@ function getRandomNumber(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function defer(func) {
+	setTimeout(func, 0);
+}
+
 export {
 	$,
 	flex,
@@ -156,4 +160,5 @@ export {
 	getRandomColor,
 	isUndefined,
 	getRandomNumber,
+	defer,
 };

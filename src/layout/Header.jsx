@@ -15,16 +15,10 @@ const menuData = [
 		},
 	},
 	{
-		isComponent: true,
-		jsx: ({ key }) => {
-			return (
-				<Link key={key} href="/setting/profile">
-					<li id="prof-icon">
-						<i className="fa fa-user" />
-					</li>
-				</Link>
-			);
-		},
+		isComponent: false,
+		route: "/setting/profile",
+		id: "prof-icon",
+		className: "fa fa-user",
 	},
 ];
 
@@ -35,19 +29,32 @@ export default function Header({}) {
 		return (
 			<StyledHeader>
 				<StyledUl>
-					{menuData.map(({ route, label, isComponent, jsx }, idx) => {
-						if (isComponent) return jsx({ key: idx });
-						return (
-							<Link href={route} key={route}>
-								<StyledLi selectedMe={url === route}>{label}</StyledLi>
-							</Link>
-						);
-					})}
+					{menuData.map(
+						({ route, label, isComponent, id, svg, className, jsx }, idx) => {
+							if (isComponent) return jsx({ key: idx });
+							return (
+								<Link href={route || router.pathname} key={route}>
+									<StyledLi
+										selectedMe={url === route}
+										id={id}
+										className={className}
+									>
+										<img src={svg} />
+										{label && label}
+									</StyledLi>
+								</Link>
+							);
+						}
+					)}
 				</StyledUl>
 			</StyledHeader>
 		);
 	}, [url]);
 }
+
+const StyledLi = styled.li(props => {
+	return { cursor: "pointer" };
+});
 
 const StyledUl = styled.ul(({ theme: { flex, $blue, $white } }) => {
 	return {
@@ -57,6 +64,7 @@ const StyledUl = styled.ul(({ theme: { flex, $blue, $white } }) => {
 		backgroundColor: $white,
 		width: "100%",
 		height: "100vh",
+		margin: 0,
 		"> #top-header": {
 			...flex(),
 			width: "100%",

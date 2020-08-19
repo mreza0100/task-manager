@@ -8,7 +8,6 @@ async function handleSubmit(color, taskID) {
 		await _USE_API_({
 			isPrivetRoute: true,
 			describe: "change task color",
-			debug: true,
 		}).Put({
 			data: { color, id: taskID },
 			url: "/tasks",
@@ -44,11 +43,14 @@ const Picker = styled.input(props => {
 		padding: 0,
 		border: "0 !important",
 		outline: "none !important",
-		boxShadow: "0 !important",
+		boxShadow: "0 0 0 0 !important",
 		width: "45px",
 		height: "22px",
 		transform: "rotate(90deg)",
 		backgroundColor: "transparent",
+		position: "relative",
+		left: "13px",
+		cursor: "pointer",
 		"&:focus": {
 			boxShadow: "none",
 		},

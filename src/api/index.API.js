@@ -226,10 +226,14 @@ class API {
 		});
 	}
 
-	Get = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "get");
-	Post = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "post");
-	Put = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "put");
-	Delete = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "delete");
+	Get = ({ url, params, data, callback } = {}) =>
+		this.request({ url, params, data, callback }, "get");
+	Post = ({ url, params, data, callback } = {}) =>
+		this.request({ url, params, data, callback }, "post");
+	Put = ({ url, params, data, callback } = {}) =>
+		this.request({ url, params, data, callback }, "put");
+	Delete = ({ url, params, data, callback } = {}) =>
+		this.request({ url, params, data, callback }, "delete");
 }
 
 // ? INITING HOOK
@@ -246,6 +250,8 @@ function _USE_API_({
 	pendingID,
 	describe,
 	ignoreStatuses,
+	kickOn401,
+	logError,
 } = {}) {
 	return new API({
 		baseURL,
@@ -259,6 +265,8 @@ function _USE_API_({
 		pendingID,
 		describe,
 		ignoreStatuses,
+		kickOn401,
+		logError,
 	});
 }
 

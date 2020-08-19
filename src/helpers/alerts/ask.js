@@ -1,5 +1,5 @@
 import create from "./elementFactory";
-import { flex } from "../exports";
+import { flex, defer } from "../exports";
 
 const wrapperStyles = ({ extraStyles }) => {
 	var width = window.innerWidth < 500 ? "90%" : "40%";
@@ -55,8 +55,20 @@ export default function ask(
 			nodeName: tNodeName,
 			props: tProps,
 		},
-		btn1: { text: b1Text, attrs: b1attrs, styles: b1Styles, childs: b1Cilds, props: b1Props } = {},
-		btn2: { text: b2Text, attrs: b2attrs, styles: b2Styles, childs: b2Cilds, props: b2Props } = {},
+		btn1: {
+			text: b1Text,
+			attrs: b1attrs,
+			styles: b1Styles,
+			childs: b1Cilds,
+			props: b1Props,
+		} = {},
+		btn2: {
+			text: b2Text,
+			attrs: b2attrs,
+			styles: b2Styles,
+			childs: b2Cilds,
+			props: b2Props,
+		} = {},
 		html,
 	},
 	{ timeout, extraStyles = {}, mainAttrs, status } = {}
@@ -138,10 +150,11 @@ export default function ask(
 		});
 		if (status !== "none") askWindow.classList.add(`bg-${status ?? "info"}`);
 		document.body.appendChild(askWindow);
-		setTimeout(() => {
+		defer(() => {
+			// !!!!!!!!
 			askWindow.style.opacity = 1;
 			window.addEventListener("click", onClickWindow);
-		}, 0);
+		});
 
 		if (timeout)
 			setTimeout(() => {

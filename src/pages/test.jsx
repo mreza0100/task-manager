@@ -1,5 +1,12 @@
-import { SketchPicker, CustomPicker } from "react-color";
+import styled from "styled-components";
 
 export default function ColorPicker() {
-	return <div>22</div>;
+	return <Span></Span>;
 }
+const Span = styled.span(props => {
+	return {
+		"background-color": "red",
+		"-webkit-mask-image": "url(icon.svg)",
+		"mask-image": "url(icon.svg)",
+	};
+});

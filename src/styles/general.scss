@@ -1,9 +1,9 @@
 @import "./animations";
 @import "./react-tags";
-@import "./css-reset";
+// @import "./css-reset";
 @import "./calendar";
 @import "./fonts";
-// @import "./bs4";
+@import "./bs4";
 // !------------------
 * {
 	box-sizing: border-box;
@@ -19,6 +19,10 @@ body {
 	height: 100%;
 }
 
+h1 {
+	margin: 0;
+}
+
 a {
 	text-decoration: none;
 	color: unset;
@@ -29,6 +33,10 @@ a {
 	height: 1px;
 	background: #aca4a4;
 	margin: 12px 0;
+}
+
+ul {
+	padding: 0;
 }
 
 li {
@@ -84,5 +92,5 @@ i.fa-clone {
 }
 
 #making-color {
-	color: #7be624;
+	color: #f5f6fa;
 }

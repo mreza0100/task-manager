@@ -19,6 +19,7 @@ const wrapperStyles = ({ time, extraStyles = {}, top }) => ({
 	animationFillMode: "forwards",
 	animationDirection: "forward",
 	animationDelay: 0,
+	userSelect: "none",
 	...extraStyles,
 });
 
@@ -45,17 +46,17 @@ export default function showMsg(
 		} = {},
 		html,
 	} = {},
-	{ time = 6, extraStyles = {}, mainAttrs, status, pendingID } = {},
+	{ time = 6, extraStyles = {}, mainAttrs, status = "info", pendingID = false } = {},
 	callback
 ) {
 	// TODO: pendingList not working currectly
-	if (!process.browser) return void 0;
+	if (!process.browser) return;
 	const top = inPlay * 70 + "px";
-	inPlay++;
 	if (pendingID) {
-		if (pendingList.find(ID => ID === pendingID)) return void 0;
-		else pendingList.push(pendingID);
+		if (pendingList.find(ID => ID === pendingID)) return;
+		pendingList.push(pendingID);
 	}
+	inPlay++;
 
 	var title, body;
 	if (tText)
@@ -82,7 +83,7 @@ export default function showMsg(
 		childs: [title, body, ...(Array.isArray(html) ? html : [html])],
 	});
 
-	if (status !== "none") msg.classList.add(`bg-${status ?? "info"}`);
+	if (status !== "none") msg.classList.add(`bg-${status}`);
 	document.body.appendChild(msg);
 	setTimeout(() => {
 		inPlay--;
