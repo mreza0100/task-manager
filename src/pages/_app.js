@@ -14,7 +14,6 @@ import "../styles/general.scss";
 import { ThemeProvider } from "styled-components";
 // style helpers in styled components props
 import styleHelpers from "../helpers/style-helpers";
-import "../helpers/extra-prototypes";
 
 Router.onRouteChangeStart = () => {
 	NProgress.start();
