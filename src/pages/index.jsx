@@ -1,71 +1,166 @@
 import { getProfileData } from "../redux/actions/profile";
-import { useSelector } from "react-redux";
+import useFiltringTasks from "../hooks/filtringTasks";
+import useTaskSelector from "../hooks/taskSelector";
+import TaskManager from "../components/TaskManager";
+import { togglePlus } from "../redux/actions/plus";
 import { getTasks } from "../redux/actions/tasks";
 import MainLayout from "../layout/Main.lauout";
+import { useState, useMemo } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import Task from "../components/Task";
 
-// import TaskManager, { formikStyles } from "../components/TaskManager";
-// import { useState, useEffect, useMemo } from "react";
-// import PluseWindow from "../components/PluseWindow";
-// import Router, { useRouter } from "next/router";
-// import showMsg from "../helpers/alerts/msg";
+const sortsData = (SA, sorts) => [
+	{
+		click: SA.isFavorites_top,
+		me: sorts.isFavorites_top,
+		label: "ستاره دار ها اول باشند",
+	},
+	{
+		click: SA.isDone_down,
+		me: sorts.isDone_down,
+		label: "تمام شده ها اخر باشند",
+	},
+	{
+		click: SA.reverse,
+		me: sorts.reverse,
+		label: "برعکس کردن همه",
+	},
+];
 
-// TODO: plus
-
-function TaskList() {
-	const tasks = useSelector(({ tasks }) => tasks);
-	const getFiltredTasks = () => {
-		var _tasks = [...tasks];
-		// if (showNotDones) _tasks = _tasks.filter(task => !task.is_done);
-		// if (false) _tasks = [..._tasks.filter(t => t.is_favorite), ..._tasks.filter(t => !t.is_favorite)];
-		return _tasks;
-	};
-	return (
-		<ul>
-			{getFiltredTasks().map(task => {
-				return <Task taskData={task} key={task.id} />;
-			})}
-		</ul>
-	);
-}
+const filterData = (FA, filters) => [
+	{
+		click: FA.justUnfinished,
+		me: filters.justUnfinished,
+		label: "فقط تمام نشده ها را نشان بده",
+	},
+	{
+		click: FA.justfinished,
+		me: filters.justfinished,
+		label: "فقط تمام شده ها را نشان بده",
+	},
+	{
+		click: FA.justFavorites,
+		me: filters.justFavorites,
+		label: "فقط ستاره دارها را نشان بده",
+	},
+];
 
 export default function Index() {
+	const [filters, setFilters] = useState({
+		justUnfinished: false,
+		justFavorites: false,
+		justfinished: false,
+	});
+	const [sorts, setSorts] = useState({ isFavorites_top: false, isDone_down: false, reverse: false });
+	const dispatch = useDispatch();
+
+	const filtredTasks = useFiltringTasks({ filters, sorts });
+
+	useTaskSelector({ tasks: filtredTasks, getTaskIDFromRouter: true, alertOnNotFound: false });
+
+	const FA = {
+		// FA for filterActions
+		justUnfinished() {
+			const newFilters = { ...filters };
+			newFilters.justUnfinished = !newFilters.justUnfinished;
+			setFilters(newFilters);
+		},
+		justfinished() {
+			const newFilters = { ...filters };
+			newFilters.justfinished = !newFilters.justfinished;
+			setFilters(newFilters);
+		},
+		justFavorites() {
+			const newFilters = { ...filters };
+			newFilters.justFavorites = !newFilters.justFavorites;
+			setFilters(newFilters);
+		},
+	};
+	const SA = {
+		// SA for sortActions
+		isFavorites_top() {
+			const newSorts = { ...sorts };
+			newSorts.isFavorites_top = !newSorts.isFavorites_top;
+			setSorts(newSorts);
+		},
+		isDone_down() {
+			const newSorts = { ...sorts };
+			newSorts.isDone_down = !newSorts.isDone_down;
+			setSorts(newSorts);
+		},
+		reverse() {
+			const newSorts = { ...sorts };
+			newSorts.reverse = !newSorts.reverse;
+			setSorts(newSorts);
+		},
+	};
+
 	return (
 		<MainLayout>
 			<Main>
-				<Section>
-					<TopContents>
-						<h1>
-							<img src="miz-logo.svg" />
-							<span>پروژه میز - تسک ها</span>
-						</h1>
-						<div id="fields">
-							<div>
-								<span>مرتب سازی</span>
-								<div className="menu"></div>
-							</div>
-							<div>
-								<span>فیلتر</span>
-								<div className="menu">
-									<span>awd</span>
-									<span>awd</span>
+				{useMemo(
+					() => (
+						<Section>
+							<TopContents>
+								<h1>
+									<img src="miz-logo.svg" />
+									<span>پروژه میز - تسک ها</span>
+								</h1>
+								<div id="fields">
+									<div>
+										<span>مرتب سازی</span>
+										<div className="menu">
+											{sortsData(SA, sorts).map(
+												({ me, click, label }, idx) => (
+													<MenuItem
+														key={idx}
+														selectedMe={me}
+														onClick={click}
+													>
+														{label}
+													</MenuItem>
+												)
+											)}
+										</div>
+									</div>
+									<div>
+										<span>فیلتر</span>
+										<div className="menu">
+											{filterData(FA, filters).map(
+												({ me, click, label }, idx) => (
+													<MenuItem
+														key={idx}
+														selectedMe={me}
+														onClick={click}
+													>
+														{label}
+													</MenuItem>
+												)
+											)}
+										</div>
+									</div>
 								</div>
-							</div>
-						</div>
-					</TopContents>
-				</Section>
-				<Section extraStyles={{ marginBottom: 20 }}>
-					<PluseTaskBtn>
+							</TopContents>
+						</Section>
+					),
+					[filters, sorts]
+				)}
+				<Section>
+					<PlusTaskBtn onClick={() => dispatch(togglePlus())}>
 						<img src="plus.svg" />
 						<h4>افزودن تسک ...</h4>
-					</PluseTaskBtn>
+					</PlusTaskBtn>
 				</Section>
 				<Section>
-					<TaskList />
+					<ul>
+						{filtredTasks.map((task, idx) => {
+							return <Task taskData={task} key={task.id} />;
+						})}
+					</ul>
 				</Section>
 			</Main>
-			<Aside></Aside>
+			<TaskManager />
 		</MainLayout>
 	);
 }
@@ -74,7 +169,17 @@ Index.getInitialProps = async ({ store: { dispatch }, req, res }) => {
 	await dispatch(getTasks({ req, res }));
 };
 
-const PluseTaskBtn = styled.div(({ theme: { flex, $bolderBlue, $white } }) => {
+const MenuItem = styled.span(({ selectedMe }) => {
+	return {
+		padding: "10px 0",
+		userSelect: "none",
+		color: selectedMe ? "red" : "black",
+		fontSize: "10px",
+		whiteSpace: "nowrap",
+	};
+});
+
+const PlusTaskBtn = styled.div(({ theme: { flex, $bolderBlue, $white } }) => {
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "flex-start",
@@ -101,7 +206,7 @@ const TopContents = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
 		...flex(["justifyContent"]),
 		justifyContent: "space-between",
 		width: "100%",
-		height: "50px",
+		height: "70px",
 		"> h1": {
 			...flex(["justifyContent"]),
 			color: $black,
@@ -121,21 +226,20 @@ const TopContents = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
 				minWidth: "40%",
 				minHeight: "30px",
 				borderRadius: "4px",
-				justifyContent: "space-between",
 				color: $blueTxt,
 				fontSize: "12px",
 				backgroundColor: "rgba(111, 160, 241, 0.15)",
 				position: "relative",
 				padding: "0 10px",
 				cursor: "pointer",
-				"> span": { margin: "0 auto 0 auto" },
 				"> div.menu": {
 					position: "absolute",
-					backgroundColor: "red",
+					padding: "10px 0",
+					backgroundColor: "#FFF",
 					overflow: "hidden",
 					top: 30,
-					right: 0,
-					left: 0,
+					right: -10,
+					left: -10,
 					...flex(["justifyContent"]),
 					justifyContent: "space-evenly",
 					flexDirection: "column",
@@ -163,17 +267,8 @@ const Section = styled.section(({ extraStyles }) => {
 	return {
 		width: "100%",
 		height: "max-content",
-		marginBottom: 10,
+		marginBottom: 20,
 		...extraStyles,
-	};
-});
-
-const Aside = styled.aside(({ theme: { flex, $white } }) => {
-	return {
-		width: "400px",
-		padding: "20px",
-		borderRight: "1px solid #E4EAF0",
-		backgroundColor: $white,
 	};
 });
 

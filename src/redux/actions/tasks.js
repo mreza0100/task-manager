@@ -16,7 +16,7 @@ export const getTasks = payload => async (dispatch, getState) => {
 			dispatch({ type: SET_TASKS, payload });
 		}
 	} catch (err) {
-		// console.dir(err);
+		throw Error("NEtwork Error>>: ", err);
 	}
 };
 
@@ -51,11 +51,6 @@ export const getOneAndOverwrite = payload => async (dispatch, getState) => {
 	} catch (err) {
 		console.dir(err);
 	}
-};
-
-export const getOneFromState = payload => (dispatch, getState) => {
-	const { taskID } = payload;
-	return getState().tasks.find(task => task.id === taskID);
 };
 
 export const getOneTask = payload => async (dispatch, getState) => {

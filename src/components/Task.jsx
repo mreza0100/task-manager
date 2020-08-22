@@ -1,41 +1,34 @@
-import { copyToClipboard } from "../helpers/exports";
 import { _USE_API_ } from "../api/index.API";
-import showMsg from "../helpers/alerts/msg";
+import { useRouter } from "next/router";
 import ColorPicker from "./ColorPicker";
 import styled from "styled-components";
 import CheckBox from "./CheckBox";
+import CopyBtn from "./CopyBtn";
 import Star from "./Star";
-
-function handleCopy(taskID) {
-	if (copyToClipboard(`${location.origin}/?id=${taskID}`)) {
-		showMsg(
-			{ title: { text: "با موفقیت کپی شد", nodeName: "h6" } },
-			{ time: 3, status: "success", pendingID: `copy-${taskID}` }
-		);
-	} else {
-		showMsg(
-			{ title: { text: "مرورگر شما برای این کار قدیمی است" } },
-			{ time: 5, status: "warning" }
-		);
-	}
-}
 
 export default function Task({ taskData }) {
 	const { id: taskID, title, color, is_done, is_favorite, tags } = taskData;
+	const router = useRouter();
+	const routerID = router.query.id;
+	const selectedMe = routerID === taskID;
+	const checkPassQuery = ({ target }) => {
+		if (!target.classList.contains("open")) return;
+		if (selectedMe) return router.push("/", undefined, { shallow: true });
+		router.push(`/?id=${taskID}`, undefined, { shallow: true });
+	};
+
 	return (
-		<TaskWrapper>
-			<div className="right-hand">
+		<TaskWrapper onClick={checkPassQuery} className="open" selectedMe={selectedMe}>
+			<div className="right-hand open">
 				<ColorPicker color={color} taskID={taskID} />
-				<Title isDone={is_done}>{title}</Title>
+				<Title isDone={is_done} className="open">
+					{title}
+				</Title>
 				{tags[0] && <p>{tags[0]}</p>}
 				{tags[1] && <p>{tags[1]}</p>}
-				<i
-					className="fa fa-clone"
-					onClick={() => handleCopy(taskID)}
-					title="کپی URL تسک"
-				/>
+				<CopyBtn taskID={taskID} />
 			</div>
-			<div className="left-hand">
+			<div className="left-hand open">
 				<Star isFavorite={is_favorite} taskID={taskID} />
 				<CheckBox isDone={is_done} taskID={taskID} />
 			</div>
@@ -43,7 +36,7 @@ export default function Task({ taskData }) {
 	);
 }
 
-const TaskWrapper = styled.li(({ theme: { flex, $blue, $blueTxt, $white } }) => {
+const TaskWrapper = styled.li(({ theme: { flex, $blue, $blueTxt, $white }, selectedMe }) => {
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "space-between",
@@ -54,6 +47,10 @@ const TaskWrapper = styled.li(({ theme: { flex, $blue, $blueTxt, $white } }) => 
 		borderRadius: "4px",
 		padding: 5,
 		marginBottom: 10,
+		border: selectedMe ? "2px solid #5460FE" : "unset",
+		cursor: "pointer",
+		transition: "all 0.2s",
+		"&:hover": {},
 		"> div.right-hand": {
 			height: "100%",
 			...flex(["justifyContent"]),

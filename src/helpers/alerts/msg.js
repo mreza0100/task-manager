@@ -9,7 +9,7 @@ const wrapperStyles = ({ time, extraStyles = {}, top }) => ({
 	justifyContent: "space-evenly",
 	alignItems: "flex-start",
 	borderRadius: "5px",
-	position: "absolute",
+	position: "fixed",
 	top,
 	right: "-30%",
 	animationName: "msg",
@@ -51,7 +51,7 @@ export default function showMsg(
 ) {
 	// TODO: pendingList not working currectly
 	if (!process.browser) return;
-	const top = inPlay * 70 + "px";
+	const top = inPlay * 70 + 2 + "px";
 	if (pendingID) {
 		if (pendingList.find(ID => ID === pendingID)) return;
 		pendingList.push(pendingID);

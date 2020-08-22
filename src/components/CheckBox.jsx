@@ -29,13 +29,13 @@ export default function CheckBox({ isDone, taskID }) {
 	};
 
 	return (
-		<CheckBox_styled onClick={handleSubmit} selected={isDone}>
+		<StyledCheckBox onClick={handleSubmit} selected={isDone}>
 			<i className="fa fa-check" />
-		</CheckBox_styled>
+		</StyledCheckBox>
 	);
 }
 
-const CheckBox_styled = styled.div(({ theme: { flex, $bolderBlue, $white }, selected }) => {
+const StyledCheckBox = styled.div(({ theme: { flex, $bolderBlue, $white }, selected }) => {
 	return {
 		...flex(),
 		width: "18px",

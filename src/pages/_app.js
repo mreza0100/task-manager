@@ -1,4 +1,5 @@
 import NextApp from "next/app";
+import Head from "next/head";
 // Router for NProgress
 import Router from "next/router";
 // NProgress
@@ -13,7 +14,7 @@ import "../styles/general.scss";
 import { ThemeProvider } from "styled-components";
 // style helpers in styled components props
 import styleHelpers from "../helpers/style-helpers";
-import Head from "next/head";
+import "../helpers/extra-prototypes";
 
 Router.onRouteChangeStart = () => {
 	NProgress.start();

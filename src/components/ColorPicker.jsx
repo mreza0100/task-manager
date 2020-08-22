@@ -1,5 +1,4 @@
 import { _USE_API_ } from "../api/index.API";
-import showMsg from "../helpers/alerts/msg";
 import styled from "styled-components";
 import { useState } from "react";
 
@@ -13,14 +12,7 @@ async function handleSubmit(color, taskID) {
 			url: "/tasks",
 		});
 	} catch (err) {
-		console.log(err);
-		showMsg(
-			{
-				title: { text: "مشکل شبکه" },
-				body: { text: "درخواست انجام نشد" },
-			},
-			{ status: "danger" }
-		);
+		console.dir(err);
 	}
 }
 
@@ -44,13 +36,26 @@ const Picker = styled.input(props => {
 		border: "0 !important",
 		outline: "none !important",
 		boxShadow: "0 0 0 0 !important",
-		width: "45px",
-		height: "22px",
+		width: "40px",
+		height: "16px",
 		transform: "rotate(90deg)",
 		backgroundColor: "transparent",
 		position: "relative",
 		left: "13px",
 		cursor: "pointer",
+		"&::-webkit-color-swatch-wrapper": {
+			padding: 0,
+		},
+		"&::-webkit-color-swatch": {
+			border: "none",
+		},
+		"&::-moz-color-swatch": {
+			border: "none",
+		},
+		"&::-moz-focus-inner": {
+			border: "none",
+			padding: 0,
+		},
 		"&:focus": {
 			boxShadow: "none",
 		},

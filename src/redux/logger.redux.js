@@ -2,10 +2,9 @@ import { HYDRATE } from "next-redux-wrapper";
 import { createLogger } from "redux-logger";
 import * as types from "./type";
 
-const allowTypesForLog = { ...types };
-const deniedTypesForLog = {};
-const debug = false;
-if (debug) {
+export default function getLogger() {
+	const allowTypesForLog = { ...types };
+	const deniedTypesForLog = {};
 	const colors = {
 		action: () => "#2aaf99f3",
 		prevState: () => "#e20ebf",
@@ -24,16 +23,10 @@ if (debug) {
 		return true;
 	};
 
-	var logger = createLogger({
+	return createLogger({
 		predicate,
 		collapsed,
 		colors,
 		diff,
 	});
-} else {
-	var logger = store => next => action => {
-		// mock middleware do nothing
-		return next(action);
-	};
 }
-export default logger;
