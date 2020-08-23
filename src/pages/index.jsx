@@ -9,6 +9,7 @@ import { useState, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import Task from "../components/Task";
+import PluseWindow from "../components/PluseWindow";
 
 const sortsData = (SA, sorts) => [
 	{
@@ -57,7 +58,9 @@ export default function Index() {
 
 	const filtredTasks = useFiltringTasks({ filters, sorts });
 
-	useTaskSelector({ tasks: filtredTasks, getTaskIDFromRouter: true, alertOnNotFound: false });
+	const taskSelector = useTaskSelector({ tasks: filtredTasks });
+
+	useTaskSelector({ getTaskIDFromRouter: true, alertOnNotFound: false });
 
 	const FA = {
 		// FA for filterActions
@@ -99,14 +102,14 @@ export default function Index() {
 	return (
 		<MainLayout>
 			<Main>
-				{useMemo(
-					() => (
-						<Section>
-							<TopContents>
-								<h1>
-									<img src="miz-logo.svg" />
-									<span>پروژه میز - تسک ها</span>
-								</h1>
+				<Section>
+					<TopContents>
+						<h1>
+							<img src="miz-logo.svg" />
+							<span>پروژه میز - تسک ها</span>
+						</h1>
+						{useMemo(
+							() => (
 								<div id="fields">
 									<div>
 										<span>مرتب سازی</span>
@@ -141,11 +144,11 @@ export default function Index() {
 										</div>
 									</div>
 								</div>
-							</TopContents>
-						</Section>
-					),
-					[filters, sorts]
-				)}
+							),
+							[filters, sorts]
+						)}
+					</TopContents>
+				</Section>
 				<Section>
 					<PlusTaskBtn onClick={() => dispatch(togglePlus())}>
 						<img src="plus.svg" />
@@ -154,13 +157,14 @@ export default function Index() {
 				</Section>
 				<Section>
 					<ul>
-						{filtredTasks.map((task, idx) => {
+						{filtredTasks.map(task => {
 							return <Task taskData={task} key={task.id} />;
 						})}
 					</ul>
 				</Section>
 			</Main>
 			<TaskManager />
+			<PluseWindow />
 		</MainLayout>
 	);
 }

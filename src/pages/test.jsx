@@ -15,3 +15,6 @@
 // }, []);
 
 // return <Calendar value={selectedDay} onChange={setSelectedDay} shouldHighlightWeekends />;
+export default function Test() {
+	return null;
+}

@@ -17,14 +17,7 @@ export default function Star({ isFavorite, taskID }) {
 				url: "/tasks",
 			});
 		} catch (err) {
-			console.log(err);
-			showMsg(
-				{
-					title: { text: "مشکل شبکه" },
-					body: { text: "درخواست انجام نشد" },
-				},
-				{ status: "danger" }
-			);
+			console.dir(err);
 			dispatch(editTask({ newTask: { id: taskID, is_favorite: isFavorite } }));
 		}
 	};

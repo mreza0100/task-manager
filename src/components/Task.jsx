@@ -80,7 +80,7 @@ const TaskWrapper = styled.li(({ theme: { flex, $blue, $blueTxt, $white }, selec
 		},
 	};
 });
-const Title = styled.span(({ theme: { flex, $black }, isDone }) => {
+export const Title = styled.span(({ theme: { flex, $black }, isDone }) => {
 	return {
 		color: $black,
 		textDecoration: isDone ? "line-through" : "unset",

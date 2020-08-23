@@ -2,7 +2,8 @@ import useTaskSelector from "./taskSelector";
 import { useMemo } from "react";
 
 export default function useFiltringTasks({ filters, sorts }) {
-	var tasks = useTaskSelector();
+	const taskSelector = useTaskSelector();
+	var tasks = taskSelector();
 
 	return useMemo(() => {
 		if (filters.justfinished) tasks = tasks.filter(task => task.is_done);

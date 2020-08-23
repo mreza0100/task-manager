@@ -1,14 +1,11 @@
-import { transition, flex, prevEnter, changeDateFormat, tagObjToArr, getRandomColor } from "../helpers/exports";
-import { StyledDatePickers, validation } from "./TaskManager";
-import { togglePluse } from "../redux/actions/pluse";
+import { transition, flex, prevEnter, changeDateFormat, tagObjToArr } from "../helpers/exports";
+import { togglePlus } from "../redux/actions/plus";
 import { getOneTask } from "../redux/actions/tasks";
 import ReactTags from "react-tag-autocomplete";
-import PluseBtn from "../components/PluseBtn";
 import { _USE_API_ } from "../api/index.API";
-import { formikStyles } from "./TaskManager";
 import { Formik, Form, Field } from "formik";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import moment from "moment-jalaali";
 import DatePicker from "../proxy";
@@ -33,7 +30,7 @@ async function handleSubmit(data, { dispatch, setSubmitting }) {
 		});
 }
 
-export default function PluseWindow({ hasPluseBtn }) {
+export default function PluseWindow() {
 	const [firstDate, setFirstDate] = useState(moment());
 	const [secondDate, setSecDate] = useState(moment());
 	const [tags, setTags] = useState([]);
@@ -50,83 +47,111 @@ export default function PluseWindow({ hasPluseBtn }) {
 		};
 	}, []);
 
+	const isPlusMode = useSelector(state => state.isPlusMode);
+
 	return (
-		<StyledTaskManager>
-			{hasPluseBtn && <PluseBtn extraClass="align-self-start mr-4" />}
-			<Formik
-				enableReinitialize
-				validationSchema={validation}
-				initialValues={{
-					title: "a",
-					description: "",
-					color: "#454F4F",
-				}}
-				onSubmit={({ title, color, description }, { setSubmitting }) => {
-					const sortedData = {
-						title,
-						color,
-						description,
-						tags: tagObjToArr(tags),
-						from_date: changeDateFormat(firstDate),
-						to_date: changeDateFormat(secondDate),
-					};
-					handleSubmit(sortedData, { dispatch, setSubmitting });
-				}}
-			>
-				{({ isSubmitting }) => (
-					<Form className="container formik-form" onKeyDown={prevEnter}>
-						<div className="title-color col-md-12 row">
+		<TransitonWrapper visible={isPlusMode}>
+			<StyledTaskManager>
+				<Formik
+					enableReinitialize
+					// validationSchema={}
+					initialValues={{
+						title: "a",
+						description: "",
+						color: "#454F4F",
+					}}
+					onSubmit={({ title, color, description }, { setSubmitting }) => {
+						const sortedData = {
+							title,
+							color,
+							description,
+							tags: tagObjToArr(tags),
+							from_date: changeDateFormat(firstDate),
+							to_date: changeDateFormat(secondDate),
+						};
+						handleSubmit(sortedData, { dispatch, setSubmitting });
+					}}
+				>
+					{({ isSubmitting }) => (
+						<Form className="container formik-form" onKeyDown={prevEnter}>
+							<div className="title-color col-md-12 row">
+								<Field
+									type="text"
+									placeholder="سر تیتر"
+									name="title"
+									className="col-11"
+								/>
+								<Field type="color" name="color" className="col-1" />
+							</div>
 							<Field
-								type="text"
-								placeholder="سر تیتر"
-								name="title"
-								className="col-11"
+								as="textarea"
+								name="description"
+								placeholder="توضیحات"
+								rows="4"
 							/>
-							<Field type="color" name="color" className="col-1" />
-						</div>
-						<Field as="textarea" name="description" placeholder="توضیحات" rows="4" />
-						<StyledDatePickers className="col-12">
-							<div>
-								<span>از تاریخ:</span>
-								<DatePicker
-									className="d-block m-auto w-100 cursor-pointer"
-									isGregorian={false}
-									onChange={val => setFirstDate(val)}
-									value={firstDate}
-								/>
-							</div>
-							<div>
-								<span>تا تاریخ:</span>
-								<DatePicker
-									className="d-block m-auto w-100 cursor-pointer"
-									isGregorian={false}
-									onChange={val => setSecDate(val)}
-									value={secondDate}
-								/>
-							</div>
-						</StyledDatePickers>
-						<ReactTags
-							tags={tags}
-							onAddition={handleAddition}
-							onDelete={handleDelete}
-							placeholderText="اضافه کردن تگ(با کلید Enter)"
-							minQueryLength={1}
-							autoresize={false}
-							allowNew
-						/>
-						<button
-							type="submit"
-							className="btn btn-primary align-self-end pr-5 pl-5"
-							disabled={isSubmitting}
-						>
-							ثبت
-						</button>
-					</Form>
-				)}
-			</Formik>
-		</StyledTaskManager>
+							<StyledDatePickers className="col-12">
+								<div>
+									<span>از تاریخ:</span>
+									<DatePicker
+										className="d-block m-auto w-100 cursor-pointer"
+										isGregorian={false}
+										onChange={val => setFirstDate(val)}
+										value={firstDate}
+									/>
+								</div>
+								<div>
+									<span>تا تاریخ:</span>
+									<DatePicker
+										className="d-block m-auto w-100 cursor-pointer"
+										isGregorian={false}
+										onChange={val => setSecDate(val)}
+										value={secondDate}
+									/>
+								</div>
+							</StyledDatePickers>
+							<ReactTags
+								tags={tags}
+								onAddition={handleAddition}
+								onDelete={handleDelete}
+								placeholderText="اضافه کردن تگ(با کلید Enter)"
+								minQueryLength={1}
+								autoresize={false}
+								allowNew
+							/>
+							<button
+								type="submit"
+								className="btn btn-primary align-self-end pr-5 pl-5"
+								disabled={isSubmitting}
+							>
+								ثبت
+							</button>
+						</Form>
+					)}
+				</Formik>
+			</StyledTaskManager>
+		</TransitonWrapper>
 	);
 }
+
+const StyledDatePickers = styled.div(() => {
+	return {};
+});
+
+const TransitonWrapper = styled.div(({ theme: { flex }, visible: v }) => {
+	return {
+		transition: "all 0.3s",
+		position: "fixed",
+		bottom: v ? "0%" : "-80%",
+		right: "10%",
+		width: "35%",
+		minHeight: "450px",
+		padding: "15px 0",
+		opacity: v ? 1 : 0,
+		pointerEvents: v ? "unset" : "none",
+		borderRadius: "10px 10px 0px 0px",
+		backgroundColor: "#286B89",
+	};
+});
 
 const StyledTaskManager = styled.div(({}) => {
 	return {
@@ -135,6 +160,5 @@ const StyledTaskManager = styled.div(({}) => {
 		width: "100%",
 		height: "auto",
 		...transition(1.5),
-		...formikStyles,
 	};
 });

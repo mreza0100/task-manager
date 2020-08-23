@@ -65,7 +65,7 @@ const StyledLi = styled.li(({ theme: { flex, $blue }, selectedMe }) => {
 	return {
 		...flex(),
 		width: "100%",
-		height: "50px",
+		height: "70px",
 		fontSize: "18px",
 		color: selectedMe ? $blue : "black",
 		cursor: "pointer",
@@ -92,7 +92,7 @@ const StyledUl = styled.ul(({ theme: { flex, $blue, $white } }) => {
 
 const StyledHeader = styled.header(({ theme: { flex, $blue } }) => {
 	return {
-		width: 71,
+		width: 70,
 		height: "100%",
 		height: "max-content",
 		borderLeft: "1px solid #DDDFFF",

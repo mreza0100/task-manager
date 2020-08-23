@@ -2,11 +2,19 @@ import useTaskSelector from "../hooks/taskSelector";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import CheckBox from "./CheckBox";
+import { useState } from "react";
 import CopyBtn from "./CopyBtn";
+import { Title } from "./Task";
 import Star from "./Star";
 
+import moment from "moment-jalaali";
+import DatePicker from "../proxy";
+
 export default function TaskManager() {
+	const taskSelector = useTaskSelector();
 	const router = useRouter();
+	const [value, setValue] = useState(moment("2020-06-21 19:30:00.000Z"));
+
 	const { id: taskID } = router.query;
 	if (!taskID) return noTask;
 
@@ -19,25 +27,32 @@ export default function TaskManager() {
 		to_date: initaialToDate,
 		is_done,
 		is_favorite,
-	} = useTaskSelector({ taskID });
+	} = taskSelector({ taskID });
 	if (notFound) return noTask;
 
 	return (
 		<Manager>
-			<TopManager>
+			<HeadManager>
 				<div>
 					<CheckBox isDone={is_done} taskID={taskID} />
-					<span>{initialTitle}</span>
+					<Title isDone={is_done}>{initialTitle}</Title>
 				</div>
 				<div>
 					<Star taskID={taskID} isFavorite={is_favorite} />
 					<CopyBtn taskID={taskID} />
 				</div>
-			</TopManager>
+			</HeadManager>
 			<ManagerItems>
 				<Item>
 					<div className="font">
 						<img src="bag.svg" />
+					</div>
+					<div className="content">
+						<DatePicker
+							isGregorian={false}
+							value={value}
+							onChange={val => setValue(val)}
+						/>
 					</div>
 				</Item>
 				<Item>
@@ -59,20 +74,40 @@ const Item = styled.div(({ theme: { flex } }) => {
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "space-between",
-		width: "100%",
+		marginTop: "20px",
+		"> .font": {
+			...flex(),
+			width: "30px",
+			height: "30px",
+			borderRadius: "4px",
+			backgroundColor: "#F7F9FE",
+		},
+		"> .content": {
+			...flex(["justifyContent"]),
+			justifyContent: "flex-start",
+			width: "100%",
+			height: "30px",
+			fontSize: "12px",
+			paddingRight: "10px",
+			marginRight: "10px",
+			borderRadius: "4px",
+			color: "#54698D",
+			cursor: "pointer",
+			backgroundColor: "#F7F9FE",
+		},
 	};
 });
 
 const ManagerItems = styled.div(({ theme: { flex } }) => {
 	return {
-		...flex(),
-		flexDirection: "column",
 		width: "100%",
-		padding: "10px",
+		height: "auto",
+		padding: "0 20px",
+		marginBottom: "10px",
 	};
 });
 
-const TopManager = styled.div(({ theme: { flex } }) => {
+const HeadManager = styled.div(({ theme: { flex } }) => {
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "space-between",
