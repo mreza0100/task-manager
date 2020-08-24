@@ -1,16 +1,15 @@
+import { parseDateFromServer, stringfyDateForServer } from "../helpers/exports";
 import DatePicker from "../../node_modules/react-datepicker2/dist/es/index";
+import useTaskSelectore from "../hooks/taskSelector";
 import styled from "styled-components";
+import CheckBox from "./task/CheckBox";
 import CopyBtn from "./task/CopyBtn";
 import { Title } from "./task/Task";
-import CheckBox from "./task/CheckBox";
 import { useState } from "react";
 import Star from "./task/Star";
-import { parseDateFromServer, stringfyDateForServer } from "../helpers/exports";
-import useTaskSelectore from "../hooks/taskSelector";
+import TagsInput from "react-tagsinput";
 
 export default function TaskManager() {
-	const taskData = useTaskSelectore();
-
 	const {
 		notFound,
 		id: taskID,
@@ -21,12 +20,16 @@ export default function TaskManager() {
 		to_date: initaialToDate,
 		is_done,
 		is_favorite,
-	} = taskData;
+	} = useTaskSelectore();
 
 	const [fromDate, setFromDate] = useState(parseDateFromServer(initaialFromDate));
 	const [toDate, setToDate] = useState(parseDateFromServer(initaialToDate));
+	const [tags, setTags] = useState([]);
 
 	if (notFound) return noTask;
+
+	const handleChangeTag = newTags => setTags(newTags);
+
 	return (
 		<Manager>
 			<HeadManager>
@@ -44,31 +47,34 @@ export default function TaskManager() {
 					<div className="font">
 						<img src="bag.svg" />
 					</div>
-					<WDatePicker className="content">
+					<div className="content date">
 						<span>از</span>
 						<DatePicker
 							isGregorian={false}
 							value={fromDate}
 							onChange={d => setFromDate(d)}
 						/>
-					</WDatePicker>
+					</div>
 				</Item>
 				<Item>
 					<div className="font">
 						<img src="bag.svg" />
 					</div>
-					<WDatePicker className="content">
+					<div className="content date">
 						<span>تا</span>
 						<DatePicker
 							isGregorian={false}
 							value={toDate}
 							onChange={d => setToDate(d)}
 						/>
-					</WDatePicker>
+					</div>
 				</Item>
 				<Item>
 					<div className="font">
 						<img src="tag.svg" />
+					</div>
+					<div className="content">
+						<TagsInput value={tags} onChange={handleChangeTag} />
 					</div>
 				</Item>
 			</ManagerItems>
@@ -83,11 +89,11 @@ const Item = styled.div(({ theme: { flex } }) => {
 		marginTop: "20px",
 		"> .font": {
 			...flex(),
-			width: "18px",
-			height: "18px",
+			width: "25px",
+			height: "25px",
 			borderRadius: "4px",
 			backgroundColor: "#F7F9FE",
-			img: { width: "100%", height: "100%" },
+			img: { width: "75%", height: "75%" },
 		},
 		"> .content": {
 			...flex(["justifyContent"]),
@@ -100,24 +106,22 @@ const Item = styled.div(({ theme: { flex } }) => {
 			cursor: "pointer",
 			backgroundColor: "#F7F9FE",
 		},
-	};
-});
-
-const WDatePicker = styled.div(props => {
-	return {
-		justifyContent: "flex-start",
-		"> span": { fontSize: "14px", marginLeft: "5px" },
-		"> div": {
-			width: "auto",
-			cursor: "pointer",
-			input: {
-				border: "none",
-				outline: "none",
-				padding: 0,
-				backgroundColor: "transparent",
-				textAlign: "center",
+		"> div.date": {
+			justifyContent: "flex-start",
+			padding: "5px",
+			"> span": { fontSize: "14px", marginLeft: "5px" },
+			"> div": {
+				width: "auto",
 				cursor: "pointer",
-				width: "100%",
+				input: {
+					border: "none",
+					outline: "none",
+					padding: 0,
+					backgroundColor: "transparent",
+					textAlign: "center",
+					cursor: "pointer",
+					width: "100%",
+				},
 			},
 		},
 	};
