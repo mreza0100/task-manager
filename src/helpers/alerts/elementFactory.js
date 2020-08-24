@@ -5,17 +5,19 @@ export default function create({
 	childs = [],
 	props = {},
 	events = {},
-	text = "",
+	text = false,
 } = {}) {
 	if (!process.browser) return void 0;
 	childs = Array.isArray(childs) ? childs : [childs];
 	let style, attr, child;
 	const node = document.createElement(nodeName);
-	node.innerText = text;
+
+	if (text) node.appendChild(document.createTextNode(text));
+
 	for (style in styles) if (style) node.style[style] = styles[style];
 	for (attr in attrs) if (attr) node.setAttribute(attr, attrs[attr]);
 	for (const prop in props) node[prop] = props[prop];
-	for (const e in events) node.addEventListener(e, events[e]);
+	for (const e in events) if (e && events[e]) node.addEventListener(e, events[e]);
 	for (child of childs) {
 		if (!child) continue;
 		if (typeof child === "object") node.appendChild(child);

@@ -1,11 +1,11 @@
-import useTaskSelector from "./taskSelector";
 import { useMemo } from "react";
+import useTaskSelectore from "./taskSelector";
 
 export default function useFiltringTasks({ filters, sorts }) {
-	const taskSelector = useTaskSelector();
-	var tasks = taskSelector();
+	var tasks = useTaskSelectore({ returnArray: true });
 
-	return useMemo(() => {
+	const result = useMemo(() => {
+		tasks = [...tasks];
 		if (filters.justfinished) tasks = tasks.filter(task => task.is_done);
 		if (filters.justUnfinished) tasks = tasks.filter(task => !task.is_done);
 		if (filters.justFavorites) tasks = tasks.filter(task => task.is_favorite);
@@ -18,4 +18,5 @@ export default function useFiltringTasks({ filters, sorts }) {
 
 		return tasks;
 	}, [tasks, filters, sorts]);
+	return result;
 }

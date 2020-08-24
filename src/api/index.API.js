@@ -26,6 +26,7 @@ const AC /* as APIConfigs */ = {
 	ignoreStatuses: [],
 	kickOn401: true,
 	logError: false,
+	inBrowser: typeof window !== "undefined",
 	describe() {
 		for (let i = 0; i < 10; i++) {
 			console.error("<<<<<<<<<<<API need a describe<<<<<<<<<<<");
@@ -56,7 +57,7 @@ class API {
 		this.debug = debug ?? AC.debug;
 		this.details = details ?? AC.details;
 		this.baseURL = baseURL ?? AC.baseURL;
-		this.inBrowser = process.browser;
+		this.inBrowser = process.browser && AC.inBrowser;
 		this.describe = describe ?? AC.describe();
 		this.isPrivetRoute /*need token*/ = isPrivetRoute ?? AC.isPrivetRoute;
 		this.$XHR = Axios.create({
@@ -185,16 +186,16 @@ class API {
 		return data;
 	}
 
-	_permissionSending() {
+	_requestPermission() {
 		if (this.pendingID) {
 			if (pendingList.includes(this.pendingID)) return false;
-			else pendingList.push(this.pendingID);
+			pendingList.push(this.pendingID);
 		}
 		return true;
 	}
 
 	request({ url, params, data, callback } = {}, method) {
-		if (!this._permissionSending()) return this._permissionDenied();
+		if (!this._requestPermission()) return this._permissionDenied();
 		if (method === "get") params = this._filterDataBeforSend(params);
 		else data = this._filterDataBeforSend(data);
 		return new Promise((resolve, reject) => {

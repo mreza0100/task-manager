@@ -6,7 +6,7 @@
 // import { useState, useEffect } from "react";
 // import styled from "styled-components";
 // import moment from "moment-jalaali";
-// import DatePicker from "../proxy";
+// import DatePicker from "../";
 // import * as yup from "yup";
 
 // async function getQueriesData() {

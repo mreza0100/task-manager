@@ -1,6 +1,6 @@
-import { editTask } from "../redux/actions/tasks";
-import { _USE_API_ } from "../api/index.API";
-import showMsg from "../helpers/alerts/msg";
+import { editTask } from "../../redux/actions/tasks";
+import { _USE_API_ } from "../../api/index.API";
+import showMsg from "../../helpers/alerts/msg";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 

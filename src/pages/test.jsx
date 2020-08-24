@@ -1,20 +1,9 @@
-// const [selectedDay, setSelectedDay] = useState(null);
+import moment from "moment-jalaali";
 
-// useEffect(() => {
-//       let date = {
-//             year: 1399,
-//             month: 10,
-//             day: 23,
-//       };
+import DatePicker from "../../node_modules/react-datepicker2/dist/es/index";
+import { useState } from "react";
+import { parseDateFromServer, stringfyDateForServer } from "../helpers/exports";
 
-//       let str = `${date.year}/${date.month}/${date.day}`;
-
-//       let changedDate = moment(str, "jYYYY/jMM/jDD").locale("en").format("YYYY-MM-DD 00:00:00");
-
-//       console.log(changedDate);
-// }, []);
-
-// return <Calendar value={selectedDay} onChange={setSelectedDay} shouldHighlightWeekends />;
 export default function Test() {
-	return null;
+	return null
 }

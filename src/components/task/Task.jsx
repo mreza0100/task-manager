@@ -1,6 +1,6 @@
-import { _USE_API_ } from "../api/index.API";
+import { _USE_API_ } from "../../api/index.API";
 import { useRouter } from "next/router";
-import ColorPicker from "./ColorPicker";
+import ColorPicker from "../ColorPicker";
 import styled from "styled-components";
 import CheckBox from "./CheckBox";
 import CopyBtn from "./CopyBtn";
@@ -47,7 +47,7 @@ const TaskWrapper = styled.li(({ theme: { flex, $blue, $blueTxt, $white }, selec
 		borderRadius: "4px",
 		padding: 5,
 		marginBottom: 10,
-		border: selectedMe ? "2px solid #5460FE" : "unset",
+		border: `2px solid ${selectedMe ? "#5460FE" : "transparent"} `,
 		cursor: "pointer",
 		transition: "all 0.2s",
 		"&:hover": {},

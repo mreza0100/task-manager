@@ -1,3 +1,4 @@
+import moment from "moment-jalaali";
 import Router from "next/router";
 import $CACH from "./cash";
 
@@ -68,14 +69,35 @@ function invertHex(hex) {
 	return (Number(`0x1${hex}`) ^ 0xffffff).toString(16).substr(1).toUpperCase();
 }
 
-function changeDateFormat(date) {
-	// changing "2020-06-21T19:30:00.000Z" to 2020-06-21 19:30:00
-	return JSON.stringify(date).split("T").join(" ").slice(1, 20);
+/* 
+
+import DatePicker from "../../node_modules/react-datepicker2/dist/es/index";
+import { useState } from "react";
+
+export default function Test() {
+	const date = "2024-10-25 5:35:20";
+	const [value, setValue] = useState(moment(date, "YYYY-M-D HH:mm:ss"));
+	return (
+		<div>
+			<DatePicker isGregorian={false} value={value} onChange={val => setValue(val)} />
+			<h1
+				onClick={() => {
+					console.log(value.format("YYYY-M-D HH:mm:ss"));
+				}}
+			>
+				HIIIIIIII
+			</h1>
+		</div>
+	);
+}
+*/
+
+function parseDateFromServer(dateFromDB) {
+	return moment(dateFromDB, "YYYY-M-D HH:mm:ss");
 }
 
-function editDate(initaialDate) {
-	// changing 2020-06-21 19:30:00 to 2020-06-21 19:30:00.000Z
-	return initaialDate + ".000Z";
+function stringfyDateForServer(dateForDB) {
+	return dateForDB.format("YYYY-M-D HH:mm:ss");
 }
 
 function tagObjToArr(tags = []) {
@@ -150,10 +172,8 @@ export {
 	setCookie,
 	deleteCookie,
 	invertHex,
-	changeDateFormat,
 	tagObjToArr,
 	tagArrToObj,
-	editDate,
 	reloadRouter,
 	serverRedirect,
 	copyToClipboard,
@@ -161,4 +181,6 @@ export {
 	isUndefined,
 	getRandomNumber,
 	defer,
+	stringfyDateForServer,
+	parseDateFromServer,
 };

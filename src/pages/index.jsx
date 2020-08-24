@@ -1,6 +1,7 @@
 import { getProfileData } from "../redux/actions/profile";
 import useFiltringTasks from "../hooks/filtringTasks";
-import useTaskSelector from "../hooks/taskSelector";
+import useTaskSelectore from "../hooks/taskSelector";
+import PluseWindow from "../components/PluseWindow";
 import TaskManager from "../components/TaskManager";
 import { togglePlus } from "../redux/actions/plus";
 import { getTasks } from "../redux/actions/tasks";
@@ -8,8 +9,7 @@ import MainLayout from "../layout/Main.lauout";
 import { useState, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import Task from "../components/Task";
-import PluseWindow from "../components/PluseWindow";
+import Task from "../components/task/Task";
 
 const sortsData = (SA, sorts) => [
 	{
@@ -58,9 +58,7 @@ export default function Index() {
 
 	const filtredTasks = useFiltringTasks({ filters, sorts });
 
-	const taskSelector = useTaskSelector({ tasks: filtredTasks });
-
-	useTaskSelector({ getTaskIDFromRouter: true, alertOnNotFound: false });
+	useTaskSelectore({ tasks: filtredTasks, getTaskIDFromRouter: true, alertOnNotFound: false });
 
 	const FA = {
 		// FA for filterActions
@@ -108,45 +106,40 @@ export default function Index() {
 							<img src="miz-logo.svg" />
 							<span>پروژه میز - تسک ها</span>
 						</h1>
-						{useMemo(
-							() => (
-								<div id="fields">
-									<div>
-										<span>مرتب سازی</span>
-										<div className="menu">
-											{sortsData(SA, sorts).map(
-												({ me, click, label }, idx) => (
-													<MenuItem
-														key={idx}
-														selectedMe={me}
-														onClick={click}
-													>
-														{label}
-													</MenuItem>
-												)
-											)}
-										</div>
-									</div>
-									<div>
-										<span>فیلتر</span>
-										<div className="menu">
-											{filterData(FA, filters).map(
-												({ me, click, label }, idx) => (
-													<MenuItem
-														key={idx}
-														selectedMe={me}
-														onClick={click}
-													>
-														{label}
-													</MenuItem>
-												)
-											)}
-										</div>
-									</div>
+						<div id="fields">
+							<div>
+								<span>مرتب سازی</span>
+								<div className="menu">
+									{sortsData(SA, sorts).map(
+										({ me, click, label }, idx) => (
+											<MenuItem
+												key={idx}
+												selectedMe={me}
+												onClick={click}
+											>
+												{label}
+											</MenuItem>
+										)
+									)}
 								</div>
-							),
-							[filters, sorts]
-						)}
+							</div>
+							<div>
+								<span>فیلتر</span>
+								<div className="menu">
+									{filterData(FA, filters).map(
+										({ me, click, label }, idx) => (
+											<MenuItem
+												key={idx}
+												selectedMe={me}
+												onClick={click}
+											>
+												{label}
+											</MenuItem>
+										)
+									)}
+								</div>
+							</div>
+						</div>
 					</TopContents>
 				</Section>
 				<Section>
@@ -223,7 +216,7 @@ const TopContents = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
 		},
 		"> div#fields": {
 			...flex(["justifyContent"]),
-			justifyContent: "space-between",
+			justifyContent: "flex-end",
 			width: "30%",
 			"> div": {
 				...flex(),
@@ -260,6 +253,7 @@ const TopContents = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
 					},
 				},
 			},
+			"> div + div": { marginRight: "10px" },
 		},
 		"> ul": {
 			padding: 0,

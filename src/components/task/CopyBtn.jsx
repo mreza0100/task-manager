@@ -1,5 +1,5 @@
-import { copyToClipboard } from "../helpers/exports";
-import showMsg from "../helpers/alerts/msg";
+import { copyToClipboard } from "../../helpers/exports";
+import showMsg from "../../helpers/alerts/msg";
 
 function handleCopy(taskID) {
 	if (copyToClipboard(`${location.origin}/?id=${taskID}`)) {

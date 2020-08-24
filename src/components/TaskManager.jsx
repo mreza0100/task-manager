@@ -1,25 +1,19 @@
-import useTaskSelector from "../hooks/taskSelector";
-import { useRouter } from "next/router";
+import DatePicker from "../../node_modules/react-datepicker2/dist/es/index";
 import styled from "styled-components";
-import CheckBox from "./CheckBox";
+import CopyBtn from "./task/CopyBtn";
+import { Title } from "./task/Task";
+import CheckBox from "./task/CheckBox";
 import { useState } from "react";
-import CopyBtn from "./CopyBtn";
-import { Title } from "./Task";
-import Star from "./Star";
-
-import moment from "moment-jalaali";
-import DatePicker from "../proxy";
+import Star from "./task/Star";
+import { parseDateFromServer, stringfyDateForServer } from "../helpers/exports";
+import useTaskSelectore from "../hooks/taskSelector";
 
 export default function TaskManager() {
-	const taskSelector = useTaskSelector();
-	const router = useRouter();
-	const [value, setValue] = useState(moment("2020-06-21 19:30:00.000Z"));
-
-	const { id: taskID } = router.query;
-	if (!taskID) return noTask;
+	const taskData = useTaskSelectore();
 
 	const {
 		notFound,
+		id: taskID,
 		title: initialTitle,
 		description: initialDescription,
 		tags: initalTags,
@@ -27,9 +21,12 @@ export default function TaskManager() {
 		to_date: initaialToDate,
 		is_done,
 		is_favorite,
-	} = taskSelector({ taskID });
-	if (notFound) return noTask;
+	} = taskData;
 
+	const [fromDate, setFromDate] = useState(parseDateFromServer(initaialFromDate));
+	const [toDate, setToDate] = useState(parseDateFromServer(initaialToDate));
+
+	if (notFound) return noTask;
 	return (
 		<Manager>
 			<HeadManager>
@@ -47,22 +44,31 @@ export default function TaskManager() {
 					<div className="font">
 						<img src="bag.svg" />
 					</div>
-					<div className="content">
+					<WDatePicker className="content">
+						<span>از</span>
 						<DatePicker
 							isGregorian={false}
-							value={value}
-							onChange={val => setValue(val)}
+							value={fromDate}
+							onChange={d => setFromDate(d)}
 						/>
-					</div>
+					</WDatePicker>
 				</Item>
 				<Item>
 					<div className="font">
 						<img src="bag.svg" />
 					</div>
+					<WDatePicker className="content">
+						<span>تا</span>
+						<DatePicker
+							isGregorian={false}
+							value={toDate}
+							onChange={d => setToDate(d)}
+						/>
+					</WDatePicker>
 				</Item>
 				<Item>
 					<div className="font">
-						<img src="bag.svg" />
+						<img src="tag.svg" />
 					</div>
 				</Item>
 			</ManagerItems>
@@ -77,23 +83,42 @@ const Item = styled.div(({ theme: { flex } }) => {
 		marginTop: "20px",
 		"> .font": {
 			...flex(),
-			width: "30px",
-			height: "30px",
+			width: "18px",
+			height: "18px",
 			borderRadius: "4px",
 			backgroundColor: "#F7F9FE",
+			img: { width: "100%", height: "100%" },
 		},
 		"> .content": {
 			...flex(["justifyContent"]),
-			justifyContent: "flex-start",
 			width: "100%",
 			height: "30px",
 			fontSize: "12px",
-			paddingRight: "10px",
 			marginRight: "10px",
 			borderRadius: "4px",
 			color: "#54698D",
 			cursor: "pointer",
 			backgroundColor: "#F7F9FE",
+		},
+	};
+});
+
+const WDatePicker = styled.div(props => {
+	return {
+		justifyContent: "flex-start",
+		"> span": { fontSize: "14px", marginLeft: "5px" },
+		"> div": {
+			width: "auto",
+			cursor: "pointer",
+			input: {
+				border: "none",
+				outline: "none",
+				padding: 0,
+				backgroundColor: "transparent",
+				textAlign: "center",
+				cursor: "pointer",
+				width: "100%",
+			},
 		},
 	};
 });
@@ -127,14 +152,12 @@ const HeadManager = styled.div(({ theme: { flex } }) => {
 });
 
 const Manager = styled.aside(({ theme: { flex, $white, transition } }) => {
-	const router = useRouter();
-	const { id: routerID } = router.query;
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "flex-start",
 		flexDirection: "column",
 		...transition(),
-		width: routerID ? "400px" : "300px",
+		width: "400px",
 		borderRight: "1px solid #E4EAF0",
 		backgroundColor: $white,
 		"> #no-task": {

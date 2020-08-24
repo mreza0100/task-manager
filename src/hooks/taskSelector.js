@@ -1,23 +1,29 @@
 import showMsg from "../helpers/alerts/msg";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
-// import { useEffect } from "react";
+import { useEffect } from "react";
 
-export default function useTaskSelector({ tasks } = {}) {
+export default function useTaskSelectore({
+	tasks = null,
+	taskID = false,
+	redirectOnNotFound = true,
+	alertOnNotFound = true,
+	returnArray = false,
+	limit = 0,
+} = {}) {
+	var result;
 	const router = useRouter();
-	tasks = tasks || useSelector(state => state.tasks);
+	tasks = tasks || useSelector(({ tasks }) => tasks);
 
-	return ({
-		taskID = null,
-		getTaskIDFromRouter = false,
-		redirectOnNotFound = true,
-		alertOnNotFound = true,
-	} = {}) => {
-		taskID = getTaskIDFromRouter ? router.query.id : taskID;
-		const result = taskID ? tasks.find(task => task.id === taskID) : tasks;
+	taskID = taskID || router.query.id;
 
-		// useEffect(() => {
-		if (taskID && !result) {
+	if (returnArray) {
+		result = tasks;
+		if (limit) result = result.slice(0, limit);
+	} else result = tasks.find(task => task.id === taskID);
+
+	useEffect(() => {
+		if (!returnArray && taskID && !result) {
 			// ! then its not found
 			if (redirectOnNotFound) router.push("/");
 			if (alertOnNotFound) {
@@ -31,9 +37,8 @@ export default function useTaskSelector({ tasks } = {}) {
 				);
 			}
 		}
-		// }, [taskID, tasks.length]);
+	}, [taskID, tasks.length]);
 
-		if (result) return Array.isArray(result) ? [...result] : result;
-		return { notFound: true };
-	};
+	if (result) return result;
+	return { notFound: true };
 }

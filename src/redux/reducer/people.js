@@ -1,6 +1,6 @@
 import { SET_PEOPLE, ADD_PEOPLE } from "../type";
 
-export default function (state = [], action) {
+export default function peopleReducer(state = [], action) {
 	switch (action.type) {
 		case SET_PEOPLE:
 			return action.payload;

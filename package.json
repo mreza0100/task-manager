@@ -14,24 +14,37 @@
 		"font-awesome": "^4.7.0",
 		"formik": "^2.1.5",
 		"moment-jalaali": "^0.9.2",
-		"next": "^9.4.4",
+		"next": "^9.5.2",
 		"next-images": "^1.4.1",
 		"next-redux-wrapper": "^6.0.2",
 		"nprogress": "^0.2.0",
-		"react": "16.13.1",
+		"react": "^16.13.1",
 		"react-datepicker2": "^3.3.10",
 		"react-dom": "16.13.1",
 		"react-modern-calendar-datepicker": "^3.1.6",
 		"react-redux": "^7.2.0",
 		"react-tag-autocomplete": "^6.0.0",
+		"react-tagsinput": "^3.19.0",
 		"redux": "^4.0.5",
 		"redux-logger": "^3.0.6",
 		"redux-thunk": "^2.3.0",
 		"sass": "^1.26.5",
 		"styled-components": "^5.1.1",
-		"yup": "^0.29.1"
+		"yup": "^0.29.3"
 	},
 	"devDependencies": {
 		"babel-plugin-styled-components": "^1.10.7"
-	}
+	},
+	"main": "next.config.js",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/mreza0100/task-manager.git"
+	},
+	"author": "MrezaKV",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/mreza0100/task-manager/issues"
+	},
+	"homepage": "https://github.com/mreza0100/task-manager#readme",
+	"description": ""
 }
