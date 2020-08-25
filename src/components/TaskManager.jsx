@@ -73,6 +73,7 @@ export default function TaskManager() {
 	const [tags, setTags] = useState(initalTags);
 
 	useEffect(() => {
+		if (taskID) handleSubmit({ taskID, description, tags, fromDate, toDate }, { dispatch });
 		setFromDate(parseDateFromServer(initaialFromDate));
 		setToDate(parseDateFromServer(initaialToDate));
 		setDescription(initialDescription);
@@ -80,11 +81,14 @@ export default function TaskManager() {
 	}, [taskID]);
 
 	useEffect(() => {
-		clearTimeout(timeoutVal);
-		timeoutVal = setTimeout(() => {
-			delete timeoutVal;
-			handleSubmit({ taskID, description, tags, fromDate, toDate }, { dispatch });
-		}, 5000);
+		if (taskID) {
+			console.log(taskID);
+			clearTimeout(timeoutVal);
+			timeoutVal = setTimeout(() => {
+				timeoutVal = undefined;
+				handleSubmit({ taskID, description, tags, fromDate, toDate }, { dispatch });
+			}, 5000);
+		}
 	}, [fromDate, toDate, description, tags]);
 
 	const handleChangeTag = newTags => setTags(newTags);

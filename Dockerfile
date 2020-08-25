@@ -12,6 +12,8 @@ COPY . .
 
 RUN npm run build
 
+EXPOSE 10000
+
 CMD [ "npm", "start" ]
 # docker build -t task-manager .
 # docker run -d -p 10000:10000 task-manager
@@ -19,4 +21,3 @@ CMD [ "npm", "start" ]
 # or just use my account in http://localhost:10000//register-progsess/login"
 # mobile: 09361719102
 # password: 123456789
-# profile section is hardcoded for now
