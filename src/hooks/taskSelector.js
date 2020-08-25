@@ -37,7 +37,7 @@ export default function useTaskSelectore({
 				);
 			}
 		}
-	}, [taskID, tasks.length]);
+	}, [taskID]);
 
 	if (result) return result;
 	return { notFound: true };

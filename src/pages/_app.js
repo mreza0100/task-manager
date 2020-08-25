@@ -5,11 +5,7 @@ import Router from "next/router";
 // NProgress
 import NProgress from "nprogress";
 import { wrapper } from "../redux/store";
-// font-awesome
-import "font-awesome/css/font-awesome.min.css";
-// nprogress
-import "nprogress/nprogress.css";
-// general styles include libs font etc...
+// all general styles
 import "../styles/general.scss";
 import { ThemeProvider } from "styled-components";
 // style helpers in styled components props

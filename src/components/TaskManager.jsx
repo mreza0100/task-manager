@@ -1,35 +1,104 @@
 import { parseDateFromServer, stringfyDateForServer } from "../helpers/exports";
-import DatePicker from "../../node_modules/react-datepicker2/dist/es/index";
+import DatePicker from "react-datepicker2";
 import useTaskSelectore from "../hooks/taskSelector";
 import styled from "styled-components";
 import CheckBox from "./task/CheckBox";
 import CopyBtn from "./task/CopyBtn";
 import { Title } from "./task/Task";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Star from "./task/Star";
 import TagsInput from "react-tagsinput";
+import { useDispatch } from "react-redux";
+import { getOneAndOverwrite } from "../redux/actions/tasks";
+import { _USE_API_ } from "../api/index.API";
+import Router from "next/router";
 
+async function handleDeleteTask(taskID) {
+	try {
+		const data = { id: taskID };
+		const res = await _USE_API_({
+			isPrivetRoute: true,
+			describe: "deleting a task",
+			debug: true,
+		}).Delete({ data, url: "/tasks" });
+		if (res.status === 200) Router.replace("/");
+	} catch (err) {
+		console.dir(err);
+	}
+}
+
+async function handleSubmit(data, { dispatch }) {
+	if (!data.taskID) return;
+	try {
+		data = {
+			id: data.taskID,
+			description: data.description,
+			tags: data.tags || [],
+			from_date: stringfyDateForServer(data.fromDate),
+			to_date: stringfyDateForServer(data.toDate),
+		};
+		console.log("in:::");
+		const { id: taskID } = data;
+		const res = await _USE_API_({
+			isPrivetRoute: true,
+			describe: "saving TaskManager changes",
+			debug: true,
+		}).Put({
+			url: "/tasks",
+			data,
+		});
+		if (res.status === 200) dispatch(getOneAndOverwrite({ taskID }));
+	} catch (err) {
+		console.dir(err);
+	}
+}
+
+var timeoutVal;
 export default function TaskManager() {
+	const dispatch = useDispatch();
 	const {
 		notFound,
 		id: taskID,
 		title: initialTitle,
 		description: initialDescription,
-		tags: initalTags,
+		tags: initalTags = [],
 		from_date: initaialFromDate,
 		to_date: initaialToDate,
 		is_done,
 		is_favorite,
 	} = useTaskSelectore();
-
 	const [fromDate, setFromDate] = useState(parseDateFromServer(initaialFromDate));
 	const [toDate, setToDate] = useState(parseDateFromServer(initaialToDate));
-	const [tags, setTags] = useState([]);
+	const [description, setDescription] = useState(initialDescription);
+	const [tags, setTags] = useState(initalTags);
 
-	if (notFound) return noTask;
+	useEffect(() => {
+		setFromDate(parseDateFromServer(initaialFromDate));
+		setToDate(parseDateFromServer(initaialToDate));
+		setDescription(initialDescription);
+		setTags(initalTags);
+	}, [taskID]);
+
+	useEffect(() => {
+		clearTimeout(timeoutVal);
+		timeoutVal = setTimeout(() => {
+			delete timeoutVal;
+			handleSubmit({ taskID, description, tags, fromDate, toDate }, { dispatch });
+		}, 5000);
+	}, [fromDate, toDate, description, tags]);
 
 	const handleChangeTag = newTags => setTags(newTags);
+	const tagJSX = props => {
+		const { tag, key, onRemove, className, getTagDisplayValue } = props;
+		return (
+			<span key={key} className={className} onClick={e => onRemove(key)}>
+				{getTagDisplayValue(tag)}
+				<i>×</i>
+			</span>
+		);
+	};
 
+	if (notFound) return noTask;
 	return (
 		<Manager>
 			<HeadManager>
@@ -73,20 +142,82 @@ export default function TaskManager() {
 					<div className="font">
 						<img src="tag.svg" />
 					</div>
+					<div className="content tags">
+						<TagsInput
+							value={tags}
+							onChange={handleChangeTag}
+							renderTag={tagJSX}
+							inputProps={{ placeholder: "اضافه کردن تگ" }}
+						/>
+					</div>
+				</Item>
+				<Item id="description">
+					<div className="font">
+						<img src="pen.svg" />
+					</div>
 					<div className="content">
-						<TagsInput value={tags} onChange={handleChangeTag} />
+						<textarea
+							placeholder="افزودن متن"
+							value={description}
+							onChange={({ target }) => setDescription(target.value)}
+						/>
 					</div>
 				</Item>
 			</ManagerItems>
+			<Footer>
+				<i className="fa fa-trash" onClick={() => handleDeleteTask(taskID)} />
+			</Footer>
 		</Manager>
 	);
 }
 
-const Item = styled.div(({ theme: { flex } }) => {
+const Footer = styled.div(({ theme: { flex } }) => {
 	return {
 		...flex(["justifyContent"]),
+		justifyContent: "flex-end",
+		marginTop: "auto",
+		minHeight: "25px",
+		width: "100%",
+		"> i": {
+			padding: "15px",
+			fontSize: "20px",
+			cursor: "pointer",
+			transition: "color 0.4s",
+			"&:hover": {
+				color: "red",
+			},
+		},
+	};
+});
+
+const Item = styled.div(({ theme: { flex } }) => {
+	return {
+		...flex(["justifyContent", "alignItems"]),
 		justifyContent: "space-between",
+		alignItems: "flex-start",
 		marginTop: "20px",
+		"&#description": {
+			".font": { background: "rgba(218, 179, 44, 0.15)" },
+			".content": {
+				minHeight: "74px",
+
+				backgroundColor: "transparent",
+				textarea: {
+					width: "100%",
+					background: "rgba(218, 179, 44, 0.15)",
+					padding: "5px",
+					maxWidth: "100%",
+					minWidth: "100%",
+					minHeight: "130px",
+					outline: "none",
+					border: "none",
+					"&::placeholder": {
+						color: "#DAB32C",
+						"font-family": "IRANSansWeb !important",
+					},
+				},
+			},
+		},
 		"> .font": {
 			...flex(),
 			width: "25px",
@@ -97,8 +228,9 @@ const Item = styled.div(({ theme: { flex } }) => {
 		},
 		"> .content": {
 			...flex(["justifyContent"]),
-			width: "100%",
-			height: "30px",
+			width: "90%",
+			minHeight: "30px",
+			height: "auto",
 			fontSize: "12px",
 			marginRight: "10px",
 			borderRadius: "4px",
@@ -122,6 +254,15 @@ const Item = styled.div(({ theme: { flex } }) => {
 					cursor: "pointer",
 					width: "100%",
 				},
+			},
+		},
+		"> .tags": {
+			input: {
+				border: "none",
+				outline: "none",
+				padding: 0,
+				backgroundColor: "transparent",
+				textAlign: "center",
 			},
 		},
 	};
@@ -158,7 +299,7 @@ const HeadManager = styled.div(({ theme: { flex } }) => {
 const Manager = styled.aside(({ theme: { flex, $white, transition } }) => {
 	return {
 		...flex(["justifyContent"]),
-		justifyContent: "flex-start",
+		justifyContent: "space-between",
 		flexDirection: "column",
 		...transition(),
 		width: "400px",

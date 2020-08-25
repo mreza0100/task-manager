@@ -16,14 +16,17 @@ async function handleSubmit(color, taskID) {
 	}
 }
 
-var timeoutValue = 0;
+var timeoutVals = {};
 export default function ColorPicker({ color: initialColor, taskID }) {
 	const [color, setColor] = useState(initialColor);
 
 	const onChange = e => {
 		setColor(e.target.value);
-		clearTimeout(timeoutValue);
-		timeoutValue = setTimeout(() => handleSubmit(color, taskID), 2000);
+		clearTimeout(timeoutVals[taskID]);
+		timeoutVals[taskID] = setTimeout(() => {
+			delete timeoutVals[taskID];
+			handleSubmit(color, taskID);
+		}, 2000);
 	};
 
 	return <Picker type="color" value={color} onChange={onChange} />;

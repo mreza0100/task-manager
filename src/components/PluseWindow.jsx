@@ -2,41 +2,38 @@ import { transition, flex, prevEnter, tagObjToArr } from "../helpers/exports";
 import { getOneTask } from "../redux/actions/tasks";
 import { _USE_API_ } from "../api/index.API";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
-import useTaskSelectore from "../hooks/taskSelector";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
 // !>>
-
-async function handleSubmit(data, { dispatch, setSubmitting }) {
-	setSubmitting(true);
-	await _USE_API_({ isPrivetRoute: true, describe: "PluseWindow" })
-		.Post({
-			url: "tasks",
-			data,
-		})
-		.then(res => {
-			const taskID = res.data.data.item.id;
-			if (taskID) dispatch(getOneTask({ taskID }));
-		})
-		.catch(err => {
-			console.dir(err);
-		})
-		.finally(() => {
-			setSubmitting(false);
-		});
-}
 
 export default function PluseWindow() {
 	const isPlusMode = useSelector(state => state.isPlusMode);
+	const dispatch = useDispatch();
+	useEffect(() => {
+		// 	const data = { title: "test", tags: [] };
+		// 	try {
+		// 		(async () => {
+		// 			const res = await _USE_API_({
+		// 				isPrivetRoute: true,
+		// 				describe: "PluseWindow",
+		// 				debug: true,
+		// 			}).Post({
+		// 				url: "/tasks",
+		// 				data,
+		// 			});
+		// 			const taskID = res.data.data.item.id;
+		// 			if (res.status === 200) dispatch(getOneTask({ taskID }));
+		// 		})();
+		// 	} catch (err) {
+		// 		console.dir(err);
+		// 	}
+	}, [isPlusMode]);
 	return (
 		<TransitonWrapper visible={isPlusMode}>
 			<StyledTaskManager></StyledTaskManager>
 		</TransitonWrapper>
 	);
 }
-
-const StyledDatePickers = styled.div(() => {
-	return {};
-});
 
 const TransitonWrapper = styled.div(({ theme: { flex }, visible: v }) => {
 	return {

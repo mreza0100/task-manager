@@ -1,9 +1,14 @@
+// ! from libs
+// @import "./bs4";
+@import "../../node_modules/font-awesome/css/font-awesome.min.css";
+@import "../../node_modules/nprogress/nprogress.css";
+@import "./react-tagsinput.scss";
+// ! internals
 @import "./animations";
-@import "./react-tags";
 @import "./css-reset";
 @import "./fonts";
-// @import "./bs4";
 @import "./bg";
+
 // !------------------
 * {
 	box-sizing: border-box;
