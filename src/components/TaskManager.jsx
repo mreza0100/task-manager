@@ -37,12 +37,12 @@ async function handleSubmit(data, { dispatch }) {
 			from_date: stringfyDateForServer(data.fromDate),
 			to_date: stringfyDateForServer(data.toDate),
 		};
-		console.log("in:::");
+		// console.log("in:::");
 		const { id: taskID } = data;
 		const res = await _USE_API_({
 			isPrivetRoute: true,
 			describe: "saving TaskManager changes",
-			debug: true,
+			debug: false,
 		}).Put({
 			url: "/tasks",
 			data,
@@ -200,32 +200,11 @@ const Item = styled.div(({ theme: { flex } }) => {
 		justifyContent: "space-between",
 		alignItems: "flex-start",
 		marginTop: "20px",
-		"&#description": {
-			".font": { background: "rgba(218, 179, 44, 0.15)" },
-			".content": {
-				minHeight: "74px",
-
-				backgroundColor: "transparent",
-				textarea: {
-					width: "100%",
-					background: "rgba(218, 179, 44, 0.15)",
-					padding: "5px",
-					maxWidth: "100%",
-					minWidth: "100%",
-					minHeight: "130px",
-					outline: "none",
-					border: "none",
-					"&::placeholder": {
-						color: "#DAB32C",
-						"font-family": "IRANSansWeb !important",
-					},
-				},
-			},
-		},
 		"> .font": {
 			...flex(),
 			width: "25px",
-			height: "25px",
+			height: "auto",
+			minHeight: "35px",
 			borderRadius: "4px",
 			backgroundColor: "#F7F9FE",
 			img: { width: "75%", height: "75%" },
@@ -233,8 +212,9 @@ const Item = styled.div(({ theme: { flex } }) => {
 		"> .content": {
 			...flex(["justifyContent"]),
 			width: "90%",
-			minHeight: "30px",
 			height: "auto",
+			minHeight: "35px",
+			paddingRight: "8px",
 			fontSize: "12px",
 			marginRight: "10px",
 			borderRadius: "4px",
@@ -244,7 +224,7 @@ const Item = styled.div(({ theme: { flex } }) => {
 		},
 		"> div.date": {
 			justifyContent: "flex-start",
-			padding: "5px",
+			// padding: "5px",
 			"> span": { fontSize: "14px", marginLeft: "5px" },
 			"> div": {
 				width: "auto",
@@ -266,7 +246,31 @@ const Item = styled.div(({ theme: { flex } }) => {
 				outline: "none",
 				padding: 0,
 				backgroundColor: "transparent",
-				textAlign: "center",
+				marginRight: "5px",
+				"&::placeholder": {
+					textAlign: "right",
+				},
+			},
+		},
+		"&#description": {
+			".font": { background: "rgba(218, 179, 44, 0.15)" },
+			".content": {
+				minHeight: "74px",
+				backgroundColor: "transparent",
+				textarea: {
+					width: "100%",
+					background: "rgba(218, 179, 44, 0.15)",
+					padding: "5px",
+					maxWidth: "100%",
+					minWidth: "100%",
+					minHeight: "130px",
+					maxHeight: "400px",
+					outline: "none",
+					border: "none",
+					"&::placeholder": {
+						color: "#DAB32C",
+					},
+				},
 			},
 		},
 	};

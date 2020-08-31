@@ -27,7 +27,7 @@ const menuData = [
 	},
 ];
 
-export default function Header({}) {
+export default function Header() {
 	const router = useRouter();
 	const url = router.route;
 

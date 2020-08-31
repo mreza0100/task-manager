@@ -6,7 +6,7 @@ import TaskManager from "../components/TaskManager";
 import { togglePlus } from "../redux/actions/plus";
 import { getTasks } from "../redux/actions/tasks";
 import MainLayout from "../layout/Main.lauout";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import Task from "../components/task/Task";
@@ -58,7 +58,7 @@ export default function Index() {
 
 	const filtredTasks = useFiltringTasks({ filters, sorts });
 
-	useTaskSelectore({ tasks: filtredTasks, getTaskIDFromRouter: true, alertOnNotFound: false });
+	useTaskSelectore({ tasks: filtredTasks, alertOnNotFound: false });
 
 	const FA = {
 		// FA for filterActions
