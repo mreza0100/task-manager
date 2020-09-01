@@ -153,14 +153,17 @@ export default function People(props) {
 
 	const { id: routerID } = router.query;
 	return (
-		<SettingLayout extraClass="row">
+		<SettingLayout
+			extraClass="row"
+			styles={{ justifyContent: "center", alignItems: "flex-start" }}
+		>
 			<AddBox
 				onSubmit={onSubmit}
 				inBtn={inBtn}
 				extraBtnClass="d-flex justify-content-evenly align-items-center"
 			/>
-			<ul className="col-12 justify-content-evenly row">
-				{people.map(({ name, mobile, pic, id }) => {
+			<ContactsList className="col-12 row">
+				{people.map(({ name, mobile, id }) => {
 					return (
 						<StyledContact key={id} className="row">
 							<div className="data col-9">
@@ -180,7 +183,7 @@ export default function People(props) {
 						</StyledContact>
 					);
 				})}
-			</ul>
+			</ContactsList>
 			{routerID && <Modal people={people} id={routerID} StyledAddBox={StyledAddBox} />}
 		</SettingLayout>
 	);
@@ -191,26 +194,29 @@ People.getInitialProps = async ({ store: { dispatch, getState }, req, res }) => 
 	await dispatch(getPeople({ req, res }));
 };
 
+const ContactsList = styled.ul(({}) => {
+	return {
+		padding: "0 15px",
+	};
+});
+
 const StyledContact = styled.li(props => {
 	return {
 		...flex(["justifyContent"]),
-		justifyContent: "space-around",
-		flex: "0 0 47%",
+		justifyContent: "space-between",
+		flex: "0 0 100%",
 		color: "#fff",
-		padding: 8,
-		margin: "8px 5px",
+		padding: 0,
+		margin: "8px 0",
 		fontSize: "14px",
-		"&:hover": {
-			opacity: 0.95,
-		},
 		".data": {
 			...flex(),
-			flexDirection: "column",
 			textAlign: "right",
 			padding: 0,
 			alignItems: "flex-start",
 			backgroundColor: "#000000a6",
 			borderRadius: 5,
+			minHeight: "40px",
 			"> span": {
 				whiteSpace: "nowrap",
 			},

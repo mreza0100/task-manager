@@ -154,18 +154,26 @@ export default function TaskManager() {
 				</Item>
 			</ManagerItems>
 			<Footer>
-				<button
-					className="btn"
-					onClick={() => {
-						handleSubmit(
-							{ taskID, toDate, fromDate, description, tags },
-							dispatch
-						);
-					}}
-				>
-					ثبت
-				</button>
-				<i className="fa fa-trash" onClick={() => handleDeleteTask(taskID)} />
+				<Item>
+					<div className="font"></div>
+					<div className="content">
+						<button
+							className="btn"
+							onClick={() => {
+								handleSubmit(
+									{ taskID, toDate, fromDate, description, tags },
+									dispatch
+								);
+							}}
+						>
+							ثبت
+						</button>
+						<i
+							className="fa fa-trash"
+							onClick={() => handleDeleteTask(taskID)}
+						/>
+					</div>
+				</Item>
 			</Footer>
 		</Manager>
 	);
@@ -180,19 +188,29 @@ const Footer = styled.div(({ theme: { flex }, theme: { $bolderBlue } }) => {
 		padding: "0 10px",
 		width: "100%",
 		height: "60px",
-		"> i": {
-			fontSize: "20px",
-			cursor: "pointer",
-			transition: "color 0.4s",
-			"&:hover": {
-				color: "red",
-			},
+		"> div": {
+			width: "100%",
 		},
-		"> button": {
-			backgroundColor: $bolderBlue,
-			height: "50%",
-			fontSize: "12px",
-			...flex(),
+		".font": { backgroundColor: "transparent !important" },
+		".content": {
+			...flex(["justifyContent"]),
+			justifyContent: "space-between",
+			width: "100%",
+			backgroundColor: "transparent !important",
+			" button": {
+				backgroundColor: $bolderBlue,
+				height: "50%",
+				fontSize: "12px",
+				...flex(),
+			},
+			" i": {
+				fontSize: "20px",
+				cursor: "pointer",
+				transition: "color 0.4s",
+				"&:hover": {
+					color: "red",
+				},
+			},
 		},
 	};
 });
@@ -227,7 +245,6 @@ const Item = styled.div(({ theme: { flex } }) => {
 		},
 		"> div.date": {
 			justifyContent: "flex-start",
-			// padding: "5px",
 			"> span": { fontSize: "14px", marginLeft: "5px" },
 			"> div": {
 				width: "auto",
@@ -258,6 +275,7 @@ const Item = styled.div(({ theme: { flex } }) => {
 		"&#description": {
 			".font": { background: "rgba(218, 179, 44, 0.15)" },
 			".content": {
+				paddingRight: 0,
 				minHeight: "74px",
 				backgroundColor: "transparent",
 				textarea: {

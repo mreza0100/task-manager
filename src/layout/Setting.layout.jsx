@@ -169,18 +169,24 @@ const StyledUl = styled.ul(props => {
 	};
 });
 
-export default function SettingLayout({ children, extraClass }) {
+export default function SettingLayout({ children, extraClass, styles }) {
 	return (
 		<LayoutWrapper>
 			<StyledMain className="container-fluid row">
 				<div className="col-sm-3">
 					<Menu />
 				</div>
-				<div className={`col-sm-8 ${extraClass || ""}`}>{children}</div>
+				<ChildrenWrapper styles={styles} className={`col-sm-8 ${extraClass || ""}`}>
+					{children}
+				</ChildrenWrapper>
 			</StyledMain>
 		</LayoutWrapper>
 	);
 }
+
+const ChildrenWrapper = styled.div(({ styles }) => {
+	return styles || {};
+});
 
 const StyledMain = styled.main(props => {
 	return {

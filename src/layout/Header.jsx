@@ -82,6 +82,8 @@ const StyledUl = styled.ul(({ theme: { flex, $blue, $white } }) => {
 			height: "70px",
 			background: $blue,
 			cursor: "default",
+			pointerEvents: "none",
+			userSelect: "none",
 		},
 	};
 });
