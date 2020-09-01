@@ -135,7 +135,22 @@ function getRandomNumber(min, max) {
 }
 
 function defer(func) {
-	setTimeout(func, 0);
+	return setTimeout(func, 0);
+}
+
+function isEmptyObjOrArr(obj_arr) {
+	for (const _ in obj_arr) return false;
+	return true;
+}
+
+function trimObj(obj, { removeNull = true, removeEmptyArr = false, removeAnyFalse = false } = {}) {
+	const _obj = { ...obj };
+	for (const key in _obj) {
+		if (removeNull && _obj[key] === null) delete _obj[key];
+		if (removeEmptyArr && Array.isArray(_obj[key])) if (isEmptyObjOrArr) delete _obj[key];
+		if (removeAnyFalse && !_obj[key]) delete _obj[key];
+	}
+	return _obj;
 }
 
 export {
@@ -160,4 +175,6 @@ export {
 	defer,
 	stringfyDateForServer,
 	parseDateFromServer,
+	isEmptyObjOrArr,
+	trimObj,
 };

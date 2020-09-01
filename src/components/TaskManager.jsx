@@ -1,4 +1,4 @@
-import { parseDateFromServer, stringfyDateForServer } from "../helpers/exports";
+import { parseDateFromServer, stringfyDateForServer, trimObj } from "../helpers/exports";
 import DatePicker from "react-datepicker2";
 import useTaskSelectore from "../hooks/taskSelector";
 import styled from "styled-components";
@@ -19,7 +19,7 @@ async function handleDeleteTask(taskID) {
 		const res = await _USE_API_({
 			isPrivetRoute: true,
 			describe: "deleting a task",
-			debug: true,
+			debug: false,
 		}).Delete({ data, url: "/tasks" });
 		if (res.status === 200) Router.replace("/");
 	} catch (err) {
@@ -32,28 +32,24 @@ async function handleSubmit(data, { dispatch }) {
 	try {
 		data = {
 			id: data.taskID,
-			description: data.description,
-			tags: data.tags || [],
+			description: data.description || "",
+			tags: data.tags,
 			from_date: stringfyDateForServer(data.fromDate),
 			to_date: stringfyDateForServer(data.toDate),
 		};
-		// console.log("in:::");
+		data = trimObj(data);
 		const { id: taskID } = data;
 		const res = await _USE_API_({
 			isPrivetRoute: true,
-			describe: "saving TaskManager changes",
+			describe: "saving Task-manager changes",
 			debug: false,
-		}).Put({
-			url: "/tasks",
-			data,
-		});
+		}).Put({ url: "/tasks", data });
 		if (res.status === 200) dispatch(getOneAndOverwrite({ taskID }));
 	} catch (err) {
 		console.dir(err);
 	}
 }
 
-var timeoutVal;
 export default function TaskManager() {
 	const dispatch = useDispatch();
 	const {
@@ -66,30 +62,19 @@ export default function TaskManager() {
 		to_date: initaialToDate,
 		is_done,
 		is_favorite,
-	} = useTaskSelectore();
+	} = useTaskSelectore({ alertOnNotFound: false });
 	const [fromDate, setFromDate] = useState(parseDateFromServer(initaialFromDate));
 	const [toDate, setToDate] = useState(parseDateFromServer(initaialToDate));
 	const [description, setDescription] = useState(initialDescription);
 	const [tags, setTags] = useState(initalTags);
 
 	useEffect(() => {
-		if (taskID) handleSubmit({ taskID, description, tags, fromDate, toDate }, { dispatch });
+		if (!taskID) return undefined;
 		setFromDate(parseDateFromServer(initaialFromDate));
 		setToDate(parseDateFromServer(initaialToDate));
 		setDescription(initialDescription);
 		setTags(initalTags);
 	}, [taskID]);
-
-	useEffect(() => {
-		if (taskID) {
-			console.log(taskID);
-			clearTimeout(timeoutVal);
-			timeoutVal = setTimeout(() => {
-				timeoutVal = undefined;
-				handleSubmit({ taskID, description, tags, fromDate, toDate }, { dispatch });
-			}, 5000);
-		}
-	}, [fromDate, toDate, description, tags]);
 
 	const handleChangeTag = newTags => setTags(newTags);
 	const tagJSX = props => {
@@ -169,27 +154,45 @@ export default function TaskManager() {
 				</Item>
 			</ManagerItems>
 			<Footer>
+				<button
+					className="btn"
+					onClick={() => {
+						handleSubmit(
+							{ taskID, toDate, fromDate, description, tags },
+							dispatch
+						);
+					}}
+				>
+					ثبت
+				</button>
 				<i className="fa fa-trash" onClick={() => handleDeleteTask(taskID)} />
 			</Footer>
 		</Manager>
 	);
 }
 
-const Footer = styled.div(({ theme: { flex } }) => {
+const Footer = styled.div(({ theme: { flex }, theme: { $bolderBlue } }) => {
 	return {
 		...flex(["justifyContent"]),
-		justifyContent: "flex-end",
+		justifyContent: "space-between",
 		marginTop: "auto",
 		minHeight: "25px",
+		padding: "0 10px",
 		width: "100%",
+		height: "60px",
 		"> i": {
-			padding: "15px",
 			fontSize: "20px",
 			cursor: "pointer",
 			transition: "color 0.4s",
 			"&:hover": {
 				color: "red",
 			},
+		},
+		"> button": {
+			backgroundColor: $bolderBlue,
+			height: "50%",
+			fontSize: "12px",
+			...flex(),
 		},
 	};
 });
@@ -313,8 +316,9 @@ const Manager = styled.aside(({ theme: { flex, $white, transition } }) => {
 		width: "400px",
 		borderRight: "1px solid #E4EAF0",
 		backgroundColor: $white,
-		"> #no-task": {
+		"#no-task": {
 			height: "10%",
+			textAlign: "center",
 			margin: "auto",
 		},
 	};

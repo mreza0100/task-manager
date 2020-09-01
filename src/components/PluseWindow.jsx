@@ -42,8 +42,9 @@ export default function PluseWindow() {
 
 	const isPlusMode = useSelector(state => state.isPlusMode);
 
+	if (!isPlusMode) return <TransitonWrapper visible={false} />;
 	return (
-		<TransitonWrapper visible={isPlusMode}>
+		<TransitonWrapper visible={true}>
 			<StyledTaskManager>
 				<Formik
 					enableReinitialize

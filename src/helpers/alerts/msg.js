@@ -64,7 +64,7 @@ export default function showMsg(
 			nodeName: tNodeName ?? "h3",
 			attrs: { class: "msg-title", ...tAttrs },
 			text: tText,
-			styles: tStyles,
+			styles: { ...tStyles, ...{ margin: 0 } },
 			childs: tChilds,
 			props: tProps,
 		});

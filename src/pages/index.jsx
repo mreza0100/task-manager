@@ -1,4 +1,3 @@
-import { getProfileData } from "../redux/actions/profile";
 import useFiltringTasks from "../hooks/filtringTasks";
 import useTaskSelectore from "../hooks/taskSelector";
 import PluseWindow from "../components/PluseWindow";
@@ -6,10 +5,10 @@ import TaskManager from "../components/TaskManager";
 import { togglePlus } from "../redux/actions/plus";
 import { getTasks } from "../redux/actions/tasks";
 import MainLayout from "../layout/Main.lauout";
-import { useState } from "react";
+import Task from "../components/task/Task";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import Task from "../components/task/Task";
+import { useState } from "react";
 
 const sortsData = (SA, sorts) => [
 	{
@@ -162,17 +161,21 @@ export default function Index() {
 	);
 }
 Index.getInitialProps = async ({ store: { dispatch }, req, res }) => {
-	await dispatch(getProfileData({ req, res }));
 	await dispatch(getTasks({ req, res }));
 };
 
 const MenuItem = styled.span(({ selectedMe }) => {
 	return {
-		padding: "10px 0",
+		padding: "10px",
 		userSelect: "none",
 		color: selectedMe ? "red" : "black",
 		fontSize: "10px",
+		fonstWeight: 500,
 		whiteSpace: "nowrap",
+		transition: "color 0.3s",
+		"&:hover": {
+			color: !selectedMe ? "#a37f7f" : "red",
+		},
 	};
 });
 
@@ -234,26 +237,24 @@ const TopContents = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
 					padding: "10px 0",
 					backgroundColor: "#FFF",
 					overflow: "hidden",
-					top: 30,
-					right: -10,
-					left: -10,
+					minWidth: "100%",
+					top: "30px",
+					left: "unset",
+					right: 0,
 					...flex(["justifyContent"]),
 					justifyContent: "space-evenly",
 					flexDirection: "column",
 					height: "max-content",
 					minHeight: "25px",
-					opacity: 0,
-					pointerEvents: "none",
-					transition: "all 0.4s",
+					display: "none",
 				},
 				"&:hover": {
 					".menu": {
-						opacity: 1,
-						pointerEvents: "unset",
+						display: "inherit",
 					},
 				},
 			},
-			"> div + div": { marginRight: "10px" },
+			"> div + div": { marginRight: "10px", "div.menu": { left: 0, right: "unset" } },
 		},
 		"> ul": {
 			padding: 0,

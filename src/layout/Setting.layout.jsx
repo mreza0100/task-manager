@@ -2,10 +2,10 @@ import { flex, deleteCookie } from "../helpers/exports";
 import Router, { useRouter } from "next/router";
 import showMsg from "../helpers/alerts/msg";
 import { useSelector } from "react-redux";
+import LayoutWrapper from "./Main.lauout";
 import ask from "../helpers/alerts/ask";
 import styled from "styled-components";
 import { useMemo } from "react";
-import Header from "./Header";
 import Link from "next/link";
 
 function handleLogout() {
@@ -56,11 +56,6 @@ const menuData = [
 		isComponent: false,
 		label: "تغییر گذرواژه",
 		route: "/setting/reset-password",
-	},
-	{
-		isComponent: false,
-		label: "شخصی سازی",
-		route: "/setting/customize",
 	},
 	{
 		isComponent: false,
@@ -176,15 +171,14 @@ const StyledUl = styled.ul(props => {
 
 export default function SettingLayout({ children, extraClass }) {
 	return (
-		<>
-			<Header />
+		<LayoutWrapper>
 			<StyledMain className="container-fluid row">
 				<div className="col-sm-3">
 					<Menu />
 				</div>
 				<div className={`col-sm-8 ${extraClass || ""}`}>{children}</div>
 			</StyledMain>
-		</>
+		</LayoutWrapper>
 	);
 }
 

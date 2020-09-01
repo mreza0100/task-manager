@@ -5,14 +5,9 @@ import Link from "next/link";
 
 const menuData = [
 	{
-		isComponent: true,
-		jsx: ({ key }) => {
-			return (
-				<li key={key} id="top-header">
-					<img src="top-header.svg" />
-				</li>
-			);
-		},
+		isComponent: false,
+		id: "top-header",
+		svg: require("../assets/svg/top-header.svg"),
 	},
 	{
 		isComponent: false,
@@ -22,8 +17,8 @@ const menuData = [
 	},
 	{
 		isComponent: false,
-		svg: "tasks.svg",
 		route: "/",
+		svg: require("../assets/svg/tasks.svg"),
 	},
 ];
 
@@ -42,11 +37,11 @@ export default function Header() {
 						) => {
 							if (isComponent) return jsx({ key: idx });
 							return (
-								<Link href={route} key={route}>
+								<Link href={route || url} key={idx}>
 									<StyledLi
 										selectedMe={url === route}
 										id={id}
-										className={className}
+										className={className || null}
 									>
 										{svg && <img src={svg} />}
 										{label && label}
@@ -86,6 +81,7 @@ const StyledUl = styled.ul(({ theme: { flex, $blue, $white } }) => {
 			width: "100%",
 			height: "70px",
 			background: $blue,
+			cursor: "default",
 		},
 	};
 });

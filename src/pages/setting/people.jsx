@@ -31,7 +31,12 @@ function AddBox({ onSubmit, inBtn, initialValues, extraBtnClass }) {
 				{({ errors }) => {
 					return (
 						<Form className="col-12 row">
-							<Field name="name" type="text" className="col-sm-4" placeholder="نام" />
+							<Field
+								name="name"
+								type="text"
+								className="col-sm-4"
+								placeholder="نام"
+							/>
 							<Field
 								name="mobile"
 								type="text"
@@ -163,8 +168,14 @@ export default function People(props) {
 								<span>شماره تلفن: {mobile}</span>
 							</div>
 							<div className="control col-2 row">
-								<i className="fa fa-edit col-5" onClick={() => setQuery(id)} />
-								<i className="fa fa-trash col-5" onClick={() => onDelete(id)} />
+								<i
+									className="fa fa-edit col-5"
+									onClick={() => setQuery(id)}
+								/>
+								<i
+									className="fa fa-trash col-5"
+									onClick={() => onDelete(id)}
+								/>
 							</div>
 						</StyledContact>
 					);
@@ -216,6 +227,7 @@ const StyledContact = styled.li(props => {
 				color: "#fff",
 				borderRadius: "4px",
 				cursor: "pointer",
+				maxHeight: "40px",
 			},
 			"i.fa-trash": {
 				backgroundColor: "red",

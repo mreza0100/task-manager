@@ -3,14 +3,14 @@ import Header from "./Header";
 
 export default function MainLauout({ children }) {
 	return (
-		<Wrapper>
+		<LayoutWrapper>
 			<Header />
 			{children}
-		</Wrapper>
+		</LayoutWrapper>
 	);
 }
 
-const Wrapper = styled.div(({ theme: { flex } }) => {
+export const LayoutWrapper = styled.div(({ theme: { flex } }) => {
 	return {
 		...flex(["justifyContent", "alignItems"]),
 		justifyContent: "space-between",

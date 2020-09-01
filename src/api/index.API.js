@@ -28,9 +28,8 @@ const AC /* as APIConfigs */ = {
 	logError: false,
 	inBrowser: typeof window !== "undefined",
 	describe() {
-		for (let i = 0; i < 10; i++) {
-			console.error("<<<<<<<<<<<API need a describe<<<<<<<<<<<");
-		}
+		for (let i = 0; i < 100; i++) console.error(`<<<<<<<<<<<API need a describe<<<<<<<<<<<${i}`);
+
 		throw Error("<<<<<<<<<<<API need a describe<<<<<<<<<<<");
 	},
 };

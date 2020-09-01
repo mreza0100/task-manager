@@ -5,8 +5,9 @@ const wrapperStyles = ({ extraStyles }) => {
 	var width = window.innerWidth < 500 ? "90%" : "40%";
 	return {
 		width,
-		height: "30vh",
-		minHeight: "120px",
+		minHeight: "30vh",
+		// minHeight: "120px",
+		padding: "10px 0 10px 0",
 		opacity: 0,
 		position: "absolute",
 		top: "25%",
@@ -39,7 +40,7 @@ const closeStyles = {
 	position: "absolute",
 	right: "15px",
 	top: "10px",
-	padding: "8px",
+	// padding: "8px",
 	cursor: "pointer",
 };
 
@@ -99,7 +100,7 @@ export default function ask(
 		var title, btn1, btn2;
 		if (tText) {
 			title = create({
-				nodeName: tNodeName ?? "h5",
+				nodeName: tNodeName ?? "p",
 				attrs: tAttrs,
 				childs: tChilds,
 				props: tProps,
