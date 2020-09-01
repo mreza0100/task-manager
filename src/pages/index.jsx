@@ -8,7 +8,7 @@ import MainLayout from "../layout/Main.lauout";
 import Task from "../components/task/Task";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const sortsData = (SA, sorts) => [
 	{
@@ -59,6 +59,10 @@ export default function Index() {
 
 	useTaskSelectore({ tasks: filtredTasks, alertOnNotFound: false });
 
+	useEffect(() => {
+		console.log("in");
+	}, []);
+	console.log("out");
 	const FA = {
 		// FA for filterActions
 		justUnfinished() {

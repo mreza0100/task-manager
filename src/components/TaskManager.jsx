@@ -1,17 +1,17 @@
 import { parseDateFromServer, stringfyDateForServer, trimObj } from "../helpers/exports";
-import DatePicker from "react-datepicker2";
+import { getOneAndOverwrite } from "../redux/actions/tasks";
 import useTaskSelectore from "../hooks/taskSelector";
+import { _USE_API_ } from "../api/index.API";
+import { useState, useEffect } from "react";
+import DatePicker from "react-datepicker2";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import TagsInput from "react-tagsinput";
 import CheckBox from "./task/CheckBox";
 import CopyBtn from "./task/CopyBtn";
 import { Title } from "./task/Task";
-import { useState, useEffect } from "react";
-import Star from "./task/Star";
-import TagsInput from "react-tagsinput";
-import { useDispatch } from "react-redux";
-import { getOneAndOverwrite } from "../redux/actions/tasks";
-import { _USE_API_ } from "../api/index.API";
 import Router from "next/router";
+import Star from "./task/Star";
 
 async function handleDeleteTask(taskID) {
 	try {

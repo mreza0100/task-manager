@@ -2,32 +2,29 @@ import { transition, flex, prevEnter, tagObjToArr, stringfyDateForServer } from 
 import DatePicker from "../../node_modules/react-datepicker2/dist/es/index";
 import { useDispatch, useSelector } from "react-redux";
 import { getOneTask } from "../redux/actions/tasks";
-import { togglePlus } from "../redux/actions/plus";
 import ReactTags from "react-tag-autocomplete";
 import { _USE_API_ } from "../api/index.API";
 import { Formik, Form, Field } from "formik";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import moment from "moment-jalaali";
 // !>>
 
 async function handleSubmit(data, { dispatch, setSubmitting }) {
 	setSubmitting(true);
-	await _USE_API_({ isPrivetRoute: true, describe: "PluseWindow" })
-		.Post({
+
+	try {
+		const res = await _USE_API_({ isPrivetRoute: true, describe: "PluseWindow" }).Post({
 			url: "tasks",
 			data,
-		})
-		.then(res => {
-			const taskID = res.data.data.item.id;
-			if (taskID) dispatch(getOneTask({ taskID }));
-		})
-		.catch(err => {
-			console.dir(err);
-		})
-		.finally(() => {
-			setSubmitting(false);
 		});
+		const taskID = res.data.data.item.id;
+		if (taskID) dispatch(getOneTask({ taskID }));
+	} catch (err) {
+		console.dir(err);
+	} finally {
+		setSubmitting(false);
+	}
 }
 
 export default function PluseWindow() {
