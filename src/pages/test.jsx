@@ -1,3 +1,9 @@
 export default function Test() {
-	return null;
+	return (
+		<div
+			onClick={() => {
+				console.log(22);
+			}}
+		></div>
+	);
 }

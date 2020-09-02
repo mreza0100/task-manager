@@ -11,21 +11,17 @@ import { ThemeProvider } from "styled-components";
 // style helpers in styled components props
 import styleHelpers from "../helpers/style-helpers";
 
-Router.onRouteChangeStart = () => {
-	NProgress.start();
-};
-Router.onRouteChangeComplete = () => {
-	NProgress.done();
-};
-Router.onRouteChangeError = () => {
-	NProgress.done();
-};
+Router.onRouteChangeStart = () => NProgress.start();
+
+Router.onRouteChangeComplete = () => NProgress.done();
+
+Router.onRouteChangeError = () => NProgress.done();
 
 // !--->>>
 
-function ForUsingHooks({ children }) {
-	return <ThemeProvider theme={styleHelpers}>{children}</ThemeProvider>;
-}
+// function ForUsingHooks({ children }) {
+// return <ThemeProvider theme={styleHelpers}>{children}</ThemeProvider>;
+// }
 
 class App extends NextApp {
 	static async getInitialProps({ Component, ctx }) {
@@ -40,11 +36,11 @@ class App extends NextApp {
 		return (
 			<>
 				<Head>
-					<link rel="shortcut icon" href="miz-logo.svg" />
+					<link rel="shortcut icon" href={require("../assets/svg/miz-logo.svg")} />
 				</Head>
-				<ForUsingHooks>
+				<ThemeProvider theme={styleHelpers}>
 					<Component {...pageProps} />
-				</ForUsingHooks>
+				</ThemeProvider>
 			</>
 		);
 	}
