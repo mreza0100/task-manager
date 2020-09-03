@@ -19,14 +19,14 @@ const AC /* as APIConfigs */ = {
 	getState: false,
 	debug: false,
 	details: false,
-	req: false,
-	res: false,
+	req: null,
+	res: null,
 	isPrivetRoute: false,
 	pendingID: false,
 	ignoreStatuses: [],
 	kickOn401: true,
 	logError: true,
-	inBrowser: typeof window !== "undefined",
+	inBrowser: !isUndefined(window),
 	describe() {
 		for (let i = 0; i < 100; i++) console.error(`<<<<<<<<<<<API need a describe<<<<<<<<<<<${i}`);
 
@@ -59,15 +59,16 @@ class API {
 		this.inBrowser = process.browser && AC.inBrowser;
 		this.describe = describe ?? AC.describe();
 		this.isPrivetRoute /*need token*/ = isPrivetRoute ?? AC.isPrivetRoute;
+		this.ignoreStatuses = ignoreStatuses ?? AC.ignoreStatuses;
+		this.kickOn401 = kickOn401 ?? AC.kickOn401;
+		this.logError = logError ?? AC.logError;
+		this.pendingID = this.inBrowser ? pendingID ?? AC.pendingID : false;
 		this.$XHR = Axios.create({
 			baseURL: this.baseURL,
 			...configs,
 		});
-		this.ignoreStatuses = ignoreStatuses ?? AC.ignoreStatuses;
-		this.kickOn401 = kickOn401 ?? AC.kickOn401;
-		this.logError = logError ?? AC.logError;
-		if (this.inBrowser) this.pendingID = pendingID ?? AC.pendingID;
-		else this.pendingID = false;
+		// if (this.inBrowser) this.pendingID = pendingID ?? AC.pendingID;
+		// else this.pendingID = false;
 	}
 
 	_debugCenter = ({ res, url, params, data, callback }) => {
