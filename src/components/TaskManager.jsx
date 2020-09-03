@@ -22,9 +22,7 @@ async function handleDeleteTask(taskID) {
 			debug: false,
 		}).Delete({ data, url: "/tasks" });
 		if (res.status === 200) Router.replace("/");
-	} catch (err) {
-		console.dir(err);
-	}
+	} catch (err) {}
 }
 
 async function handleSubmit(data, { dispatch }) {
@@ -45,9 +43,7 @@ async function handleSubmit(data, { dispatch }) {
 			debug: false,
 		}).Put({ url: "/tasks", data });
 		if (res.status === 200) dispatch(getOneAndOverwrite({ taskID }));
-	} catch (err) {
-		console.dir(err);
-	}
+	} catch (err) {}
 }
 
 export default function TaskManager() {
@@ -120,11 +116,7 @@ export default function TaskManager() {
 					</div>
 					<div className="content date">
 						<span>تا</span>
-						<DatePicker
-							isGregorian={false}
-							value={toDate}
-							onChange={d => setToDate(d)}
-						/>
+						<DatePicker isGregorian={false} value={toDate} onChange={d => setToDate(d)} />
 					</div>
 				</Item>
 				<Item>
@@ -168,10 +160,7 @@ export default function TaskManager() {
 						>
 							ثبت
 						</button>
-						<i
-							className="fa fa-trash"
-							onClick={() => handleDeleteTask(taskID)}
-						/>
+						<i className="fa fa-trash" onClick={() => handleDeleteTask(taskID)} />
 					</div>
 				</Item>
 			</Footer>

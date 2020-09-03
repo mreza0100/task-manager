@@ -15,13 +15,10 @@ export const getProfileData = payload => async (dispatch, getState) => {
 			params: { fields: JSON.stringify(fields) },
 		});
 		dispatch({ type: SET_PROFILE, payload: APIResponse.data.data.item });
-	} catch (err) {
-		// throw Error("NEtwork Error>>: ", err);
-	}
-	// name,
-	// family,
-	// email,
-	// userID,
-	// mobile,
-	// tasksFigure
+	} catch (err) {}
+	// name
+	// family
+	// email
+	// userID
+	// mobile
 };

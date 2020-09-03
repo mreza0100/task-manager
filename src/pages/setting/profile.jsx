@@ -30,20 +30,19 @@ async function handleSubmit(data, setSubmitting) {
 		});
 		if (res.status === 200) reloadRouter();
 	} catch (err) {
-		console.dir(err);
 	} finally {
 		setSubmitting(false);
 	}
 }
 
-export default function Profile(props) {
+export default function Profile() {
 	const { email, family, mobile, name } = useSelector(state => state.profile);
 	const [editMode, setEditmode] = useState(false);
 
 	const onToggleEditMode = () => setEditmode(!editMode);
 
 	return (
-		<SettingLayout>
+		<SettingLayout getProfile={{ cancel: true }}>
 			<Formik
 				initialValues={{
 					name,

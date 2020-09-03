@@ -17,17 +17,12 @@ export default function Star({ isFavorite, taskID }) {
 				url: "/tasks",
 			});
 		} catch (err) {
-			console.dir(err);
 			dispatch(editTask({ newTask: { id: taskID, is_favorite: isFavorite } }));
 		}
 	};
 
 	return (
-		<I
-			onClick={handleSubmit}
-			className={`fa fa-star${!isFavorite ? "-o" : ""}`}
-			isFavorite={isFavorite}
-		/>
+		<I onClick={handleSubmit} className={`fa fa-star${!isFavorite ? "-o" : ""}`} isFavorite={isFavorite} />
 	);
 }
 

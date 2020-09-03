@@ -1,4 +1,4 @@
-const { SET_PEOPLE, ADD_PEOPLE, DELETE_PEOPLE } = require("../type");
+import { SET_PEOPLE, ADD_PEOPLE, DELETE_PEOPLE } from "../type.js";
 import { _USE_API_ } from "../../api/index.API";
 import { reloadRouter } from "../../helpers/exports";
 
@@ -27,9 +27,7 @@ export const addPeople = payload => async (dispatch, getState) => {
 		}).Post({ url: "/people", data });
 		const { id } = res.data.data.item;
 		if (id && res.status === 200) dispatch({ type: ADD_PEOPLE, payload: { ...data, id } });
-	} catch (err) {
-		console.dir(err);
-	}
+	} catch (err) {}
 };
 
 export const deleteContact = payload => async (dispatch, getState) => {
@@ -45,9 +43,7 @@ export const deleteContact = payload => async (dispatch, getState) => {
 			data,
 		});
 		if (res.status === 200) reloadRouter();
-	} catch (err) {
-		console.dir(err);
-	}
+	} catch (err) {}
 };
 
 export const editContact = payload => async (dispatch, getState) => {
@@ -62,7 +58,5 @@ export const editContact = payload => async (dispatch, getState) => {
 			data,
 		});
 		if (res.status === 200) reloadRouter();
-	} catch (err) {
-		console.dir(err);
-	}
+	} catch (err) {}
 };

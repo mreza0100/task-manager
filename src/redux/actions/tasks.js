@@ -15,9 +15,7 @@ export const getTasks = payload => async (dispatch, getState) => {
 			const payload = APIResponse.data.data.list;
 			dispatch({ type: SET_TASKS, payload });
 		}
-	} catch (err) {
-		throw Error("NEtwork Error>>: ", err);
-	}
+	} catch (err) {}
 };
 
 export const editTask = payload => (dispatch, getState) => {
@@ -48,9 +46,7 @@ export const getOneAndOverwrite = payload => async (dispatch, getState) => {
 			const newTasks = tasks.map(task => (task.id === newTask.id ? newTask : task));
 			dispatch({ type: SET_TASKS, payload: newTasks });
 		}
-	} catch (err) {
-		console.dir(err);
-	}
+	} catch (err) {}
 };
 
 export const getOneTask = payload => async (dispatch, getState) => {
@@ -69,7 +65,5 @@ export const getOneTask = payload => async (dispatch, getState) => {
 			const newTask = res.data.data.item;
 			dispatch({ type: SET_TASK, payload: newTask });
 		}
-	} catch (err) {
-		console.dir(err);
-	}
+	} catch (err) {}
 };

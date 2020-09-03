@@ -25,7 +25,7 @@ const AC /* as APIConfigs */ = {
 	pendingID: false,
 	ignoreStatuses: [],
 	kickOn401: true,
-	logError: false,
+	logError: true,
 	inBrowser: typeof window !== "undefined",
 	describe() {
 		for (let i = 0; i < 100; i++) console.error(`<<<<<<<<<<<API need a describe<<<<<<<<<<<${i}`);
@@ -66,9 +66,8 @@ class API {
 		this.ignoreStatuses = ignoreStatuses ?? AC.ignoreStatuses;
 		this.kickOn401 = kickOn401 ?? AC.kickOn401;
 		this.logError = logError ?? AC.logError;
-		if (this.inBrowser) {
-			this.pendingID = pendingID ?? AC.pendingID;
-		} else this.pendingID = false;
+		if (this.inBrowser) this.pendingID = pendingID ?? AC.pendingID;
+		else this.pendingID = false;
 	}
 
 	_debugCenter = ({ res, url, params, data, callback }) => {
@@ -133,7 +132,9 @@ class API {
 	};
 
 	_handleErr({ err, url, params, data, callback }) {
-		if (this.inBrowser && !isUndefined(err.response) && this.ignoreStatuses) {
+		if (this.inBrowser && !isUndefined(err.response)) {
+			// ant API error is throwing a msg network Error to user
+			// if !isUndefined(err.response) is mean backend is working
 			if (!this.ignoreStatuses.find(status => status === err.response.status))
 				showMsg(
 					{
@@ -144,14 +145,25 @@ class API {
 				);
 		}
 		if (isUndefined(err.response)) {
-			// if err.response was undefined internet is disconnected
-			showMsg(
-				{
-					title: { text: "مشکل شبکه " },
-					body: { text: "احتمالا اتصال شما مشکل دارد" },
-				},
-				{ status: "danger" }
-			);
+			// if err.response was undefined its backend or connection Error
+			if (this.inBrowser) {
+				showMsg(
+					{
+						title: { text: "مشکل شبکه " },
+						body: { text: "احتمالا اتصال شما مشکل دارد" },
+					},
+					{ status: "danger" }
+				);
+			} else {
+				const msg = `
+					<h1>Backend or Network Error</h1> <hr /><br /><br /><br />
+					go to server route <a href='http://5.63.9.74:7575/v1/tasks'>go to server JSON</a>
+					<br /><br /><br />
+					Error::>><br /><pre>${JSON.stringify(err, undefined, "\t")}</pre>
+					`;
+				this.res.writeHeader(500, { "Content-Type": "text/html" }).write(msg);
+				this.res.end();
+			}
 		}
 		if (this.debug)
 			this._debugCenter({
@@ -161,16 +173,17 @@ class API {
 				data,
 				callback,
 			});
-		try {
+
+		if (!isUndefined(err.response)) {
 			const status = err.response.status;
 			if (this.isPrivetRoute) {
 				if (status === 404 && this.inBrowser) return reloadRouter();
 				if (status === 401 && !this.kickOn401) return this._redirectToLogin();
 			}
 			// TODO: deleting token for 401 status
-		} catch (reason) {
-			if (this.logError) console.dir(err);
 		}
+
+		if (this.logError) console.dir(err);
 	}
 
 	_permissionDenied() {
@@ -226,17 +239,11 @@ class API {
 		});
 	}
 
-	Get = ({ url, params, data, callback } = {}) =>
-		this.request({ url, params, data, callback }, "get");
-	Post = ({ url, params, data, callback } = {}) =>
-		this.request({ url, params, data, callback }, "post");
-	Put = ({ url, params, data, callback } = {}) =>
-		this.request({ url, params, data, callback }, "put");
-	Delete = ({ url, params, data, callback } = {}) =>
-		this.request({ url, params, data, callback }, "delete");
+	Get = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "get");
+	Post = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "post");
+	Put = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "put");
+	Delete = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "delete");
 }
-
-// ? INITING HOOK
 
 function _USE_API_({
 	baseURL,
@@ -287,23 +294,3 @@ class APITools {
 // $>>> EXPORTS
 export { API };
 export { _USE_API_, APITools };
-
-// this.xhr.interceptors.request.use(configs => {
-// 	if (this.isPrivetRoute) {
-// 		const token = this._getToken();
-// 		if (!token) return this._redirectToLogin();
-// 		if (configs.data) configs.data = { ...configs.data, token };
-// 		else configs.params = { ...configs.params, token };
-// 		// _beforeEachRequest() {}
-// 	}
-// 	return configs;
-// });
-// this.xhr.interceptors.response.use(this._handleRes, this._handleErr);
-
-// this.dispatch = /*  dispatch ?? */ AC.dispatch;
-// this.getState = /* getState ??  */ AC.getState;
-/*
- dispatch, getState, 
-log("dispatch        ::::", !!this.dispatch);
-log("getState        ::::", !!this.getState);
-*/

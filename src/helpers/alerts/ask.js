@@ -78,8 +78,8 @@ export default function ask(
 		if (!process.browser) return reject("inBrowser");
 		if (isBusy) return reject({ isBusy: true });
 		else isBusy = true;
-		const onClickWindow = ({ path }) => {
-			if (!path.find(elem => elem === askWindow)) onRefuse();
+		const onClickWindow = ({ target }) => {
+			if (!askWindow.contains(target)) onRefuse();
 		};
 		const callback = () => {
 			askWindow.style.opacity = 0;

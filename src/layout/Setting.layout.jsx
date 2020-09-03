@@ -1,12 +1,13 @@
 import { flex, deleteCookie } from "../helpers/exports";
 import Router, { useRouter } from "next/router";
 import showMsg from "../helpers/alerts/msg";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import LayoutWrapper from "./Main.lauout";
 import ask from "../helpers/alerts/ask";
 import styled from "styled-components";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import Link from "next/link";
+import { getProfileData } from "../redux/actions/profile";
 
 function handleLogout() {
 	ask(
@@ -73,11 +74,15 @@ const menuData = [
 	},
 ];
 
-function Menu(props) {
-	// TODO: make a component for prof img header and here
-	const { name, family } = useSelector(state => state.profile);
-	const router = useRouter();
-	const url = router.route;
+function Menu({ getProfile: { extraParams = [], cancel = false } }) {
+	const { name, family } = useSelector(({ profile }) => profile);
+	const dispatch = useDispatch();
+	const { route: url } = useRouter();
+
+	useEffect(() => {
+		if (!cancel) dispatch(getProfileData({ fields: ["name", "family", ...extraParams] }));
+	}, [url]);
+
 	return useMemo(() => {
 		return (
 			<StyledUl>
@@ -169,12 +174,12 @@ const StyledUl = styled.ul(props => {
 	};
 });
 
-export default function SettingLayout({ children, extraClass, styles }) {
+export default function SettingLayout({ children, extraClass, styles, getProfile = {} }) {
 	return (
 		<LayoutWrapper>
 			<StyledMain className="container-fluid row">
 				<div className="col-sm-3">
-					<Menu />
+					<Menu getProfile={getProfile} />
 				</div>
 				<ChildrenWrapper styles={styles} className={`col-sm-8 ${extraClass || ""}`}>
 					{children}

@@ -11,9 +11,7 @@ async function handleSubmit(color, taskID) {
 			data: { color, id: taskID },
 			url: "/tasks",
 		});
-	} catch (err) {
-		console.dir(err);
-	}
+	} catch (err) {}
 }
 
 var timeoutVals = {};

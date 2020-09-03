@@ -2,7 +2,9 @@ const { cashedData, functions } = (function init(functions, initialCash) {
 	if (!new.target) return new init(functions, initialCash);
 	this.cashedData = initialCash;
 	this.functions = functions;
-	Object.keys(this.functions).forEach(func => (this.cashedData[func] = {}));
+	Object.keys(this.functions).forEach(func => {
+		this.cashedData[func] = {};
+	});
 })(
 	{
 		flex(whatIDontWant) {
@@ -22,17 +24,23 @@ const { cashedData, functions } = (function init(functions, initialCash) {
 		},
 		test(a, b) {
 			console.log("not cached!!");
-			return /*<<PURE*/ a ** b;
+			var x = [];
+			for (let i = 0; i < 100; i++) x.push(a ** b);
+
+			console.log(x);
+			return x;
 		},
 	},
 	{}
 );
 const { stringify: str, parse } = JSON;
-export default function $CASH(funcName) {
-	const args = Object.values(arguments).slice(1);
+export default function $CASH(funcName, ...args) {
 	const cash = cashedData[funcName];
-	const possiblyResult = cash[str(args)];
+	// get cashed data for that function
+	const possiblyResult = cash[str(args)] || false;
+	// maybe its secend time(or more) for a argumen i wanna get that
 	if (possiblyResult) return parse(possiblyResult);
+	// its not cashed im calling that function with uncashed arguments then cash result and return it
 	const result = functions[funcName](...args);
 	cash[str(args)] = str(result);
 	return result;
@@ -40,8 +48,8 @@ export default function $CASH(funcName) {
 
 // (function () {
 // 	/*test*/
-// 	if (!process.browser) return "pashmak";
-// 	const args = [10000000, 10000000];
+// 	if (!process.browser) return void 0;
+// 	const args = [100, 100];
 // 	for (let i = 0; i < 10; i++) {
 // 		console.time();
 // 		$CASH("test", ...args);
@@ -50,16 +58,15 @@ export default function $CASH(funcName) {
 // })();
 
 // const cash = {};
-// function sumArray(arr, num) {
+// function sumArray(arr) {
 // 	const { stringify: str, parse } = JSON;
-// 	if (str(arguments) in cash) return parse(cash[str(arguments)]);
-
+// 	if (cash[str(arr)]) return parse(cash[str(arr)]);
 // 	console.log(arr, "not in cashed data. calculating it");
 
-// 	var calculatedReturn = 0;
-// 	for (const i of arr) calculatedReturn += i + num;
+// 	var result = 0;
+// 	for (const i of arr) result += i;
 
-// 	cash[str(arguments)] = str(calculatedReturn);
+// 	cash[str(arr)] = str(result);
 
-// 	return calculatedReturn;
+// 	return result;
 // }

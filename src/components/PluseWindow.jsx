@@ -21,7 +21,6 @@ async function handleSubmit(data, { dispatch, setSubmitting }) {
 		const taskID = res.data.data.item.id;
 		if (taskID) dispatch(getOneTask({ taskID }));
 	} catch (err) {
-		console.dir(err);
 	} finally {
 		setSubmitting(false);
 	}
@@ -74,12 +73,7 @@ export default function PluseWindow() {
 								/>
 								<Field type="color" name="color" className="col-1" />
 							</div>
-							<Field
-								as="textarea"
-								name="description"
-								placeholder="توضیحات"
-								rows="4"
-							/>
+							<Field as="textarea" name="description" placeholder="توضیحات" rows="4" />
 							<StyledDatePickers className="col-12">
 								<div>
 									<span>از تاریخ:</span>

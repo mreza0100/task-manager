@@ -34,7 +34,6 @@ export const step_1 = {
 			});
 			return res.status;
 		} catch (err) {
-			console.dir(err);
 			if (!isUndefined(err.response) && err.response.status === 401)
 				showMsg(
 					{ title: { text: "این شماره در سیستم ثبت نشده است" } },

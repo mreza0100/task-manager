@@ -18,13 +18,9 @@ const butyInputs = {
 	},
 };
 
-function transition(time = 0.3) {
-	return $CACH("transition", time);
-}
+const transition = (time = 0.3) => $CACH("transition", time);
 
-function flex(whatIDontWant = []) {
-	return $CACH("flex", whatIDontWant);
-}
+const flex = (whatIDontWant = []) => $CACH("flex", whatIDontWant);
 
 const $blue = "#5460FE";
 const $blueTxt = "#6FA0F1";

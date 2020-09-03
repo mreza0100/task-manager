@@ -59,10 +59,6 @@ export default function Index() {
 
 	useTaskSelectore({ tasks: filtredTasks, alertOnNotFound: false });
 
-	useEffect(() => {
-		console.log("in");
-	}, []);
-	console.log("out");
 	const FA = {
 		// FA for filterActions
 		justUnfinished() {
@@ -113,33 +109,21 @@ export default function Index() {
 							<div>
 								<span>مرتب سازی</span>
 								<div className="menu">
-									{sortsData(SA, sorts).map(
-										({ me, click, label }, idx) => (
-											<MenuItem
-												key={idx}
-												selectedMe={me}
-												onClick={click}
-											>
-												{label}
-											</MenuItem>
-										)
-									)}
+									{sortsData(SA, sorts).map(({ me, click, label }, idx) => (
+										<MenuItem key={idx} selectedMe={me} onClick={click}>
+											{label}
+										</MenuItem>
+									))}
 								</div>
 							</div>
 							<div>
 								<span>فیلتر</span>
 								<div className="menu">
-									{filterData(FA, filters).map(
-										({ me, click, label }, idx) => (
-											<MenuItem
-												key={idx}
-												selectedMe={me}
-												onClick={click}
-											>
-												{label}
-											</MenuItem>
-										)
-									)}
+									{filterData(FA, filters).map(({ me, click, label }, idx) => (
+										<MenuItem key={idx} selectedMe={me} onClick={click}>
+											{label}
+										</MenuItem>
+									))}
 								</div>
 							</div>
 						</div>
@@ -170,7 +154,7 @@ Index.getInitialProps = async ({ store: { dispatch }, req, res }) => {
 
 const MenuItem = styled.span(({ selectedMe }) => {
 	return {
-		padding: "10px",
+		// padding: "10px",
 		userSelect: "none",
 		color: selectedMe ? "red" : "black",
 		fontSize: "10px",
@@ -237,8 +221,8 @@ const TopContents = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
 				padding: "0 10px",
 				cursor: "pointer",
 				"> div.menu": {
+					display: "inherit",
 					position: "absolute",
-					padding: "10px 0",
 					backgroundColor: "#FFF",
 					overflow: "hidden",
 					minWidth: "100%",
@@ -248,13 +232,13 @@ const TopContents = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
 					...flex(["justifyContent"]),
 					justifyContent: "space-evenly",
 					flexDirection: "column",
-					height: "max-content",
-					minHeight: "25px",
-					display: "none",
+					padding: "0 10px",
+					transition: "all 0.3s",
+					height: "0px",
 				},
 				"&:hover": {
 					".menu": {
-						display: "inherit",
+						height: "100px",
 					},
 				},
 			},
