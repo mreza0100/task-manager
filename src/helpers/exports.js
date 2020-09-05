@@ -95,6 +95,7 @@ function reloadRouter() {
 }
 
 function serverRedirect({ res, route }) {
+	if (process.browser) return "only in server side";
 	if (route[0] !== "/") route = "/" + route;
 	res.writeHead(302, { Location: route }).end();
 }
@@ -153,6 +154,47 @@ function trimObj(obj, { removeNull = true, removeEmptyArr = false, removeAnyFals
 	return _obj;
 }
 
+function mapObject(obj, forEach) {
+	const _obj = { ...obj };
+	const len = Object.keys(_obj).length;
+	for (const i in _obj) _obj[i] = forEach(i, _obj[i], len, _obj);
+	return _obj;
+}
+
+function toRawType(value) {
+	return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
+}
+
+function isObject(obj) {
+	return obj !== null && typeof obj === "object";
+}
+
+function looseEqual(a, b) {
+	if (a === b) return true;
+
+	var isObjectA = isObject(a);
+	var isObjectB = isObject(b);
+	if (isObjectA && isObjectB) {
+		try {
+			var isArrayA = Array.isArray(a);
+			var isArrayB = Array.isArray(b);
+			if (isArrayA && isArrayB) {
+				return a.length === b.length && a.every((e, i) => looseEqual(e, b[i]));
+			} else if (a instanceof Date && b instanceof Date) {
+				return a.getTime() === b.getTime();
+			} else if (!isArrayA && !isArrayB) {
+				var keysA = Object.keys(a);
+				var keysB = Object.keys(b);
+				return keysA.length === keysB.length && keysA.every(key => looseEqual(a[key], b[key]));
+			} else return /*istanbul ignore next*/ false;
+		} catch (e) {
+			/* istanbul ignore next */
+			return false;
+		}
+	} else if (!isObjectA && !isObjectB) return String(a) === String(b);
+	else return false;
+}
+
 export {
 	$,
 	flex,
@@ -177,4 +219,8 @@ export {
 	parseDateFromServer,
 	isEmptyObjOrArr,
 	trimObj,
+	mapObject,
+	toRawType,
+	isObject,
+	looseEqual,
 };

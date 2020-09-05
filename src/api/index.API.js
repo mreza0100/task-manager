@@ -26,7 +26,7 @@ const AC /* as APIConfigs */ = {
 	ignoreStatuses: [],
 	kickOn401: true,
 	logError: true,
-	inBrowser: !isUndefined(window),
+	inBrowser: typeof window !== "undefined",
 	describe() {
 		for (let i = 0; i < 100; i++) console.error(`<<<<<<<<<<<API need a describe<<<<<<<<<<<${i}`);
 
@@ -56,7 +56,7 @@ class API {
 		this.debug = debug ?? AC.debug;
 		this.details = details ?? AC.details;
 		this.baseURL = baseURL ?? AC.baseURL;
-		this.inBrowser = process.browser && AC.inBrowser;
+		this.inBrowser = process.browser ?? AC.inBrowser;
 		this.describe = describe ?? AC.describe();
 		this.isPrivetRoute /*need token*/ = isPrivetRoute ?? AC.isPrivetRoute;
 		this.ignoreStatuses = ignoreStatuses ?? AC.ignoreStatuses;

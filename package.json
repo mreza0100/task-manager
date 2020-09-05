@@ -5,6 +5,7 @@
 	"scripts": {
 		"fire": "next dev -p 10000",
 		"debug": "NODE_OPTIONS='--inspect' next dev -p 10000",
+		"iFire": "npm install && npm run fire",
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start -p 10000"
@@ -29,6 +30,7 @@
 		"redux-thunk": "^2.3.0",
 		"sass": "^1.26.5",
 		"styled-components": "^5.1.1",
+		"vue": "^2.6.12",
 		"yup": "^0.29.3"
 	},
 	"devDependencies": {

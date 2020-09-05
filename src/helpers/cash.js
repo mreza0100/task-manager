@@ -3,19 +3,18 @@ const { cashedData, functions } = (function init(functions, initialCash) {
 	this.cashedData = initialCash;
 	this.functions = functions;
 	Object.keys(this.functions).forEach(func => {
-		this.cashedData[func] = {};
+		if (!this.cashedData[func]) this.cashedData[func] = {};
 	});
 })(
 	{
+		/* <!><!><!><!><!><!><!><!> PURE functions <!><!><!><!><!><!><!><!>  */
 		flex(whatIDontWant) {
-			const s = { display: "flex" };
-			if (!whatIDontWant.includes("alignItems")) s.alignItems = "center";
-			return /*<<PURE*/ !whatIDontWant.includes("justifyContent")
-				? { ...s, justifyContent: "center" }
-				: s;
+			const s = { display: "flex", justifyContent: "center", alignItems: "center" };
+			for (const i of whatIDontWant) delete s[i];
+			return s;
 		},
 		transition(time) {
-			return /*<<PURE*/ {
+			return {
 				transition: `${time}s ease-in-out,background-color
 			    ${time}s ease-in-out,border-color
 			    ${time}s ease-in-out,box-shadow
@@ -34,20 +33,39 @@ const { cashedData, functions } = (function init(functions, initialCash) {
 	{}
 );
 const { stringify: str, parse } = JSON;
+// ?-- INTERNAL
 export default function $CASH(funcName, ...args) {
-	const cash = cashedData[funcName];
-	// get cashed data for that function
-	const possiblyResult = cash[str(args)] || false;
-	// maybe its secend time(or more) for a argumen i wanna get that
-	if (possiblyResult) return parse(possiblyResult);
-	// its not cashed im calling that function with uncashed arguments then cash result and return it
-	const result = functions[funcName](...args);
-	cash[str(args)] = str(result);
-	return result;
+	const strArgs = str(args);
+	const cashed = cashedData[funcName];
+
+	return parse(cashed[strArgs] || (cashed[strArgs] = str(functions[funcName](...args))));
 }
 
+// !-- EXTERNAL
+export function $USE_CASH(func) {
+	const cache = {};
+	return (...args) => parse(cache[str(args)] || (cache[str(args)] = str(func(...args))));
+}
+
+// ! external test
 // (function () {
-// 	/*test*/
+// 	const test = $USE_CASH((a, b) => {
+// 		console.log("not cached!!");
+// 		var x = [];
+// 		for (let i = 0; i < 100; i++) x.push(a ** b);
+
+// 		return x;
+// 	});
+
+// 	for (let i = 0; i < 10; i++) {
+// 		console.time();
+// 		test(10, 10);
+// 		console.timeEnd();
+// 	}
+// })();
+
+// ! internal test
+// (function () {
 // 	if (!process.browser) return void 0;
 // 	const args = [100, 100];
 // 	for (let i = 0; i < 10; i++) {
@@ -57,6 +75,7 @@ export default function $CASH(funcName, ...args) {
 // 	}
 // })();
 
+// ! perototype of cash func
 // const cash = {};
 // function sumArray(arr) {
 // 	const { stringify: str, parse } = JSON;
