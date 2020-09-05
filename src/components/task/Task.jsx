@@ -56,19 +56,7 @@ const TaskWrapper = styled.li(({ theme: { flex, $blue, $blueTxt, $white }, selec
 			...flex(["justifyContent"]),
 			justifyContent: "space-between",
 			"> p": { color: $blue, padding: "0 15px" },
-			"> i.fa-clone": {
-				...flex(),
-				width: "29px",
-				height: "29px",
-				borderRadius: "100px",
-				fontSize: "13px",
-				transition: "all 0.3s",
-				color: "#E4EAF0",
-				"&:hover": {
-					backgroundColor: "#F6F9FE",
-					color: $blueTxt,
-				},
-			},
+			"> i.fa-clone": {},
 		},
 		"> div.left-hand": {
 			height: "100%",

@@ -1,15 +1,31 @@
 import { copyToClipboard } from "../../helpers/exports";
 import showMsg from "../../helpers/alerts/msg";
+import styled from "styled-components";
 
 function handleCopy(taskID) {
 	if (copyToClipboard(`${location.origin}/?id=${taskID}`)) {
-		return showMsg(
+		showMsg(
 			{ title: { text: "با موفقیت کپی شد", nodeName: "h6" } },
 			{ time: 3, status: "success", pendingID: `copy-${taskID}` }
 		);
-	}
-	showMsg({ title: { text: "مرورگر شما برای این کار قدیمی است" } }, { time: 5, status: "warning" });
+	} else showMsg({ title: { text: "مرورگر شما برای این کار قدیمی است" } }, { time: 5, status: "warning" });
 }
 export default function CopyBtn({ taskID }) {
-	return <i className="fa fa-clone" onClick={() => handleCopy(taskID)} title="کپی URL تسک" />;
+	return <CopyI className="fa fa-clone" onClick={() => handleCopy(taskID)} title="کپی URL تسک" />;
 }
+
+const CopyI = styled.i(({ theme: { flex, $blueTxt } }) => {
+	return {
+		...flex(),
+		width: "29px",
+		height: "29px",
+		borderRadius: "100px",
+		fontSize: "13px",
+		transition: "all 0.3s",
+		color: "#E4EAF0",
+		"&:hover": {
+			backgroundColor: "#F6F9FE",
+			color: $blueTxt,
+		},
+	};
+});

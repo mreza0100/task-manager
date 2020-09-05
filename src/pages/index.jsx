@@ -8,7 +8,7 @@ import MainLayout from "../layout/Main.lauout";
 import Task from "../components/task/Task";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const sortsData = (SA, sorts) => [
 	{
@@ -53,8 +53,8 @@ export default function Index() {
 		justfinished: false,
 	});
 	const [sorts, setSorts] = useState({ isFavorites_top: false, isDone_down: false, reverse: false });
-	const dispatch = useDispatch();
 
+	const dispatch = useDispatch();
 	const filtredTasks = useFiltringTasks({ filters, sorts });
 
 	useTaskSelectore({ tasks: filtredTasks, alertOnNotFound: false });
@@ -105,7 +105,7 @@ export default function Index() {
 							<img src="miz-logo.svg" />
 							<span>پروژه میز - تسک ها</span>
 						</h1>
-						<div id="fields">
+						<FilterFields>
 							<div>
 								<span>مرتب سازی</span>
 								<div className="menu">
@@ -126,7 +126,7 @@ export default function Index() {
 									))}
 								</div>
 							</div>
-						</div>
+						</FilterFields>
 					</TopContents>
 				</Section>
 				<Section>
@@ -189,11 +189,11 @@ const PlusTaskBtn = styled.div(({ theme: { flex, $bolderBlue, $white } }) => {
 	};
 });
 
-const TopContents = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
+export const TopContents = styled.div(({ theme: { flex, $black } }) => {
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "space-between",
-		width: "100%",
+		flex: 1,
 		height: "70px",
 		"> h1": {
 			...flex(["justifyContent"]),
@@ -205,48 +205,48 @@ const TopContents = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
 				padding: "0 15px",
 			},
 		},
-		"> div#fields": {
-			...flex(["justifyContent"]),
-			justifyContent: "flex-end",
-			width: "30%",
-			"> div": {
-				...flex(),
-				minWidth: "40%",
-				minHeight: "30px",
-				borderRadius: "4px",
-				color: $blueTxt,
-				fontSize: "12px",
-				backgroundColor: "rgba(111, 160, 241, 0.15)",
-				position: "relative",
+	};
+});
+
+const FilterFields = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
+	return {
+		...flex(["justifyContent"]),
+		justifyContent: "flex-end",
+		width: "30%",
+		"> div": {
+			...flex(),
+			minWidth: "40%",
+			minHeight: "30px",
+			borderRadius: "4px",
+			color: $blueTxt,
+			fontSize: "12px",
+			backgroundColor: "rgba(111, 160, 241, 0.15)",
+			position: "relative",
+			padding: "0 10px",
+			cursor: "pointer",
+			"> div.menu": {
+				display: "inherit",
+				position: "absolute",
+				backgroundColor: "#FFF",
+				overflow: "hidden",
+				minWidth: "100%",
+				top: "30px",
+				left: "unset",
+				right: 0,
+				...flex(["justifyContent"]),
+				justifyContent: "space-evenly",
+				flexDirection: "column",
 				padding: "0 10px",
-				cursor: "pointer",
-				"> div.menu": {
-					display: "inherit",
-					position: "absolute",
-					backgroundColor: "#FFF",
-					overflow: "hidden",
-					minWidth: "100%",
-					top: "30px",
-					left: "unset",
-					right: 0,
-					...flex(["justifyContent"]),
-					justifyContent: "space-evenly",
-					flexDirection: "column",
-					padding: "0 10px",
-					transition: "all 0.3s",
-					height: "0px",
-				},
-				"&:hover": {
-					".menu": {
-						height: "100px",
-					},
+				transition: "all 0.3s",
+				height: "0px",
+			},
+			"&:hover": {
+				".menu": {
+					height: "100px",
 				},
 			},
-			"> div + div": { marginRight: "10px", "div.menu": { left: 0, right: "unset" } },
 		},
-		"> ul": {
-			padding: 0,
-		},
+		"> div + div": { marginRight: "10px", "div.menu": { left: 0, right: "unset" } },
 	};
 });
 
