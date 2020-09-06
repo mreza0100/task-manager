@@ -1,14 +1,14 @@
 import { combineReducers } from "redux";
+import contacts from "./contacts";
 import isPlusMode from "./plus";
 import profile from "./profile";
 import tasks from "./tasks";
-import people from "./people";
 
-const combinedReducer = combineReducers({
+const combinedReducers = combineReducers({
 	isPlusMode,
 	profile,
 	tasks,
-	people,
+	contacts,
 });
 
-export default combinedReducer;
+export default combinedReducers;

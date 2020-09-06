@@ -1,11 +1,10 @@
+import RegisterProgress from "../../layout/RegisterProgress.layout";
 import { FieldContainerTag, Label, C } from "./register";
 import { phoneRegExp } from "../../helpers/exports";
 import { Formik, Form, Field } from "formik";
 import { _USE_API_ } from "../../api/index.API";
-import styled from "styled-components";
 import Router from "next/router";
 import * as yup from "yup";
-import RegisterProgress from "../../layout/RegisterProgress.layout";
 // !--
 const dataInputs = [
 	{ name: "mobile", label: "شماره همراه", type: "text", auto: "on" },
@@ -33,7 +32,7 @@ async function handleSubmit(data) {
 		const res = await _USE_API_({
 			describe: "confirm creating account",
 		}).Post({ url: "active_account", data });
-		if (res.status === 200) Router.push("/register-progsess/login");
+		if (res.status === 200) Router.push("/register-progress/login");
 	} catch (err) {
 		// TODO: showMsg
 	}

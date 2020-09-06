@@ -36,7 +36,7 @@ export default function Task({ taskData }) {
 	);
 }
 
-const TaskWrapper = styled.li(({ theme: { flex, $blue, $blueTxt, $white }, selectedMe }) => {
+const TaskWrapper = styled.li(({ theme: { flex, $blue, $white }, selectedMe }) => {
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "space-between",
@@ -47,7 +47,7 @@ const TaskWrapper = styled.li(({ theme: { flex, $blue, $blueTxt, $white }, selec
 		borderRadius: "4px",
 		padding: 5,
 		marginBottom: 10,
-		border: `2px solid ${selectedMe ? "#5460FE" : "transparent"} `,
+		border: `2px solid ${selectedMe ? $blue : "transparent"} `,
 		cursor: "pointer",
 		transition: "all 0.2s",
 		"&:hover": {},
@@ -56,7 +56,6 @@ const TaskWrapper = styled.li(({ theme: { flex, $blue, $blueTxt, $white }, selec
 			...flex(["justifyContent"]),
 			justifyContent: "space-between",
 			"> p": { color: $blue, padding: "0 15px" },
-			"> i.fa-clone": {},
 		},
 		"> div.left-hand": {
 			height: "100%",

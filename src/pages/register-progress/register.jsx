@@ -33,13 +33,7 @@ const initialValues = {
 const validation = yup.object({
 	name: yup.string().trim().required(),
 	family: yup.string().trim().required(),
-	mobile: yup
-		.string()
-		.matches(phoneRegExp, "Phone number is not valid")
-		.min(11)
-		.max(11)
-		.trim()
-		.required(),
+	mobile: yup.string().matches(phoneRegExp, "Phone number is not valid").min(11).max(11).trim().required(),
 	email: yup.string().email().trim(),
 	pass: yup.string().trim().min(8).max(32).required(),
 	pass2: yup
@@ -57,14 +51,11 @@ async function handleSubmit(data) {
 			url: "register",
 			data,
 		});
-		if (res.status === 200) Router.push("/register-progsess/confirm");
+		if (res.status === 200) Router.push("/register-progress/confirm");
 	} catch (err) {
 		if (!isUndefined(err.response.status)) {
 			if (err.response.status === 401) {
-				showMsg(
-					{ title: { text: "اطلاعات تکراری" } },
-					{ status: "warning", time: 6 },
-				);
+				showMsg({ title: { text: "اطلاعات تکراری" } }, { status: "warning", time: 6 });
 			}
 		}
 	}
@@ -88,10 +79,7 @@ export default function Register(props) {
 							{dataInputs.map(({ name, label, type, auto }) => {
 								const error = touched[name] && errors[name];
 								return (
-									<FieldContainerTag
-										key={name}
-										className={C.FieldContainer}
-									>
+									<FieldContainerTag key={name} className={C.FieldContainer}>
 										<Label err={error}>{error}</Label>
 										<Field
 											name={name}

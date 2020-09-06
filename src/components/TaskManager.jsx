@@ -85,66 +85,73 @@ export default function TaskManager() {
 
 	if (notFound) return noTask;
 	return (
-		<Manager>
-			<HeadManager>
-				<div>
-					<CheckBox isDone={is_done} taskID={taskID} />
-					<Title isDone={is_done}>{initialTitle}</Title>
-				</div>
-				<div>
-					<Star taskID={taskID} isFavorite={is_favorite} />
-					<CopyBtn taskID={taskID} />
-				</div>
-			</HeadManager>
-			<ManagerItems>
-				<Item>
-					<div className="font">
-						<img src="bag.svg" />
+		<LeftAside extraStyles={{ height: "unset" }}>
+			<div style={{ width: "100%" }}>
+				<HeadManager>
+					<div>
+						<CheckBox isDone={is_done} taskID={taskID} />
+						<Title isDone={is_done}>{initialTitle}</Title>
 					</div>
-					<div className="content date">
-						<span>از</span>
-						<DatePicker
-							isGregorian={false}
-							value={fromDate}
-							onChange={d => setFromDate(d)}
-						/>
+					<div>
+						<Star taskID={taskID} isFavorite={is_favorite} />
+						<CopyBtn taskID={taskID} />
 					</div>
-				</Item>
-				<Item>
-					<div className="font">
-						<img src="bag.svg" />
-					</div>
-					<div className="content date">
-						<span>تا</span>
-						<DatePicker isGregorian={false} value={toDate} onChange={d => setToDate(d)} />
-					</div>
-				</Item>
-				<Item>
-					<div className="font">
-						<img src="tag.svg" />
-					</div>
-					<div className="content tags">
-						<TagsInput
-							value={tags}
-							onChange={handleChangeTag}
-							renderTag={tagJSX}
-							inputProps={{ placeholder: "اضافه کردن تگ" }}
-						/>
-					</div>
-				</Item>
-				<Item id="description">
-					<div className="font">
-						<img src="pen.svg" />
-					</div>
-					<div className="content">
-						<textarea
-							placeholder="افزودن متن"
-							value={description}
-							onChange={({ target }) => setDescription(target.value)}
-						/>
-					</div>
-				</Item>
-			</ManagerItems>
+				</HeadManager>
+				<ManagerItems>
+					<Item>
+						<div className="font">
+							<i className="icon-bag" />
+						</div>
+						<div className="content date">
+							<span>از</span>
+							<DatePicker
+								isGregorian={false}
+								value={fromDate}
+								onChange={d => setFromDate(d)}
+							/>
+						</div>
+					</Item>
+					<Item>
+						<div className="font">
+							<i className="icon-bag" />
+						</div>
+						<div className="content date">
+							<span>تا</span>
+							<DatePicker
+								isGregorian={false}
+								value={toDate}
+								onChange={d => setToDate(d)}
+							/>
+						</div>
+					</Item>
+					<Item>
+						<div className="font">
+							{/* TODO: remove tag img */}
+							<img src="tag.svg" />
+						</div>
+						<div className="content tags">
+							<TagsInput
+								value={tags}
+								onChange={handleChangeTag}
+								renderTag={tagJSX}
+								inputProps={{ placeholder: "اضافه کردن تگ" }}
+							/>
+						</div>
+					</Item>
+					<Item id="description">
+						<div className="font">
+							<i className="icon-pen" />
+						</div>
+						<div className="content">
+							<textarea
+								placeholder="افزودن متن"
+								value={description}
+								onChange={({ target }) => setDescription(target.value)}
+							/>
+						</div>
+					</Item>
+				</ManagerItems>
+			</div>
 			<Footer>
 				<Item>
 					<div className="font"></div>
@@ -164,18 +171,17 @@ export default function TaskManager() {
 					</div>
 				</Item>
 			</Footer>
-		</Manager>
+		</LeftAside>
 	);
 }
 
-const Footer = styled.div(({ theme: { flex }, theme: { $bolderBlue } }) => {
+const Footer = styled.div(({ theme: { flex, $bolderBlue } }) => {
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "space-between",
-		marginTop: "auto",
+		// margin: "auto auto 10px auto",
 		minHeight: "25px",
-		padding: "0 10px",
-		width: "100%",
+		width: "90%",
 		height: "60px",
 		"> div": {
 			width: "100%",
@@ -186,16 +192,19 @@ const Footer = styled.div(({ theme: { flex }, theme: { $bolderBlue } }) => {
 			justifyContent: "space-between",
 			width: "100%",
 			backgroundColor: "transparent !important",
-			" button": {
+			cursor: "default",
+			"> button": {
+				...flex(),
 				backgroundColor: $bolderBlue,
 				height: "50%",
 				fontSize: "12px",
-				...flex(),
+				cursor: "pointer",
 			},
-			" i": {
+			"> i": {
+				// padding: "8px",
 				fontSize: "20px",
 				cursor: "pointer",
-				transition: "color 0.4s",
+				transition: "color 0.3s",
 				"&:hover": {
 					color: "red",
 				},
@@ -204,7 +213,7 @@ const Footer = styled.div(({ theme: { flex }, theme: { $bolderBlue } }) => {
 	};
 });
 
-const Item = styled.div(({ theme: { flex } }) => {
+const Item = styled.div(({ theme: { flex, $black } }) => {
 	return {
 		...flex(["justifyContent", "alignItems"]),
 		justifyContent: "space-between",
@@ -212,12 +221,12 @@ const Item = styled.div(({ theme: { flex } }) => {
 		marginTop: "20px",
 		"> .font": {
 			...flex(),
-			width: "25px",
+			width: "30px",
 			height: "auto",
 			minHeight: "35px",
 			borderRadius: "4px",
 			backgroundColor: "#F7F9FE",
-			img: { width: "75%", height: "75%" },
+			i: { width: "75%", height: "75%", color: "#6FA0F1" },
 		},
 		"> .content": {
 			...flex(["justifyContent"]),
@@ -228,9 +237,9 @@ const Item = styled.div(({ theme: { flex } }) => {
 			fontSize: "12px",
 			marginRight: "10px",
 			borderRadius: "4px",
-			color: "#54698D",
-			cursor: "pointer",
+			color: $black,
 			backgroundColor: "#F7F9FE",
+			cursor: "pointer",
 		},
 		"> div.date": {
 			justifyContent: "flex-start",
@@ -262,7 +271,7 @@ const Item = styled.div(({ theme: { flex } }) => {
 			},
 		},
 		"&#description": {
-			".font": { background: "rgba(218, 179, 44, 0.15)" },
+			".font": { background: "rgba(218, 179, 44, 0.15)", i: { color: "#DAB32C" } },
 			".content": {
 				paddingRight: 0,
 				minHeight: "74px",
@@ -295,7 +304,7 @@ const ManagerItems = styled.div(({ theme: { flex } }) => {
 	};
 });
 
-const HeadManager = styled.div(({ theme: { flex } }) => {
+const HeadManager = styled.div(({ theme: { flex, $black } }) => {
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "space-between",
@@ -306,7 +315,7 @@ const HeadManager = styled.div(({ theme: { flex } }) => {
 		"> div": {
 			...flex(["justifyContent"]),
 			height: "100%",
-			"> span": { color: "#54698D", fontSize: "16px" },
+			"> span": { color: $black, fontSize: "16px" },
 			"> * ": {
 				margin: "0 7px",
 			},
@@ -314,25 +323,30 @@ const HeadManager = styled.div(({ theme: { flex } }) => {
 	};
 });
 
-const Manager = styled.aside(({ theme: { flex, $white, transition } }) => {
+export const LeftAside = styled.aside(({ theme: { flex, $white }, extraStyles }) => {
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "space-between",
 		flexDirection: "column",
-		...transition(),
 		width: "400px",
+		height: "100%",
 		borderRight: "1px solid #E4EAF0",
 		backgroundColor: $white,
-		"#no-task": {
-			height: "10%",
-			textAlign: "center",
-			margin: "auto",
-		},
+		...extraStyles,
 	};
 });
 
 const noTask = (
-	<Manager>
-		<h3 id="no-task">هیچ تسکی برای نمایش انتخاب نشده است</h3>
-	</Manager>
+	<LeftAside
+		extraStyles={{
+			height: "100vh",
+			"> h3": {
+				height: "10%",
+				textAlign: "center",
+				margin: "auto",
+			},
+		}}
+	>
+		<h3>هیچ تسکی برای نمایش انتخاب نشده است</h3>
+	</LeftAside>
 );

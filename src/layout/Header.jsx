@@ -7,45 +7,34 @@ const menuData = [
 	{
 		isComponent: false,
 		id: "top-header",
-		svg: require("../assets/svg/top-header.svg"),
+		font: "icon-header-logo",
 	},
 	{
 		isComponent: false,
 		route: "/setting/profile",
 		id: "prof-icon",
-		className: "fa fa-user-o",
+		font: "fa fa-user-o",
 	},
 	{
 		isComponent: false,
 		route: "/",
-		svg: require("../assets/svg/tasks.svg"),
+		font: "icon-tasks",
 	},
 ];
 
 export default function Header() {
-	const router = useRouter();
-	const url = router.route;
+	const { route: currentRoute } = useRouter();
 
 	return useMemo(() => {
 		return (
 			<StyledHeader>
 				<StyledUl>
 					{menuData.map(
-						(
-							{ route, label, isComponent, id = null, svg, className, jsx },
-							idx
-						) => {
-							if (isComponent) return jsx({ key: idx });
+						({ route, label, isComponent, id = null, font, className, jsx }, idx) => {
+							if (isComponent) return jsx();
 							return (
-								<Link href={route || url} key={idx}>
-									<StyledLi
-										selectedMe={url === route}
-										id={id}
-										className={className || null}
-									>
-										{svg && <img src={svg} />}
-										{label && label}
-									</StyledLi>
+								<Link href={route || currentRoute} key={idx}>
+									<StyledLi id={id}>{font && <i className={font} />}</StyledLi>
 								</Link>
 							);
 						}
@@ -53,7 +42,7 @@ export default function Header() {
 				</StyledUl>
 			</StyledHeader>
 		);
-	}, [url]);
+	}, [currentRoute]);
 }
 
 const StyledLi = styled.li(({ theme: { flex, $blue }, selectedMe }) => {
@@ -62,7 +51,7 @@ const StyledLi = styled.li(({ theme: { flex, $blue }, selectedMe }) => {
 		width: "100%",
 		height: "70px",
 		fontSize: "18px",
-		color: selectedMe ? $blue : "black",
+		color: $blue,
 		cursor: "pointer",
 	};
 });
@@ -80,7 +69,9 @@ const StyledUl = styled.ul(({ theme: { flex, $blue, $white } }) => {
 			...flex(),
 			width: "100%",
 			height: "70px",
-			background: $blue,
+			backgroundColor: $blue,
+			color: $white,
+			fontSize: "16px",
 			cursor: "default",
 			pointerEvents: "none",
 			userSelect: "none",
@@ -91,8 +82,6 @@ const StyledUl = styled.ul(({ theme: { flex, $blue, $white } }) => {
 const StyledHeader = styled.header(({ theme: { flex, $blue } }) => {
 	return {
 		width: 70,
-		height: "100%",
-		height: "max-content",
 		borderLeft: "1px solid #DDDFFF",
 	};
 });

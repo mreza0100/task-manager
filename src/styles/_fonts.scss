@@ -1,4 +1,11 @@
+@import "../../node_modules/font-awesome/css/font-awesome.min.css";
+@import "../assets/fonts/fontello/css/fontello.css";
+
 @font-face {
 	font-family: "IRANSansWeb";
 	src: url("../assets/fonts/IRANSansWeb.ttf");
+}
+
+.fa {
+	font-weight: bold;
 }

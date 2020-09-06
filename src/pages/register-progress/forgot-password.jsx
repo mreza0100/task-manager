@@ -1,9 +1,9 @@
-import { FieldContainerTag, Label, C } from "../../pages/register-progsess/register";
 import RegisterProgress from "../../layout/RegisterProgress.layout";
-import { step_1, step_2 } from "../setting/reset-password";
+import { step_1, step_2 } from "../../yup-schema/reset-password";
+import { FieldContainerTag, Label, C } from "./register";
 import { _USE_API_ } from "../../api/index.API";
-import { Formik, Form, Field } from "formik";
 import showMsg from "../../helpers/alerts/msg";
+import { Formik, Form, Field } from "formik";
 import { useState } from "react";
 
 export default function ResetPassword(props) {
@@ -17,7 +17,10 @@ export default function ResetPassword(props) {
 		handleSubmit(sortedData)
 			.then(status => {
 				if (status === 200) {
-					showMsg({ title: { text: "کد با موفقیت به دستگاه شما ارسال شد" } }, { time: 3, status: "success" });
+					showMsg(
+						{ title: { text: "کد با موفقیت به دستگاه شما ارسال شد" } },
+						{ time: 3, status: "success" }
+					);
 					setStep(2);
 				}
 			})
@@ -63,7 +66,10 @@ export default function ResetPassword(props) {
 								{dataInputs.map(({ name, label, type, auto }) => {
 									const err = touched[name] && errors[name];
 									return (
-										<FieldContainerTag key={name} className={C.FieldContainer}>
+										<FieldContainerTag
+											key={name}
+											className={C.FieldContainer}
+										>
 											<Label htmlFor={name} err={err}>
 												{err}
 											</Label>
@@ -76,7 +82,11 @@ export default function ResetPassword(props) {
 										</FieldContainerTag>
 									);
 								})}
-								<button className={C.btnSubmit} disabled={isSubmitting} type="submit">
+								<button
+									className={C.btnSubmit}
+									disabled={isSubmitting}
+									type="submit"
+								>
 									ثبت
 								</button>
 							</Form>

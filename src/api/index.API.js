@@ -97,8 +97,8 @@ class API {
 	};
 
 	_redirectToLogin() {
-		if (this.inBrowser) return Router.push("/register-progsess/login");
-		serverRedirect({ res: this.res, route: "/register-progsess/login" });
+		if (this.inBrowser) return Router.push("/register-progress/login");
+		serverRedirect({ res: this.res, route: "/register-progress/login" });
 	}
 
 	_getToken() {

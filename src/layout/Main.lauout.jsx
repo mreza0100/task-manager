@@ -15,6 +15,5 @@ export const LayoutWrapper = styled.div(({ theme: { flex } }) => {
 		...flex(["justifyContent", "alignItems"]),
 		justifyContent: "space-between",
 		alignItems: "initial",
-		minHeight: "100vh",
 	};
 });

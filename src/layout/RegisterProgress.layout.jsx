@@ -3,28 +3,27 @@ import { flex } from "../helpers/exports";
 import styled from "styled-components";
 import Router from "next/router";
 import Link from "next/link";
-import { StyledLi } from "./Setting.layout";
 
 const menuData = [
 	{
 		isComponent: false,
 		label: "ساخت حساب",
-		route: "/register-progsess/register",
+		route: "/register-progress/register",
 	},
 	{
 		isComponent: false,
 		label: "تایید شماره",
-		route: "/register-progsess/confirm",
+		route: "/register-progress/confirm",
 	},
 	{
 		isComponent: false,
 		label: "ورود",
-		route: "/register-progsess/login",
+		route: "/register-progress/login",
 	},
 	{
 		isComponent: false,
 		label: "بازیابی رمز عبور",
-		route: "/register-progsess/forgot-password",
+		route: "/register-progress/forgot-password",
 	},
 ];
 
@@ -56,6 +55,23 @@ export default function RegisterProgress({ children }) {
 		</StyledMain>
 	);
 }
+
+const StyledLi = styled.li(({ selectedMe: s, extraStyles = {} }) => {
+	return {
+		width: "100%",
+		...flex(["justifyContent"]),
+		color: "#1b1f23",
+		cursor: s ? "default" : "pointer",
+		padding: "12px 16px",
+		fontSize: "14px",
+		borderRight: `5px solid ${s ? "red" : "transparent"}`,
+		borderTop: "1px solid #eaecef",
+		"&:hover": {
+			backgroundColor: "#f6f8fa",
+		},
+		...extraStyles,
+	};
+});
 
 const ChildrenConteiner = styled.div(props => {
 	return {

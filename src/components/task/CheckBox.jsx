@@ -49,6 +49,7 @@ const StyledCheckBox = styled.div(({ theme: { flex, $bolderBlue, $white }, selec
 			opacity: selected ? 1 : 0,
 			color: $white,
 			fontSize: "12px",
+			fontWeight: "normal",
 		},
 	};
 });

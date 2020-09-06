@@ -26,7 +26,7 @@ export default function Star({ isFavorite, taskID }) {
 	);
 }
 
-const I = styled.i(({ isFavorite, theme: { flex } }) => {
+const I = styled.i(({ theme: { flex, $blueTxt }, isFavorite }) => {
 	return {
 		...flex(),
 		height: "20px",
@@ -34,6 +34,6 @@ const I = styled.i(({ isFavorite, theme: { flex } }) => {
 		fontSize: "20px",
 		cursor: "pointer",
 		transition: "all 0.5s",
-		color: isFavorite ? "#FF6672" : "#6FA0F1",
+		color: isFavorite ? "#FF6672" : $blueTxt,
 	};
 });

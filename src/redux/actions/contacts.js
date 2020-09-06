@@ -1,8 +1,8 @@
-import { SET_PEOPLE, ADD_PEOPLE, DELETE_PEOPLE } from "../type.js";
+import { SET_CONTACTS, ADD_CONTACTS, DELETE_CONTACTS } from "../type.js";
 import { _USE_API_ } from "../../api/index.API";
 import { reloadRouter } from "../../helpers/exports";
 
-export const getPeople = payload => async (dispatch, getState) => {
+export const getContacts = payload => async (dispatch, getState) => {
 	const { req, res } = payload ?? {};
 	try {
 		const APIResponse = await _USE_API_({
@@ -12,11 +12,12 @@ export const getPeople = payload => async (dispatch, getState) => {
 			describe: "getting peolpe(contacts) data",
 			debug: false,
 		}).Get({ url: "/people" });
-		dispatch({ type: SET_PEOPLE, payload: APIResponse.data.data.list });
+		const contacts = APIResponse.data.data.list;
+		dispatch({ type: SET_CONTACTS, payload: contacts });
 	} catch (err) {}
 };
 
-export const addPeople = payload => async (dispatch, getState) => {
+export const addContacts = payload => async (dispatch, getState) => {
 	const { name, mobile } = payload;
 	const data = { name, mobile, pic: "" };
 	try {
@@ -26,7 +27,7 @@ export const addPeople = payload => async (dispatch, getState) => {
 			debug: false,
 		}).Post({ url: "/people", data });
 		const { id } = res.data.data.item;
-		if (id && res.status === 200) dispatch({ type: ADD_PEOPLE, payload: { ...data, id } });
+		if (id && res.status === 200) dispatch({ type: ADD_CONTACTS, payload: { ...data, id } });
 	} catch (err) {}
 };
 

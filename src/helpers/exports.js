@@ -144,7 +144,7 @@ function isEmptyObjOrArr(obj_arr) {
 	return true;
 }
 
-function trimObj(obj, { removeNull = true, removeEmptyArr = false, removeAnyFalse = false } = {}) {
+function trimObj(obj, { removeNull = true, removeEmptyArr = false, removeFalseyValues = false } = {}) {
 	const _obj = { ...obj };
 	for (const key in _obj) {
 		if (removeNull && _obj[key] === null) delete _obj[key];

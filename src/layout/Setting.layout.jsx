@@ -1,15 +1,16 @@
-import { flex, deleteCookie } from "../helpers/exports";
+import { getProfileData } from "../redux/actions/profile";
+import { deleteCookie } from "../helpers/exports";
+import { useSelector, useDispatch } from "react-redux";
+import { LeftAside } from "../components/TaskManager";
 import Router, { useRouter } from "next/router";
 import showMsg from "../helpers/alerts/msg";
-import { useSelector, useDispatch } from "react-redux";
-import LayoutWrapper from "./Main.lauout";
+import { useEffect } from "react";
+import MainLayout from "./Main.lauout";
 import ask from "../helpers/alerts/ask";
 import styled from "styled-components";
-import { useMemo, useEffect } from "react";
 import Link from "next/link";
-import { getProfileData } from "../redux/actions/profile";
 
-function handleLogout() {
+export function handleLogout() {
 	ask(
 		{
 			title: { text: "آیا از خروج مطمعن هستید" },
@@ -21,7 +22,7 @@ function handleLogout() {
 		.then(ok => {
 			if (ok) {
 				deleteCookie("token");
-				const backToLogin = () => Router.push("/register-progsess/login");
+				const backToLogin = () => Router.push("/register-progress /login");
 				showMsg(
 					{ title: { text: "برگشت به صفحه ورود" } },
 					{ time: 3, status: "warning" },
@@ -37,166 +38,176 @@ function handleLogout() {
 
 const menuData = [
 	{
-		isComponent: true,
-		jsx: ({ name, family }) => (
-			<StyledProf className="row" key="profile">
-				<i className="fa fa-user col-2" />
-				<span className="col-7">
-					<h6>{name}</h6>
-					<p>{family}</p>
-				</span>
-			</StyledProf>
-		),
-	},
-	{
 		isComponent: false,
-		label: "پروفایل",
+		text: "پروفایل",
+		fontClass: "icon-prof-logo",
 		route: "/setting/profile",
 	},
 	{
 		isComponent: false,
-		label: "تغییر گذرواژه",
+		text: "تغییر گذرواژه",
+		fontClass: "icon-key",
 		route: "/setting/reset-password",
 	},
 	{
 		isComponent: false,
-		label: "مخاطبین",
-		route: "/setting/people",
-	},
-	{
-		isComponent: true,
-		jsx: () => (
-			<LogoutItem className="row p-3" key="logout" onClick={handleLogout}>
-				<i className="fa fa-power-off col-4" />
-				<span className="col">خروج</span>
-			</LogoutItem>
-		),
+		text: "مخاطبین",
+		fontClass: "fa fa-id-card",
+		route: "/setting/contacts",
 	},
 ];
 
-function Menu({ getProfile: { extraParams = [], cancel = false } }) {
-	const { name, family } = useSelector(({ profile }) => profile);
+export default function SettingLayout({ getProfile: { extraParams = [], cancel = false } = {}, children }) {
+	const { name, mobile, family } = useSelector(({ profile }) => profile);
 	const dispatch = useDispatch();
-	const { route: url } = useRouter();
+	const { route: currentRoute } = useRouter();
 
 	useEffect(() => {
-		if (!cancel) dispatch(getProfileData({ fields: ["name", "family", ...extraParams] }));
-	}, [url]);
+		if (!cancel) dispatch(getProfileData({ fields: ["name", "family", "mobile", ...extraParams] }));
+	}, [currentRoute]);
 
-	return useMemo(() => {
-		return (
-			<StyledUl>
-				{menuData.map(({ route, label, isComponent, jsx }) => {
-					if (isComponent) return jsx({ name, family });
-					return (
-						<Link href={route} key={route}>
-							<StyledLi selectedMe={url === route}>{label}</StyledLi>
-						</Link>
-					);
-				})}
-			</StyledUl>
-		);
-	}, [name, family, url]);
+	return (
+		<MainLayout>
+			<StyledMain>
+				<ChildrenWrapper>{children}</ChildrenWrapper>
+				<LeftAside extraStyles={{ justifyContent: "flex-start" }}>
+					<Container>
+						<HeadProf>
+							<div id="show-data">
+								<i className="fa fa-user-o" />
+								<div>
+									<p>{name + " " + family || "fetching..."}</p>
+									<span>{mobile || "fetching..."}</span>
+								</div>
+							</div>
+							<div id="controller">
+								<span id="logout" onClick={handleLogout}>
+									<i className="fa fa-power-off" />
+								</span>
+								<span id="edit">
+									<img src={require("../assets/svg/pen-blue.svg")} />
+								</span>
+							</div>
+						</HeadProf>
+					</Container>
+					<Line />
+					<Container>
+						{menuData.map(({ text, route, svgSrc, fontClass }, idx) => {
+							return (
+								<Link href={route} key={idx}>
+									<SideItem isSelectedMe={route === currentRoute}>
+										{svgSrc && <img src={svgSrc} />}
+										{fontClass && <i className={fontClass} />}
+										<p>{text}</p>
+									</SideItem>
+								</Link>
+							);
+						})}
+					</Container>
+				</LeftAside>
+			</StyledMain>
+		</MainLayout>
+	);
 }
 
-const LogoutItem = styled.li(props => {
+const SideItem = styled.div(({ theme: { flex, $bolderBlue, $white }, isSelectedMe }) => {
+	const selectedColor = $white;
+	const unSelectedColor = $bolderBlue;
+	const selectedBackground = $bolderBlue;
+	const unSelectedBackground = "rgba(66, 77, 228, 0.1)";
+
 	return {
-		width: "100%",
-		height: "auto",
 		...flex(["justifyContent"]),
-		justifyContent: "space-evenly",
-		padding: "4% 3%",
-		textAlign: "center",
+		justifyContent: "flex-start",
+		flex: 1,
+		height: "35px",
+		marginBottom: "10px",
+		borderRadius: "4px",
 		cursor: "pointer",
-		borderTop: "0.5px solid black",
-		i: {
-			transition: "all 1s",
-			fontSize: 18,
-		},
-		"&:hover": {
-			i: { color: "red" },
+		background: isSelectedMe ? selectedBackground : unSelectedBackground,
+		color: isSelectedMe ? selectedColor : unSelectedColor,
+		"i, img": {
+			padding: "0 10px",
 		},
 	};
 });
 
-const StyledProf = styled.li(props => {
+const Line = styled.span(props => {
 	return {
 		width: "100%",
+		height: "1px",
+		backgroundColor: "#F1F4F6",
+		marginBottom: "30px",
+	};
+});
+
+const HeadProf = styled.div(({ theme: { flex, $black } }) => {
+	return {
 		...flex(["justifyContent"]),
-		justifyContent: "space-evenly",
-		height: "auto",
-		padding: "10px 0",
-		pointerEvents: "none",
-		i: {
-			...flex(),
-			fontSize: "18px",
-			lineHeight: 2.5,
-			borderRadius: "50%",
-			backgroundColor: "red",
-		},
-		span: {
+		justifyContent: "space-between",
+		height: "160px",
+		paddingTop: "50px",
+		paddingBottom: "30px",
+		"> #show-data": {
 			...flex(["justifyContent"]),
-			justifyContent: "space-evenly",
-			alignItems: "start",
-			flexDirection: "column",
-			"*": {
-				margin: 0,
+			justifyContent: "space-between",
+			width: "50%",
+			"> i": {
+				...flex(),
+				width: "50px",
+				height: "50px",
+				fontSize: "50px",
+			},
+			"> div": {
+				textAlign: "right",
+				paddingRight: "10px",
+				whiteSpace: "pre",
+				p: { color: "#B4BCCA", fontSize: "16px", margin: 0 },
+				span: { color: $black, fontSize: "16px" },
+			},
+		},
+		"> #controller": {
+			...flex(["justifyContent"]),
+			justifyContent: "flex-end",
+			width: "35%",
+			span: {
+				...flex(),
+				borderRadius: "4px",
+				width: "30px",
+				height: "30px",
+				marginRight: "10px",
+				cursor: "pointer",
+				"&#logout": {
+					backgroundColor: "#FBF3F4",
+					color: "#FF6672",
+				},
+				"&#edit": {
+					backgroundColor: "#F7F9FE",
+				},
 			},
 		},
 	};
 });
 
-export const StyledLi = styled.li(({ selectedMe: s, extraStyles = {} }) => {
+const Container = styled.div(props => {
 	return {
-		width: "100%",
+		width: "80%",
+	};
+});
+
+const ChildrenWrapper = styled.div(({ theme: { flex } }) => {
+	return {
+		flex: 1,
+		minHeight: "100vh ",
+		padding: "15px",
+		backgroundColor: "#F5F6FA",
+	};
+});
+
+const StyledMain = styled.main(({ theme: { flex } }) => {
+	return {
 		...flex(["justifyContent"]),
-		color: "#1b1f23",
-		cursor: s ? "default" : "pointer",
-		padding: "12px 16px",
-		fontSize: "14px",
-		borderRight: `5px solid ${s ? "red" : "transparent"}`,
-		borderTop: "1px solid #eaecef",
-		"&:hover": {
-			backgroundColor: "#f6f8fa",
-		},
-		...extraStyles,
-	};
-});
-
-const StyledUl = styled.ul(props => {
-	return {
-		...flex(),
-		flexDirection: "column",
-		width: "100%",
-		border: "1px solid #e1e4e8",
-		borderRadius: "6px",
-		userSelect: "none",
-	};
-});
-
-export default function SettingLayout({ children, extraClass, styles, getProfile = {} }) {
-	return (
-		<LayoutWrapper>
-			<StyledMain className="container-fluid row">
-				<div className="col-sm-3">
-					<Menu getProfile={getProfile} />
-				</div>
-				<ChildrenWrapper styles={styles} className={`col-sm-8 ${extraClass || ""}`}>
-					{children}
-				</ChildrenWrapper>
-			</StyledMain>
-		</LayoutWrapper>
-	);
-}
-
-const ChildrenWrapper = styled.div(({ styles }) => {
-	return styles || {};
-});
-
-const StyledMain = styled.main(props => {
-	return {
 		justifyContent: "space-between",
-		height: "auto",
-		margin: "20px auto 0 auto",
+		flex: 1,
 	};
 });

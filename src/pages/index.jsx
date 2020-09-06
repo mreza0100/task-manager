@@ -102,7 +102,7 @@ export default function Index() {
 				<Section>
 					<TopContents>
 						<h1>
-							<img src="miz-logo.svg" />
+							<i className="icon-miz-logo" />
 							<span>پروژه میز - تسک ها</span>
 						</h1>
 						<FilterFields>
@@ -131,7 +131,7 @@ export default function Index() {
 				</Section>
 				<Section>
 					<PlusTaskBtn onClick={() => dispatch(togglePlus())}>
-						<img src="plus.svg" />
+						<i className="icon-plus" />
 						<h4>افزودن تسک ...</h4>
 					</PlusTaskBtn>
 				</Section>
@@ -183,7 +183,7 @@ const PlusTaskBtn = styled.div(({ theme: { flex, $bolderBlue, $white } }) => {
 			fontSize: "16px",
 			margin: 0,
 		},
-		"> img": {
+		"> i": {
 			padding: "0 15px",
 		},
 	};
@@ -201,7 +201,7 @@ export const TopContents = styled.div(({ theme: { flex, $black } }) => {
 			whiteSpace: "nowrap",
 			width: "17%",
 			fontSize: "16px",
-			"> img": {
+			"> i": {
 				padding: "0 15px",
 			},
 		},
