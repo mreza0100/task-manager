@@ -87,11 +87,12 @@ function tagArrToObj(tags = []) {
 	return tags.map(i => ({ name: i }));
 }
 
-function reloadRouter() {
-	if (process.browser) {
-		const { pathname, search } = location;
-		Router.replace(pathname + search);
-	}
+function reloadRouter({ showNprogress = false, route } = {}) {
+	if (!process.browser) return;
+	Router.showNprogress = showNprogress;
+	const { pathname, search } = location;
+	route = route ?? pathname + search;
+	Router.replace(route);
 }
 
 function serverRedirect({ res, route }) {
@@ -99,6 +100,7 @@ function serverRedirect({ res, route }) {
 	if (route[0] !== "/") route = "/" + route;
 	res.writeHead(302, { Location: route }).end();
 }
+
 function copyToClipboard(text) {
 	try {
 		navigator.clipboard.writeText(text);

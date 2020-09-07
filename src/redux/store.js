@@ -19,8 +19,7 @@ const makeStore = ctx => {
 	const store = debug
 		? createStore(reducer, applyMiddleware(thunk, getLogger()))
 		: createStore(reducer, applyMiddleware(thunk));
-	if (module.hot)
-		module.hot.accept("./reducer", () => store.replaceReducer(require("./reducer").default));
+	if (module.hot) module.hot.accept("./reducer", () => store.replaceReducer(require("./reducer").default));
 	return store;
 };
 

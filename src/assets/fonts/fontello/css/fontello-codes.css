@@ -1,7 +1,9 @@
 
 .icon-key:before { content: '\e800'; } /* '' */
 .icon-miz-logo:before { content: '\e801'; } /* '' */
-.icon-vector:before { content: '\e802'; } /* '' */
+.icon-trash:before { content: '\e802'; } /* '' */
+.icon-drop-arrow:before { content: '\e803'; } /* '' */
+.icon-search:before { content: '\e804'; } /* '' */
 .icon-tasks:before { content: '\e805'; } /* '' */
 .icon-password-logo:before { content: '\e807'; } /* '' */
 .icon-prof-logo:before { content: '\e808'; } /* '' */

@@ -110,9 +110,13 @@ export default function Index() {
 								<span>مرتب سازی</span>
 								<div className="menu">
 									{sortsData(SA, sorts).map(({ me, click, label }, idx) => (
-										<MenuItem key={idx} selectedMe={me} onClick={click}>
+										<DropDownItem
+											key={idx}
+											selectedMe={me}
+											onClick={click}
+										>
 											{label}
-										</MenuItem>
+										</DropDownItem>
 									))}
 								</div>
 							</div>
@@ -120,9 +124,13 @@ export default function Index() {
 								<span>فیلتر</span>
 								<div className="menu">
 									{filterData(FA, filters).map(({ me, click, label }, idx) => (
-										<MenuItem key={idx} selectedMe={me} onClick={click}>
+										<DropDownItem
+											key={idx}
+											selectedMe={me}
+											onClick={click}
+										>
 											{label}
-										</MenuItem>
+										</DropDownItem>
 									))}
 								</div>
 							</div>
@@ -152,7 +160,7 @@ Index.getInitialProps = async ({ store: { dispatch }, req, res }) => {
 	await dispatch(getTasks({ req, res }));
 };
 
-const MenuItem = styled.span(({ selectedMe }) => {
+export const DropDownItem = styled.li(({ selectedMe }) => {
 	return {
 		// padding: "10px",
 		userSelect: "none",
@@ -208,7 +216,7 @@ export const TopContents = styled.div(({ theme: { flex, $black } }) => {
 	};
 });
 
-const FilterFields = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
+export const FilterFields = styled.div(({ theme: { flex, $blueTxt, $black }, extraStyles }) => {
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "flex-end",
@@ -247,6 +255,7 @@ const FilterFields = styled.div(({ theme: { flex, $blueTxt, $black } }) => {
 			},
 		},
 		"> div + div": { marginRight: "10px", "div.menu": { left: 0, right: "unset" } },
+		...extraStyles,
 	};
 });
 

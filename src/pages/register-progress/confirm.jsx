@@ -5,6 +5,7 @@ import { Formik, Form, Field } from "formik";
 import { _USE_API_ } from "../../api/index.API";
 import Router from "next/router";
 import * as yup from "yup";
+import { login } from "../../routes";
 // !--
 const dataInputs = [
 	{ name: "mobile", label: "شماره همراه", type: "text", auto: "on" },
@@ -32,7 +33,7 @@ async function handleSubmit(data) {
 		const res = await _USE_API_({
 			describe: "confirm creating account",
 		}).Post({ url: "active_account", data });
-		if (res.status === 200) Router.push("/register-progress/login");
+		if (res.status === 200) Router.push(login);
 	} catch (err) {
 		// TODO: showMsg
 	}

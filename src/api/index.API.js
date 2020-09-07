@@ -2,6 +2,7 @@ import { getCookie, reloadRouter, isUndefined, serverRedirect } from "../helpers
 import Router from "next/router";
 import Axios from "axios";
 import showMsg from "../helpers/alerts/msg";
+import { login } from "../routes";
 const dash = "-------";
 const consoleCss = [
 	"width: 400px",
@@ -97,8 +98,8 @@ class API {
 	};
 
 	_redirectToLogin() {
-		if (this.inBrowser) return Router.push("/register-progress/login");
-		serverRedirect({ res: this.res, route: "/register-progress/login" });
+		if (this.inBrowser) return Router.push(login);
+		serverRedirect({ res: this.res, route: login });
 	}
 
 	_getToken() {
@@ -190,13 +191,16 @@ class API {
 	_permissionDenied() {
 		console.warn("Permission Denied", pendingList);
 		return new Promise((resolve, reject) => {
-			reject({ status: 0, msg: "in pendingIDs" });
+			reject({ status: 0, msg: "in pendingList or token not received" });
 		});
 	}
 
 	_filterDataBeforSend(data) {
-		if (this.isPrivetRoute) return { ...data, token: this._getToken() };
-		return data;
+		var token;
+		if (this.isPrivetRoute) token = this._getToken();
+		else return [data, false];
+		if (token) return [{ ...data, token }, false];
+		else return [null, true];
 	}
 
 	_requestPermission() {
@@ -208,9 +212,11 @@ class API {
 	}
 
 	request({ url, params, data, callback } = {}, method) {
+		var error = null;
 		if (!this._requestPermission()) return this._permissionDenied();
-		if (method === "get") params = this._filterDataBeforSend(params);
-		else data = this._filterDataBeforSend(data);
+		if (method === "get") [params, error] = this._filterDataBeforSend(params);
+		else [data, error] = this._filterDataBeforSend(data);
+		if (error) return this._permissionDenied();
 		return new Promise((resolve, reject) => {
 			this.$XHR
 				.request({ method, url, params, data })

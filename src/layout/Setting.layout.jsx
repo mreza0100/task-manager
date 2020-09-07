@@ -1,13 +1,14 @@
+import { contacts, login, profile, profileResetPassword } from "../routes";
 import { getProfileData } from "../redux/actions/profile";
-import { deleteCookie } from "../helpers/exports";
 import { useSelector, useDispatch } from "react-redux";
 import { LeftAside } from "../components/TaskManager";
+import { deleteCookie } from "../helpers/exports";
 import Router, { useRouter } from "next/router";
 import showMsg from "../helpers/alerts/msg";
-import { useEffect } from "react";
-import MainLayout from "./Main.lauout";
 import ask from "../helpers/alerts/ask";
+import MainLayout from "./Main.lauout";
 import styled from "styled-components";
+import { useEffect } from "react";
 import Link from "next/link";
 
 export function handleLogout() {
@@ -22,7 +23,7 @@ export function handleLogout() {
 		.then(ok => {
 			if (ok) {
 				deleteCookie("token");
-				const backToLogin = () => Router.push("/register-progress /login");
+				const backToLogin = () => Router.push(login);
 				showMsg(
 					{ title: { text: "برگشت به صفحه ورود" } },
 					{ time: 3, status: "warning" },
@@ -36,24 +37,28 @@ export function handleLogout() {
 		});
 }
 
+function onEditProfile() {
+	return Router.push(profile + "?edit=true");
+}
+
 const menuData = [
 	{
 		isComponent: false,
 		text: "پروفایل",
 		fontClass: "icon-prof-logo",
-		route: "/setting/profile",
+		route: profile,
 	},
 	{
 		isComponent: false,
 		text: "تغییر گذرواژه",
 		fontClass: "icon-key",
-		route: "/setting/reset-password",
+		route: profileResetPassword,
 	},
 	{
 		isComponent: false,
 		text: "مخاطبین",
 		fontClass: "fa fa-id-card",
-		route: "/setting/contacts",
+		route: contacts,
 	},
 ];
 
@@ -76,7 +81,7 @@ export default function SettingLayout({ getProfile: { extraParams = [], cancel =
 							<div id="show-data">
 								<i className="fa fa-user-o" />
 								<div>
-									<p>{name + " " + family || "fetching..."}</p>
+									<p>{name ? name + " " + family : "fetching..."}</p>
 									<span>{mobile || "fetching..."}</span>
 								</div>
 							</div>
@@ -84,7 +89,7 @@ export default function SettingLayout({ getProfile: { extraParams = [], cancel =
 								<span id="logout" onClick={handleLogout}>
 									<i className="fa fa-power-off" />
 								</span>
-								<span id="edit">
+								<span id="edit" onClick={onEditProfile}>
 									<img src={require("../assets/svg/pen-blue.svg")} />
 								</span>
 							</div>

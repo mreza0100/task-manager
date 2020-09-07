@@ -127,7 +127,7 @@ export default function TaskManager() {
 					<Item>
 						<div className="font">
 							{/* TODO: remove tag img */}
-							<img src="tag.svg" />
+							<img src={require("../assets/svg/tag.svg")} />
 						</div>
 						<div className="content tags">
 							<TagsInput

@@ -4,10 +4,10 @@ import SettingLayout from "../../layout/Setting.layout";
 import { _USE_API_ } from "../../api/index.API";
 import { Formik, Form, Field } from "formik";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
+import { profile } from "../../routes";
 import styled from "styled-components";
 import { TopContents } from "..";
-import { useRouter } from "next/router";
-import { boolean } from "yup";
 
 // TODO: validation schema
 // TODO: filter data for mobile
@@ -43,8 +43,8 @@ export default function Profile() {
 	const isEditMode = router.query.edit === "true" ? true : false;
 
 	const toggleEditMode = () => {
-		if (isEditMode) router.push("/setting/profile");
-		else router.push(`/setting/profile?edit=true`);
+		if (isEditMode) router.push(profile);
+		else router.push(profile + "?edit=true");
 	};
 
 	return (
@@ -82,17 +82,20 @@ export default function Profile() {
 													<Field
 														name={name}
 														type={type}
-														disabled={!false || !editable}
+														disabled={
+															!isEditMode || !editable
+														}
 													/>
 													{font && <i className={font} />}
 												</div>
 											</StyledField>
 										);
 									})}
-									<div>
-										{false ? (
+									<div id="btns">
+										{isEditMode ? (
 											<>
 												<button
+													id="cancel"
 													onClick={() => {
 														toggleEditMode();
 														resetForm();
@@ -100,10 +103,12 @@ export default function Profile() {
 													type="button"
 													disabled={isSubmitting}
 												>
-													لغو <i className="fa fa-times " />
+													لغو
+													<i className="fa fa-times" />
 												</button>
 												<button
-													className="btn btn-success"
+													id="submit"
+													type="submit"
 													disabled={isSubmitting}
 												>
 													ثبت <i className="fa fa-save" />
@@ -111,11 +116,12 @@ export default function Profile() {
 											</>
 										) : (
 											<button
-												className="btn btn-primary"
+												id="edit"
 												type="button"
 												onClick={toggleEditMode}
 											>
-												ویرایش <i className="fa fa-edit" />
+												<i className="icon-pen" />
+												ویرایش
 											</button>
 										)}
 									</div>
@@ -155,6 +161,7 @@ const StyledField = styled.div(({ theme: { flex } }) => {
 				border: "1px solid #DADADA",
 				borderRadius: "4px",
 				height: "50px",
+				backgroundColor: "#FFF",
 				"&::placeholder": {
 					fontSize: "14px",
 					color: "#B4BCCA",
@@ -172,7 +179,7 @@ const StyledField = styled.div(({ theme: { flex } }) => {
 	};
 });
 
-const Content = styled.div(({ theme: { flex, $white } }) => {
+const Content = styled.div(({ theme: { flex, $bolderBlue, $white } }) => {
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "space-between",
@@ -182,6 +189,30 @@ const Content = styled.div(({ theme: { flex, $white } }) => {
 		padding: "30px 38px",
 		form: {
 			width: "100%",
+			height: "100%",
+			"> #btns": {
+				...flex(["justifyContent"]),
+				justifyContent: "flex-end",
+				marginTop: "35px",
+				width: "100%",
+				height: "50px",
+				button: {
+					...flex(["justifyContent"]),
+					justifyContent: "space-between",
+					padding: "5px 10px",
+					marginRight: "5px",
+					outline: "none",
+					border: 0,
+					height: "100%",
+					color: $white,
+					fontSize: "14px",
+					width: "28%",
+					borderRadius: "4px",
+					"&#edit": {
+						background: $bolderBlue,
+					},
+				},
+			},
 		},
 	};
 });

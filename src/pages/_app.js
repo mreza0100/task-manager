@@ -8,22 +8,25 @@ import { wrapper } from "../redux/store";
 // all general styles
 import "../styles/general.scss";
 import { ThemeProvider } from "styled-components";
-// style helpers in styled components props
+// style helpers in styled component props
 import styleHelpers from "../helpers/style-helpers";
+import { reloadRouter } from "../helpers/exports";
 
-Router.onRouteChangeStart = () => NProgress.start();
+Router.onRouteChangeStart = () => {
+	if (!Router.showNprogress) Router.showNprogress = true;
+	else NProgress.start();
+};
 
 Router.onRouteChangeComplete = () => NProgress.done();
 
 Router.onRouteChangeError = () => NProgress.done();
 
+if (process.browser) Router.reloadRouter = reloadRouter;
+
 // !--->>>
 
-// function ForUsingHooks({ children }) {
-// return <ThemeProvider theme={styleHelpers}>{children}</ThemeProvider>;
-// }
-
 class App extends NextApp {
+	state = { mokeNumber: 0 };
 	static async getInitialProps({ Component, ctx }) {
 		return {
 			pageProps: {
@@ -33,6 +36,8 @@ class App extends NextApp {
 	}
 	render() {
 		const { Component, pageProps } = this.props;
+		pageProps.reload = () => this.setState({ mokeNumber: 10 });
+
 		return (
 			<>
 				<Head>
@@ -46,6 +51,10 @@ class App extends NextApp {
 	}
 }
 export default wrapper.withRedux(App);
+
+// function ForUsingHooks({ children }) {
+// return <ThemeProvider theme={styleHelpers}>{children}</ThemeProvider>;
+// }
 
 // import dynamic from "next/dynamic";
 // export default dynamic(() => Promise.resolve(wrapper.withRedux(App)), {

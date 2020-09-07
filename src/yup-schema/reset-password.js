@@ -1,4 +1,5 @@
 import { phoneRegExp, deleteCookie, isUndefined } from "../helpers/exports";
+import { login } from "../routes";
 import Router from "next/router";
 import * as yup from "yup";
 
@@ -78,7 +79,7 @@ export const step_2 = {
 			.required(),
 	}),
 	async handleSubmit(data, { setSubmitting }) {
-		const backToLogin = () => Router.push("/register-progress/login");
+		const backToLogin = () => Router.push(login);
 
 		try {
 			const res = await _USE_API_({

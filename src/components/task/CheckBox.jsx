@@ -35,7 +35,7 @@ export default function CheckBox({ isDone, taskID }) {
 	);
 }
 
-const StyledCheckBox = styled.div(({ theme: { flex, $bolderBlue, $white }, selected }) => {
+export const StyledCheckBox = styled.div(({ theme: { flex, $bolderBlue, $white }, selected }) => {
 	return {
 		...flex(),
 		width: "18px",

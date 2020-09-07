@@ -5,7 +5,7 @@
 	"scripts": {
 		"fire": "next dev -p 10000",
 		"debug": "NODE_OPTIONS='--inspect' next dev -p 10000",
-		"first": "npm install && npm run fire",
+		"irun": "npm install && npm run fire",
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start -p 10000"

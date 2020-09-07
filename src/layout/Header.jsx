@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import { useMemo } from "react";
 import Link from "next/link";
+import { profile, index } from "../routes";
 
 const menuData = [
 	{
@@ -11,13 +12,13 @@ const menuData = [
 	},
 	{
 		isComponent: false,
-		route: "/setting/profile",
+		route: profile,
 		id: "prof-icon",
 		font: "fa fa-user-o",
 	},
 	{
 		isComponent: false,
-		route: "/",
+		route: index,
 		font: "icon-tasks",
 	},
 ];

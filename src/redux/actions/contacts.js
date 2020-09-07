@@ -1,9 +1,16 @@
-import { SET_CONTACTS, ADD_CONTACTS, DELETE_CONTACTS } from "../type.js";
+import {
+	SET_CONTACTS,
+	ADD_CONTACTS,
+	DELETE_CONTACTS,
+	ADD_TO_SELECTED_CONTACTS,
+	SET_SELECTED_CONTACTS,
+} from "../type.js";
 import { _USE_API_ } from "../../api/index.API";
 import { reloadRouter } from "../../helpers/exports";
 
 export const getContacts = payload => async (dispatch, getState) => {
 	const { req, res } = payload ?? {};
+
 	try {
 		const APIResponse = await _USE_API_({
 			res,
@@ -18,8 +25,11 @@ export const getContacts = payload => async (dispatch, getState) => {
 };
 
 export const addContacts = payload => async (dispatch, getState) => {
-	const { name, mobile } = payload;
+	const { inputData, resetForm } = payload;
+
+	const { name, mobile } = inputData;
 	const data = { name, mobile, pic: "" };
+
 	try {
 		const res = await _USE_API_({
 			describe: "add a peolpe(contacts) to db",
@@ -27,7 +37,11 @@ export const addContacts = payload => async (dispatch, getState) => {
 			debug: false,
 		}).Post({ url: "/people", data });
 		const { id } = res.data.data.item;
-		if (id && res.status === 200) dispatch({ type: ADD_CONTACTS, payload: { ...data, id } });
+		if (id && res.status === 200) {
+			if (resetForm) resetForm();
+			reloadRouter();
+			dispatch({ type: ADD_CONTACTS, payload: { ...data, id } });
+		}
 	} catch (err) {}
 };
 
@@ -38,12 +52,20 @@ export const deleteContact = payload => async (dispatch, getState) => {
 		const res = await _USE_API_({
 			describe: "deleting a contact",
 			isPrivetRoute: true,
-			debug: true,
+			debug: false,
 		}).Delete({
 			url: "/people",
 			data,
 		});
-		if (res.status === 200) reloadRouter();
+		if (res.status === 200) {
+			reloadRouter();
+			// removing contactID from selectedContacts maybe it was a selected contact
+			const { selectedContacts } = getState().contacts;
+			const filtredContacts = selectedContacts.filter(
+				selectedContactID => selectedContactID !== contactID
+			);
+			dispatch({ type: SET_SELECTED_CONTACTS, payload: filtredContacts });
+		}
 	} catch (err) {}
 };
 
@@ -60,4 +82,24 @@ export const editContact = payload => async (dispatch, getState) => {
 		});
 		if (res.status === 200) reloadRouter();
 	} catch (err) {}
+};
+
+export const toggleSelectedContact = payload => (dispatch, getState) => {
+	const { contactID, selected } = payload;
+	// if its not selected im just adding it to end if the list
+	if (!selected) return dispatch({ type: ADD_TO_SELECTED_CONTACTS, payload: contactID });
+
+	// else filtering all selectedContacts to remove it from array
+	const { selectedContacts } = getState().contacts;
+	const filtredContacts = selectedContacts.filter(selectedContactID => selectedContactID !== contactID);
+	dispatch({ type: SET_SELECTED_CONTACTS, payload: filtredContacts });
+};
+
+export const toggleSelectAllContacts = payload => (dispatch, getState) => {
+	const { allContacts, selectedContacts } = getState().contacts;
+	if (allContacts.length === selectedContacts.length) {
+		return dispatch({ type: SET_SELECTED_CONTACTS, payload: [] });
+	}
+	const selectedContactListID = allContacts.map(contact => contact.id);
+	dispatch({ type: SET_SELECTED_CONTACTS, payload: selectedContactListID });
 };

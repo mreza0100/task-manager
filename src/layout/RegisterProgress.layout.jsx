@@ -1,3 +1,4 @@
+import { login, confirmRegister, register, registerForgotPassword } from "../routes";
 import { useEffect, useState } from "react";
 import { flex } from "../helpers/exports";
 import styled from "styled-components";
@@ -8,22 +9,22 @@ const menuData = [
 	{
 		isComponent: false,
 		label: "ساخت حساب",
-		route: "/register-progress/register",
+		route: register,
 	},
 	{
 		isComponent: false,
 		label: "تایید شماره",
-		route: "/register-progress/confirm",
+		route: confirmRegister,
 	},
 	{
 		isComponent: false,
 		label: "ورود",
-		route: "/register-progress/login",
+		route: login,
 	},
 	{
 		isComponent: false,
 		label: "بازیابی رمز عبور",
-		route: "/register-progress/forgot-password",
+		route: registerForgotPassword,
 	},
 ];
 
