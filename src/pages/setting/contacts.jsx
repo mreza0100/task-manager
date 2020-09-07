@@ -1,4 +1,9 @@
-import { addContacts, getContacts, toggleSelectAllContacts } from "../../redux/actions/contacts";
+import {
+	addContacts,
+	getContacts,
+	toggleSelectAllContacts,
+	deleteSElectedContacts,
+} from "../../redux/actions/contacts";
 import SettingLayout from "../../layout/Setting.layout";
 import { useDispatch, useSelector } from "react-redux";
 import { phoneRegExp } from "../../helpers/exports";
@@ -44,7 +49,13 @@ export default function Contacts() {
 						<DropDownItem onClick={() => dispatch(toggleSelectAllContacts())}>
 							انتخاب همه
 						</DropDownItem>
-						<DropDownItem>حذف همه</DropDownItem>
+						<DropDownItem
+							onClick={() => {
+								dispatch(deleteSElectedContacts());
+							}}
+						>
+							حذف انتخاب شده ها
+						</DropDownItem>
 					</DropDownMenu>
 				</TopLeftWrapper>
 			</TopContents>

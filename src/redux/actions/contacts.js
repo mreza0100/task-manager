@@ -47,12 +47,12 @@ export const addContacts = payload => async (dispatch, getState) => {
 
 export const deleteContact = payload => async (dispatch, getState) => {
 	const { contactID } = payload;
-	const data = { id: contactID };
+	const data = { id: [contactID] };
 	try {
 		const res = await _USE_API_({
 			describe: "deleting a contact",
 			isPrivetRoute: true,
-			debug: false,
+			debug: true,
 		}).Delete({
 			url: "/people",
 			data,
@@ -75,7 +75,7 @@ export const editContact = payload => async (dispatch, getState) => {
 		const res = await _USE_API_({
 			describe: "deleting a contact",
 			isPrivetRoute: true,
-			debug: true,
+			debug: false,
 		}).Put({
 			url: "/people",
 			data,
@@ -102,4 +102,23 @@ export const toggleSelectAllContacts = payload => (dispatch, getState) => {
 	}
 	const selectedContactListID = allContacts.map(contact => contact.id);
 	dispatch({ type: SET_SELECTED_CONTACTS, payload: selectedContactListID });
+};
+
+export const deleteSElectedContacts = payload => async (dispatch, getState) => {
+	const { selectedContacts } = getState().contacts;
+	const data = { id: selectedContacts };
+	try {
+		const res = await _USE_API_({
+			describe: "deleting selected contacts",
+			isPrivetRoute: true,
+			debug: false,
+		}).Delete({
+			url: "/people",
+			data,
+		});
+		if (res.status === 200) {
+			reloadRouter();
+			dispatch({ type: SET_SELECTED_CONTACTS, payload: [] });
+		}
+	} catch (err) {}
 };
