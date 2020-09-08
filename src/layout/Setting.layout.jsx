@@ -202,10 +202,15 @@ const Container = styled.div(props => {
 
 const ChildrenWrapper = styled.div(({ theme: { flex } }) => {
 	return {
+		display: "flex",
+		justifyContent: "flex-start",
+		flexDirection: "column",
+
 		flex: 1,
 		minHeight: "100vh ",
 		padding: "15px",
 		backgroundColor: "#F5F6FA",
+		height: "100%",
 	};
 });
 

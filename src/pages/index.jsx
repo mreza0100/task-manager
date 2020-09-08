@@ -220,7 +220,7 @@ export const TopContents = styled.div(({ theme: { flex, $black }, extraStyles = 
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "space-between",
-		flex: 1,
+		// flex: 1,
 		height: "70px",
 		"> h1": {
 			...flex(["justifyContent"]),
@@ -235,7 +235,7 @@ export const TopContents = styled.div(({ theme: { flex, $black }, extraStyles = 
 		"> div": {
 			...flex(),
 			"> *": {
-				marginRight: "10px",
+				marginRight: "15px",
 			},
 		},
 		...extraStyles,

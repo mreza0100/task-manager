@@ -55,85 +55,96 @@ export default function Profile() {
 					<span>پروژه میز - پروفایل</span>
 				</h1>
 			</TopContents>
-			<ProfileWindowContainer>
-				<img src={require("../../../public/stupid white chair.png")} />
-				<Content>
-					<Formik
-						initialValues={{
-							name,
-							family,
-							email,
-							mobile,
-						}}
-						onSubmit={(data, { setSubmitting }) => {
-							delete data.mobile;
-							const sortedData = { ...data };
-							handleSubmit(sortedData, setSubmitting);
-						}}
-					>
-						{({ resetForm, isSubmitting }) => {
-							return (
-								<Form>
-									{inputData.map(({ name, label, type, font, editable }) => {
-										return (
-											<StyledField key={name}>
-												<span>{label}</span>
-												<div>
-													<Field
-														name={name}
-														type={type}
-														disabled={
-															!isEditMode || !editable
-														}
-													/>
-													{font && <i className={font} />}
-												</div>
-											</StyledField>
-										);
-									})}
-									<div id="btns">
-										{isEditMode ? (
-											<>
-												<button
-													id="cancel"
-													onClick={() => {
-														toggleEditMode();
-														resetForm();
-													}}
-													type="button"
-													disabled={isSubmitting}
-													className="btn btn-success"
-												>
-													<i className="fa fa-times" />
-													لغو
-												</button>
-												<button
-													id="submit"
-													type="submit"
-													disabled={isSubmitting}
-													className="btn btn-secondary"
-												>
-													<i className="fa fa-save" />
-													ثبت
-												</button>
-											</>
-										) : (
-											<button
-												id="edit"
-												type="button"
-												onClick={toggleEditMode}
-											>
-												<i className="icon-pen" />
-												ویرایش
-											</button>
+			<Container>
+				<ProfileWindowContainer>
+					<img src={require("../../../public/stupid white chair.png")} />
+					<Content>
+						<Formik
+							initialValues={{
+								name,
+								family,
+								email,
+								mobile,
+							}}
+							onSubmit={(data, { setSubmitting }) => {
+								delete data.mobile;
+								const sortedData = { ...data };
+								handleSubmit(sortedData, setSubmitting);
+							}}
+						>
+							{({ resetForm, isSubmitting }) => {
+								return (
+									<Form>
+										{inputData.map(
+											({ name, label, type, font, editable }) => {
+												return (
+													<StyledField key={name}>
+														<span>{label}</span>
+														<div>
+															<Field
+																name={name}
+																type={type}
+																disabled={
+																	!isEditMode ||
+																	!editable
+																}
+															/>
+															{font && (
+																<i
+																	className={
+																		font
+																	}
+																/>
+															)}
+														</div>
+													</StyledField>
+												);
+											}
 										)}
-									</div>
-								</Form>
-							);
-						}}
-					</Formik>
-				</Content>
-			</ProfileWindowContainer>
+										<div id="btns">
+											{isEditMode ? (
+												<>
+													<button
+														id="cancel"
+														onClick={() => {
+															toggleEditMode();
+															resetForm();
+														}}
+														type="button"
+														disabled={isSubmitting}
+														className="btn btn-secondary"
+													>
+														<i className="fa fa-times" />
+														لغو
+													</button>
+													<button
+														id="submit"
+														type="submit"
+														disabled={isSubmitting}
+														className="btn btn-success"
+													>
+														<i className="fa fa-save" />
+														ثبت
+													</button>
+												</>
+											) : (
+												<button
+													id="edit"
+													type="button"
+													onClick={toggleEditMode}
+												>
+													<i className="icon-pen" />
+													ویرایش
+												</button>
+											)}
+										</div>
+									</Form>
+								);
+							}}
+						</Formik>
+					</Content>
+				</ProfileWindowContainer>
+			</Container>
 		</SettingLayout>
 	);
 }
@@ -141,6 +152,15 @@ export default function Profile() {
 Profile.getInitialProps = async ({ store: { dispatch }, req, res }) => {
 	await dispatch(getProfileData({ req, res }));
 };
+
+const Container = styled.div(({ theme: { flex } }) => {
+	return {
+		flex: 1,
+		...flex(),
+		height: "100%",
+		width: "100%",
+	};
+});
 
 const StyledField = styled.div(({ theme: { flex } }) => {
 	return {
