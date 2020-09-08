@@ -9,6 +9,8 @@ import Task from "../components/task/Task";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { useState } from "react";
+import DropDownMenu from "../components/DropDownMenu";
+import { flex } from "../helpers/exports";
 
 const sortsData = (SA, sorts) => [
 	{
@@ -28,23 +30,23 @@ const sortsData = (SA, sorts) => [
 	},
 ];
 
-const filterData = (FA, filters) => [
-	{
-		click: FA.justUnfinished,
-		me: filters.justUnfinished,
-		label: "فقط تمام نشده ها را نشان بده",
-	},
-	{
-		click: FA.justfinished,
-		me: filters.justfinished,
-		label: "فقط تمام شده ها را نشان بده",
-	},
-	{
-		click: FA.justFavorites,
-		me: filters.justFavorites,
-		label: "فقط ستاره دارها را نشان بده",
-	},
-];
+// const filterData = (FA, filters) => [
+// 	{
+// 		click: FA.justUnfinished,
+// 		me: filters.justUnfinished,
+// 		label: "فقط تمام نشده ها را نشان بده",
+// 	},
+// 	{
+// 		click: FA.justfinished,
+// 		me: filters.justfinished,
+// 		label: "فقط تمام شده ها را نشان بده",
+// 	},
+// 	{
+// 		click: FA.justFavorites,
+// 		me: filters.justFavorites,
+// 		label: "فقط ستاره دارها را نشان بده",
+// 	},
+// ];
 
 export default function Index() {
 	const [filters, setFilters] = useState({
@@ -59,42 +61,66 @@ export default function Index() {
 
 	useTaskSelectore({ tasks: filtredTasks, alertOnNotFound: false });
 
-	const FA = {
+	const FA = [
 		// FA for filterActions
-		justUnfinished() {
-			const newFilters = { ...filters };
-			newFilters.justUnfinished = !newFilters.justUnfinished;
-			setFilters(newFilters);
+		{
+			onClick: function justUnfinished() {
+				const newFilters = { ...filters };
+				newFilters.justUnfinished = !newFilters.justUnfinished;
+				setFilters(newFilters);
+			},
+			isSelectedMe: filters.justUnfinished,
+			label: "فقط تمام نشده ها را نشان بده",
 		},
-		justfinished() {
-			const newFilters = { ...filters };
-			newFilters.justfinished = !newFilters.justfinished;
-			setFilters(newFilters);
+		{
+			onClick: function justfinished() {
+				const newFilters = { ...filters };
+				newFilters.justfinished = !newFilters.justfinished;
+				setFilters(newFilters);
+			},
+			isSelectedMe: filters.justfinished,
+			label: "فقط تمام شده ها را نشان بده",
 		},
-		justFavorites() {
-			const newFilters = { ...filters };
-			newFilters.justFavorites = !newFilters.justFavorites;
-			setFilters(newFilters);
+		{
+			onClick: function justFavorites() {
+				const newFilters = { ...filters };
+				newFilters.justFavorites = !newFilters.justFavorites;
+				setFilters(newFilters);
+			},
+			isSelectedMe: filters.justFavorites,
+			label: "فقط ستاره دارها را نشان بده",
 		},
-	};
-	const SA = {
+	];
+	const SA = [
 		// SA for sortActions
-		isFavorites_top() {
-			const newSorts = { ...sorts };
-			newSorts.isFavorites_top = !newSorts.isFavorites_top;
-			setSorts(newSorts);
+		{
+			onClick: function isFavorites_top() {
+				const newSorts = { ...sorts };
+				newSorts.isFavorites_top = !newSorts.isFavorites_top;
+				setSorts(newSorts);
+			},
+			isSelectedMe: sorts.isFavorites_top,
+			label: "ستاره دار ها اول باشند",
 		},
-		isDone_down() {
-			const newSorts = { ...sorts };
-			newSorts.isDone_down = !newSorts.isDone_down;
-			setSorts(newSorts);
+		{
+			onClick: function isDone_down() {
+				const newSorts = { ...sorts };
+				newSorts.isDone_down = !newSorts.isDone_down;
+				setSorts(newSorts);
+			},
+			isSelectedMe: sorts.isDone_down,
+			label: "تمام شده ها اخر باشند",
 		},
-		reverse() {
-			const newSorts = { ...sorts };
-			newSorts.reverse = !newSorts.reverse;
-			setSorts(newSorts);
+		{
+			onClick: function reverse() {
+				const newSorts = { ...sorts };
+				newSorts.reverse = !newSorts.reverse;
+				setSorts(newSorts);
+			},
+			isSelectedMe: sorts.reverse,
+			label: "برعکس کردن همه",
 		},
-	};
+	];
 
 	return (
 		<MainLayout>
@@ -105,36 +131,30 @@ export default function Index() {
 							<i className="icon-miz-logo" />
 							<span>پروژه میز - تسک ها</span>
 						</h1>
-						<FilterFields>
-							<div>
-								<span>مرتب سازی</span>
-								<div className="menu">
-									{sortsData(SA, sorts).map(({ me, click, label }, idx) => (
-										<DropDownItem
-											key={idx}
-											selectedMe={me}
-											onClick={click}
-										>
-											{label}
-										</DropDownItem>
-									))}
-								</div>
-							</div>
-							<div>
-								<span>فیلتر</span>
-								<div className="menu">
-									{filterData(FA, filters).map(({ me, click, label }, idx) => (
-										<DropDownItem
-											key={idx}
-											selectedMe={me}
-											onClick={click}
-										>
-											{label}
-										</DropDownItem>
-									))}
-								</div>
-							</div>
-						</FilterFields>
+						<div style={{ ...flex() }}>
+							<DropDownMenu title="مرتب سازی">
+								{SA.map(({ onClick, label, isSelectedMe }) => (
+									<DropDownItem
+										key={label}
+										selectedMe={isSelectedMe}
+										onClick={onClick}
+									>
+										{label}
+									</DropDownItem>
+								))}
+							</DropDownMenu>
+							<DropDownMenu title="فیلتر ها">
+								{FA.map(({ onClick, label, isSelectedMe }) => (
+									<DropDownItem
+										key={label}
+										selectedMe={isSelectedMe}
+										onClick={onClick}
+									>
+										{label}
+									</DropDownItem>
+								))}
+							</DropDownMenu>
+						</div>
 					</TopContents>
 				</Section>
 				<Section>
