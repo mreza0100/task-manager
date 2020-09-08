@@ -10,9 +10,7 @@ export default function ContactComponent({ data, selected }) {
 	return (
 		<Contact>
 			<div className="name">{name}</div>
-			<div className="num">
-				<a href={`tel:${mobile}`}>{mobile}</a>
-			</div>
+			<a href={`tel:${mobile}`}>{mobile}</a>
 			<div className="controllers">
 				<i className="icon-pen" />
 				<i className="icon-trash" onClick={() => dispatch(deleteContact({ contactID }))} />
@@ -44,11 +42,12 @@ const Contact = styled.div(({ theme: { flex, $white, $blueTxt } }) => {
 				color: "#54698D",
 				textAlign: "right",
 			},
-			"&.num": {
-				color: "#5460FE",
-				cursor: "pointer",
-				textAlign: "right",
-			},
+		},
+		"> a": {
+			flex: 0.2,
+			color: "#5460FE",
+			cursor: "pointer",
+			textAlign: "right",
 		},
 		".controllers": {
 			...flex(["justifyContent"]),

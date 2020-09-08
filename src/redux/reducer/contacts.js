@@ -1,6 +1,6 @@
 import {
 	SET_CONTACTS,
-	ADD_CONTACTS,
+	ADD_TO_CONTACTS,
 	DELETE_CONTACTS,
 	ADD_TO_SELECTED_CONTACTS,
 	SET_SELECTED_CONTACTS,
@@ -17,7 +17,7 @@ export default function contactsReducer(
 				...state,
 				allContacts: action.payload,
 			};
-		case ADD_CONTACTS:
+		case ADD_TO_CONTACTS:
 			return {
 				...state,
 				allContacts: [action.payload, ...state.allContacts],

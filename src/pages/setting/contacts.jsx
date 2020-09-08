@@ -1,16 +1,16 @@
 import { addContacts, getContacts, toggleSelectAllContacts } from "../../redux/actions/contacts";
+import useFilteringContacts from "../../hooks/filteringContacts";
+import DropDownMenu from "../../components/DropDownMenu";
 import SettingLayout from "../../layout/Setting.layout";
 import { useDispatch, useSelector } from "react-redux";
 import { phoneRegExp } from "../../helpers/exports";
-import { DropDownItem } from "../index";
 import Contact from "../../components/Contact";
 import { Field, Form, Formik } from "formik";
+import { DropDownItem } from "../index";
 import styled from "styled-components";
 import { TopContents } from "../index";
-import * as yup from "yup";
-import DropDownMenu from "../../components/DropDownMenu";
 import { useState } from "react";
-import useFilteringContacts from "../../hooks/filteringContacts";
+import * as yup from "yup";
 
 const schema = yup.object({
 	name: yup.string().required().trim(),
@@ -19,8 +19,8 @@ const schema = yup.object({
 
 export default function Contacts() {
 	const [searchText, setSearchText] = useState("");
-	const dispatch = useDispatch();
 	const contacts = useSelector(({ contacts }) => contacts);
+	const dispatch = useDispatch();
 
 	const onChangeSearch = ({ target }) => {
 		setSearchText(target.value);

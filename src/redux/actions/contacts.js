@@ -1,12 +1,25 @@
 import {
 	SET_CONTACTS,
-	ADD_CONTACTS,
+	ADD_TO_CONTACTS,
 	DELETE_CONTACTS,
 	ADD_TO_SELECTED_CONTACTS,
 	SET_SELECTED_CONTACTS,
 } from "../type.js";
 import { _USE_API_ } from "../../api/index.API";
 import { reloadRouter } from "../../helpers/exports";
+
+/* 
+	const APIResponse = await _USE_API_({
+		res,
+		req,
+		isPrivetRoute: false,
+		describe: "getting peolpe(contacts) data",
+		debug: false,
+		baseURL: "http://localhost:10000/",
+	}).Get({ url: "/api/contacts" });
+	const contacts = APIResponse.data;
+	dispatch({ type: SET_CONTACTS, payload: contacts });
+*/
 
 export const getContacts = payload => async (dispatch, getState) => {
 	const { req, res } = payload ?? {};
@@ -40,7 +53,7 @@ export const addContacts = payload => async (dispatch, getState) => {
 		if (id && res.status === 200) {
 			if (resetForm) resetForm();
 			reloadRouter();
-			dispatch({ type: ADD_CONTACTS, payload: { ...data, id } });
+			dispatch({ type: ADD_TO_CONTACTS, payload: { ...data, id } });
 		}
 	} catch (err) {}
 };

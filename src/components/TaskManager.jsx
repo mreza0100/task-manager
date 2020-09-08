@@ -26,24 +26,25 @@ async function handleDeleteTask(taskID) {
 }
 
 async function handleSubmit(data, { dispatch }) {
-	if (!data.taskID) return;
 	try {
 		data = {
-			id: data.taskID,
-			description: data.description || "",
+			id: data.id,
+			description: data.description,
 			tags: data.tags,
 			from_date: stringfyDateForServer(data.fromDate),
 			to_date: stringfyDateForServer(data.toDate),
 		};
-		data = trimObj(data);
+		data = trimObj(data, { removeEmptyArr: true });
 		const { id: taskID } = data;
 		const res = await _USE_API_({
 			isPrivetRoute: true,
 			describe: "saving Task-manager changes",
-			debug: false,
+			debug: true,
 		}).Put({ url: "/tasks", data });
 		if (res.status === 200) dispatch(getOneAndOverwrite({ taskID }));
-	} catch (err) {}
+	} catch (err) {
+		console.log(err);
+	}
 }
 
 export default function TaskManager() {
@@ -160,7 +161,7 @@ export default function TaskManager() {
 							className="btn"
 							onClick={() => {
 								handleSubmit(
-									{ taskID, toDate, fromDate, description, tags },
+									{ id: taskID, toDate, fromDate, description, tags },
 									dispatch
 								);
 							}}

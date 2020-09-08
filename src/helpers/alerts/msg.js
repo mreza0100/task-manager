@@ -4,6 +4,7 @@ const wrapperStyles = ({ time, extraStyles = {}, top }) => ({
 	minWidth: "200px",
 	height: "auto",
 	padding: "15px",
+	margin: 0,
 	display: "flex",
 	flexDirection: "column",
 	justifyContent: "space-evenly",

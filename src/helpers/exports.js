@@ -151,7 +151,7 @@ function trimObj(obj, { removeNull = true, removeEmptyArr = false, removeFalseyV
 	for (const key in _obj) {
 		if (removeNull && _obj[key] === null) delete _obj[key];
 		if (removeEmptyArr && Array.isArray(_obj[key])) if (isEmptyObjOrArr) delete _obj[key];
-		if (removeAnyFalse && !_obj[key]) delete _obj[key];
+		if (removeFalseyValues && !_obj[key]) delete _obj[key];
 	}
 	return _obj;
 }
