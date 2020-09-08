@@ -102,16 +102,19 @@ export default function Profile() {
 													}}
 													type="button"
 													disabled={isSubmitting}
+													className="btn btn-success"
 												>
-													لغو
 													<i className="fa fa-times" />
+													لغو
 												</button>
 												<button
 													id="submit"
 													type="submit"
 													disabled={isSubmitting}
+													className="btn btn-secondary"
 												>
-													ثبت <i className="fa fa-save" />
+													<i className="fa fa-save" />
+													ثبت
 												</button>
 											</>
 										) : (
@@ -201,16 +204,18 @@ const Content = styled.div(({ theme: { flex, $bolderBlue, $white } }) => {
 					justifyContent: "space-between",
 					padding: "5px 10px",
 					marginRight: "5px",
-					outline: "none",
-					border: 0,
+					width: "28%",
 					height: "100%",
 					color: $white,
 					fontSize: "14px",
-					width: "28%",
 					borderRadius: "4px",
+					outline: "none",
+					border: 0,
 					"&#edit": {
 						background: $bolderBlue,
 					},
+					"&#cancel": {},
+					"&#submit": {},
 				},
 			},
 		},

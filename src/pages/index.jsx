@@ -10,7 +10,6 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { useState } from "react";
 import DropDownMenu from "../components/DropDownMenu";
-import { flex } from "../helpers/exports";
 
 const sortsData = (SA, sorts) => [
 	{
@@ -131,7 +130,7 @@ export default function Index() {
 							<i className="icon-miz-logo" />
 							<span>پروژه میز - تسک ها</span>
 						</h1>
-						<div style={{ ...flex() }}>
+						<div>
 							<DropDownMenu title="مرتب سازی">
 								{SA.map(({ onClick, label, isSelectedMe }) => (
 									<DropDownItem
@@ -217,7 +216,7 @@ const PlusTaskBtn = styled.div(({ theme: { flex, $bolderBlue, $white } }) => {
 	};
 });
 
-export const TopContents = styled.div(({ theme: { flex, $black } }) => {
+export const TopContents = styled.div(({ theme: { flex, $black }, extraStyles = {} }) => {
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "space-between",
@@ -233,6 +232,13 @@ export const TopContents = styled.div(({ theme: { flex, $black } }) => {
 				padding: "0 15px",
 			},
 		},
+		"> div": {
+			...flex(),
+			"> *": {
+				marginRight: "10px",
+			},
+		},
+		...extraStyles,
 	};
 });
 

@@ -1,4 +1,10 @@
-import { addContacts, getContacts, toggleSelectAllContacts } from "../../redux/actions/contacts";
+import {
+	toggleSelectAllContacts,
+	deleteSelectedContacts,
+	addContacts,
+	getContacts,
+} from "../../redux/actions/contacts";
+
 import useFilteringContacts from "../../hooks/filteringContacts";
 import DropDownMenu from "../../components/DropDownMenu";
 import SettingLayout from "../../layout/Setting.layout";
@@ -35,7 +41,7 @@ export default function Contacts() {
 					<i className="icon-miz-logo" />
 					<span>پروژه میز - پروفایل / مخاطبین</span>
 				</h1>
-				<TopLeftWrapper>
+				<div>
 					<Search>
 						<input type="text" value={searchText} onChange={onChangeSearch} />
 						<i className="fa fa-search" />
@@ -44,9 +50,15 @@ export default function Contacts() {
 						<DropDownItem onClick={() => dispatch(toggleSelectAllContacts())}>
 							انتخاب همه
 						</DropDownItem>
-						<DropDownItem>حذف همه</DropDownItem>
+						<DropDownItem
+							onClick={() => {
+								dispatch(deleteSelectedContacts());
+							}}
+						>
+							حذف انتخاب شده ها
+						</DropDownItem>
 					</DropDownMenu>
-				</TopLeftWrapper>
+				</div>
 			</TopContents>
 			<AddContact>
 				<Formik
@@ -83,12 +95,6 @@ export default function Contacts() {
 Contacts.getInitialProps = async ({ store: { dispatch }, req, res }) => {
 	await dispatch(getContacts({ req, res }));
 };
-
-const TopLeftWrapper = styled.div(({ theme: { flex } }) => {
-	return {
-		...flex(),
-	};
-});
 
 const Search = styled.div(props => {
 	return {

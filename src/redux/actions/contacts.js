@@ -117,7 +117,7 @@ export const toggleSelectAllContacts = payload => (dispatch, getState) => {
 	dispatch({ type: SET_SELECTED_CONTACTS, payload: selectedContactListID });
 };
 
-export const deleteSElectedContacts = payload => async (dispatch, getState) => {
+export const deleteSelectedContacts = payload => async (dispatch, getState) => {
 	const { selectedContacts } = getState().contacts;
 	const data = { id: selectedContacts };
 	try {
