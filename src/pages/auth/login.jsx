@@ -2,7 +2,7 @@ import { registerForgotPassword, register } from "../../routes";
 import { isUndefined, setCookie } from "../../helpers/exports";
 import AuthLayout from "../../layout/Auth.layout";
 import { _USE_API_ } from "../../api/index.API";
-import logInSchema from "../../schema/login";
+import logInSchema, { loginInitialValues } from "../../schema/login";
 import { Formik, Form, Field } from "formik";
 import styled from "styled-components";
 import Router from "next/router";
@@ -55,7 +55,7 @@ export default function Login() {
 			<Content>
 				<h1>ورود</h1>
 				<Formik
-					initialValues={{ mobile: "", password: "" }}
+					initialValues={loginInitialValues}
 					onSubmit={data => {
 						const { mobile, password } = data;
 						const sortedData = { mobile, password };
@@ -114,25 +114,29 @@ export default function Login() {
 	);
 }
 
-export const InputField = styled.div(({ theme: { flex, resetInput }, hasErr }) => {
+export const InputField = styled.div(({ theme: { flex, resetInput }, extraStyles = {}, hasErr }) => {
 	return {
-		...flex(["alignItems"]),
+		...flex(["alignItems", "justifyContent"]),
+		justifyContent: "space-between",
 		alignItems: "flex-start",
 		flexDirection: "column",
-		wdith: "100%",
-		height: "80px",
+		width: "100%",
+		height: "100px",
 		marginBottom: "10px",
 		...resetInput,
 		"> div": {
 			width: "100%",
 			position: "relative",
+			marginBottom: "5px",
 			"> input": {
 				background: "#FFFFFF",
 				transition: "border 0.5s",
+				padding: "15px",
 				border: `1px solid ${hasErr ? "#FF6672" : "#DADADA"}`,
 				borderRadius: "4px",
 				width: "100%",
 				height: "50px",
+				"&:focus": { border: "1px solid #5460FE" },
 			},
 			"> i": {
 				position: "absolute",
@@ -153,6 +157,7 @@ export const InputField = styled.div(({ theme: { flex, resetInput }, hasErr }) =
 			transition: "opacity 0.5s",
 			opacity: hasErr ? 1 : 0,
 		},
+		...extraStyles,
 	};
 });
 
@@ -174,6 +179,9 @@ export const Content = styled.div(({ theme: { flex, $blue, $bolderBlue } }) => {
 			marginBottom: "25px",
 		},
 		"> form": {
+			...flex(["justifyContent"]),
+			justifyContent: "flex-end",
+			flexWrap: "wrap",
 			width: "100%",
 			height: "100%",
 			"> a": {
@@ -183,6 +191,13 @@ export const Content = styled.div(({ theme: { flex, $blue, $bolderBlue } }) => {
 				textAlign: "right",
 				fontSize: "12px",
 				color: $blue,
+			},
+			"div#half-top": {
+				...flex(["justifyContent"]),
+				justifyContent: "space-between",
+				"> div": {
+					width: "45%",
+				},
 			},
 			"> #btns": {
 				...flex(["justifyContent"]),

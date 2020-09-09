@@ -1,10 +1,11 @@
 import styled from "styled-components";
 
-export default function AuthLayout({ children, imgSrc }) {
+export default function AuthLayout({ children, imgSrc, extraStyles }) {
 	imgSrc = imgSrc ? imgSrc : require("../../public/stupid white chair.png");
+
 	return (
 		<Main>
-			<ModalWindow>
+			<ModalWindow extraStyles={extraStyles}>
 				<img src={imgSrc} />
 				{children}
 			</ModalWindow>
@@ -12,12 +13,12 @@ export default function AuthLayout({ children, imgSrc }) {
 	);
 }
 
-export const ModalWindow = styled.section(({ theme: { flex, $white } }) => {
+export const ModalWindow = styled.section(({ theme: { flex, $white }, extraStyles }) => {
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "space-between",
 		width: "715px",
-		height: "515px",
+		height: "518px",
 		margin: "auto",
 		background: $white,
 		boxShadow: " 0px 0px 20px rgba(0, 0, 0, 0.1)",
@@ -26,6 +27,7 @@ export const ModalWindow = styled.section(({ theme: { flex, $white } }) => {
 			height: "100%",
 			width: "240px",
 		},
+		...extraStyles,
 	};
 });
 
