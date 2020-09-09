@@ -1,67 +1,99 @@
-// import { Formik, Form, Field } from "formik";
-// import { _USE_API_ } from "../../api/index.API";
-// import Router from "next/router";
-// import * as yup from "yup";
-// // !--
-// import { FieldContainerTag, Label, C } from "../register";
-// import { phoneRegExp } from "../../helpers/exports";
-// const __dataInputs__ = [{ name: "mobile", label: "شماره همراه", type: "text" }];
+import RegisterProgress from "../../layout/RegisterProgress.layout";
+import { step_1, step_2 } from "../../yup-schema/reset-password";
+import { FieldContainerTag, Label, C } from "./register";
+import { _USE_API_ } from "../../api/index.API";
+import showMsg from "../../helpers/alerts/msg";
+import { Formik, Form, Field } from "formik";
+import { useState } from "react";
 
-// const initialValues = {
-// 	mobile: "",
-// };
+export default function ResetPassword(props) {
+	const [step, setStep] = useState(1);
+	if (step === 1) var { dataInputs, handleSubmit, validation } = step_1;
+	else var { dataInputs, handleSubmit, validation } = step_2;
 
-// const validation = yup.object({
-// 	mobile: yup
-// 		.string()
-// 		.trim()
-// 		.matches(phoneRegExp, "شماره تلفن وارد شده صحیح نمیباشد")
-// 		.min(11)
-// 		.max(11)
-// 		.required(),
-// });
+	const onSubmit_1 = ({ mobile }, { setSubmitting }) => {
+		setSubmitting(true);
+		const sortedData = { mobile };
+		handleSubmit(sortedData)
+			.then(status => {
+				if (status === 200) {
+					showMsg(
+						{ title: { text: "کد با موفقیت به دستگاه شما ارسال شد" } },
+						{ time: 3, status: "success" }
+					);
+					setStep(2);
+				}
+			})
+			.finally(() => {
+				setSubmitting(false);
+			});
+	};
 
-// async function handleSubmit_1(data) {
-// 	const res = await _USE_API_({
-// 		debug: true,
-// 		describe: "handle forgot password step 1",
-// 	}).Post({
-// 		url: "forgot_password",
-// 		data,
-// 	});
-// 	if (res.status === 200) Router.push("/reset-password");
-// }
+	const onSubmit_2 = ({ mobile, activisionCode, newPassword }, { setSubmitting }) => {
+		setSubmitting(true);
+		const sortedData = {
+			mobile,
+			activation_code: activisionCode,
+			new_password: newPassword,
+		};
+		handleSubmit(sortedData, { setSubmitting });
+	};
 
-// export default props => {
-// 	return (
-// 		<Formik
-// 			initialValues={initialValues}
-// 			onSubmit={({ mobile }) => {
-// 				const data = { mobile };
-// 				handleSubmit(data);
-// 			}}
-// 			validationSchema={validation}
-// 		>
-// 			{({ errors, touched }) => {
-// 				return (
-// 					<main className={C.FieldContainer}>
-// 						<Form className={C.Form}>
-// 							{__dataInputs__.map(({ name, label, type }) => {
-// 								const err = touched[name] && errors[name];
-// 								return (
-// 									<FieldContainerTag key={name} className={C.FieldContainer}>
-// 										<Label err={err}>{err ?? label}</Label>
-// 										<Field name={name} type={type} />
-// 									</FieldContainerTag>
-// 								);
-// 							})}
-// 							<button className={C.btnSubmit} type="submit">
-// 								ثبت
-// 							</button>
-// 						</Form>
-// 					</main>
-// 				);
-// 			}}
-// 		</Formik>
-// 	);
-// };
+	return (
+		<RegisterProgress>
+			<div className="w-50 row justify-content-between mr-auto ml-auto">
+				<span className={`c-p ${step === 1 ? "text-danger" : ""}`} onClick={e => setStep(1)}>
+					مرحله اول
+				</span>
+				<span className={`c-p ${step === 2 ? "text-danger" : ""}`} onClick={e => setStep(2)}>
+					مرحله دوم
+				</span>
+			</div>
+			<Formik
+				initialValues={{
+					mobile: "",
+					activisionCode: "",
+					newPassword: "",
+					confirmNewPassword: "",
+				}}
+				onSubmit={step === 1 ? onSubmit_1 : onSubmit_2}
+				validationSchema={validation}
+			>
+				{({ errors, touched, isSubmitting }) => {
+					return (
+						<div className={C.FieldContainer}>
+							<Form className={C.Form}>
+								{dataInputs.map(({ name, label, type, auto }) => {
+									const err = touched[name] && errors[name];
+									return (
+										<FieldContainerTag
+											key={name}
+											className={C.FieldContainer}
+										>
+											<Label htmlFor={name} err={err}>
+												{err}
+											</Label>
+											<Field
+												name={name}
+												type={type}
+												placeholder={label}
+												autoComplete={auto}
+											/>
+										</FieldContainerTag>
+									);
+								})}
+								<button
+									className={C.btnSubmit}
+									disabled={isSubmitting}
+									type="submit"
+								>
+									ثبت
+								</button>
+							</Form>
+						</div>
+					);
+				}}
+			</Formik>
+		</RegisterProgress>
+	);
+}

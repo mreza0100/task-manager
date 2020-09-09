@@ -18,6 +18,21 @@ const butyInputs = {
 	},
 };
 
+const resetInput = {
+	"input, textarea": {
+		// border: "none",
+		outline: "none",
+		"&::placeholder": {
+			color: "black",
+			opacity: "1",
+		},
+		"&:focus": {
+			// border: "none",
+			outline: "none",
+		},
+	},
+};
+
 const transition = (time = 0.3) => $CACH("transition", time);
 
 const flex = (whatIDontWant = []) => $CACH("flex", whatIDontWant);
@@ -37,4 +52,5 @@ export default {
 	$white,
 	$black,
 	$bolderBlue,
+	resetInput,
 };

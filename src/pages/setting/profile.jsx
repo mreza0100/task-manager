@@ -67,8 +67,10 @@ export default function Profile() {
 								mobile,
 							}}
 							onSubmit={(data, { setSubmitting }) => {
-								delete data.mobile;
-								const sortedData = { ...data };
+								// !!!
+								const _data = { ...data };
+								delete _data.mobile;
+								const sortedData = { ..._data };
 								handleSubmit(sortedData, setSubmitting);
 							}}
 						>

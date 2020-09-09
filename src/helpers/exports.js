@@ -31,8 +31,6 @@ const butyInputs = {
 	},
 };
 
-const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-
 function prevEnter(e) {
 	if ((e.charCode || e.keyCode) === 13 && e.target.nodeName !== "TEXTAREA") e.preventDefault();
 }
@@ -201,7 +199,6 @@ export {
 	$,
 	flex,
 	transition,
-	phoneRegExp,
 	butyInputs,
 	prevEnter,
 	getCookie,

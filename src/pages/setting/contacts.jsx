@@ -23,7 +23,7 @@ const schema = yup.object({
 	mobile: yup.string().matches(phoneRegExp, "Phone number is not valid").trim().required(),
 });
 
-export default function Contacts() {
+function Contacts() {
 	const [searchText, setSearchText] = useState("");
 	const contacts = useSelector(({ contacts }) => contacts);
 	const dispatch = useDispatch();
@@ -35,7 +35,7 @@ export default function Contacts() {
 	const filteredContacts = useFilteringContacts(contacts, { searchText });
 
 	return (
-		<SettingLayout>
+		<>
 			<TopContents>
 				<h1>
 					<i className="icon-miz-logo" />
@@ -84,15 +84,34 @@ export default function Contacts() {
 			</AddContact>
 			<ContactsWrapper>
 				{filteredContacts.map(contactData => {
-					const selected = contacts.selectedContacts.includes(contactData.id);
-					return <Contact key={contactData.id} data={contactData} selected={selected} />;
+					return (
+						<Contact
+							key={contactData.id}
+							data={contactData}
+							selected={contacts.selectedContacts.includes(contactData.id)}
+						/>
+					);
 				})}
 			</ContactsWrapper>
+		</>
+	);
+}
+
+/*
+  ? im breaking this component to too pisces
+  ? so when you type in search box or select 
+  ? a contact the hole layout and header is not updating 
+*/
+
+export default function ContactsParent() {
+	return (
+		<SettingLayout>
+			<Contacts />
 		</SettingLayout>
 	);
 }
 
-Contacts.getInitialProps = async ({ store: { dispatch }, req, res }) => {
+ContactsParent.getInitialProps = async ({ store: { dispatch }, req, res }) => {
 	await dispatch(getContacts({ req, res }));
 };
 
