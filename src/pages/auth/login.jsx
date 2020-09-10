@@ -161,7 +161,7 @@ export const InputField = styled.div(({ theme: { flex, resetInput }, extraStyles
 	};
 });
 
-export const Content = styled.div(({ theme: { flex, $blue, $bolderBlue } }) => {
+export const Content = styled.div(({ theme: { flex, $blue, $bolderBlue }, extraStyles }) => {
 	return {
 		...flex(["justifyContent", "alignItems"]),
 		justifyContent: "flex-start",
@@ -179,17 +179,20 @@ export const Content = styled.div(({ theme: { flex, $blue, $bolderBlue } }) => {
 			marginBottom: "25px",
 		},
 		"> form": {
-			...flex(["justifyContent"]),
+			display: "flex",
 			justifyContent: "flex-end",
+			alignContent: "flex-start",
 			flexWrap: "wrap",
 			width: "100%",
 			height: "100%",
 			"> a": {
 				display: "block",
 				width: "100%",
+				height: "15px",
 				paddingRight: "15px",
 				textAlign: "right",
 				fontSize: "12px",
+				cursor: "pointer",
 				color: $blue,
 			},
 			"div#half-top": {
@@ -204,6 +207,7 @@ export const Content = styled.div(({ theme: { flex, $blue, $bolderBlue } }) => {
 				justifyContent: "flex-end",
 				marginTop: "20px",
 				height: "50px",
+				flex: 1,
 				"> button": {
 					...flex(),
 					minWidth: "120px",
@@ -227,5 +231,6 @@ export const Content = styled.div(({ theme: { flex, $blue, $bolderBlue } }) => {
 				},
 			},
 		},
+		...extraStyles,
 	};
 });

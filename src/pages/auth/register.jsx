@@ -1,19 +1,17 @@
 import registerSchema, { registerInitialValues } from "../../schema/register";
 import { confirmRegister, login } from "../../routes";
-import { isUndefined } from "../../helpers/exports";
+import { isUndefined, setCookie } from "../../helpers/exports";
 import AuthLayout from "../../layout/Auth.layout";
 import { _USE_API_ } from "../../api/index.API";
+import showMsg from "../../helpers/alerts/msg";
 import { Formik, Form, Field } from "formik";
 import { InputField } from "./login";
 import { Content } from "./login";
 import Router from "next/router";
 import { useState } from "react";
 import Link from "next/link";
-import { useDispatch } from "react-redux";
-import { setConfirmNum } from "../../redux/actions/confirm";
-import showMsg from "../../helpers/alerts/msg";
 
-async function handleSubmit(data, { dispatch }) {
+async function handleSubmit(data) {
 	try {
 		const res = await _USE_API_({
 			ignoreStatuses: [401],
@@ -25,13 +23,17 @@ async function handleSubmit(data, { dispatch }) {
 			data,
 		});
 		if (res.status === 200) {
-			dispatch(setConfirmNum({ mobile: data.mobile }));
 			Router.push(confirmRegister);
 		}
 	} catch (err) {
-		if (!isUndefined(err.response.status)) {
+		if (!isUndefined(err.response)) {
 			if (err.response.status === 401) {
-				showMsg({ title: { text: "اطلاعات تکراری" } }, { status: "warning", time: 6 });
+				setCookie({ key: "mobile", value: data.mobile, days: 10 });
+
+				const callback = () => {
+					Router.push(confirmRegister);
+				};
+				showMsg({ title: { text: "اطلاعات تکراری" } }, { status: "warning", time: 6 }, callback);
 			}
 		}
 	}
@@ -74,7 +76,6 @@ const dataInputs = (passType1, passType2) => [
 export default function Login() {
 	const [passType1, setPassType1] = useState("password");
 	const [passType2, setPassType2] = useState("password");
-	const dispatch = useDispatch();
 
 	const inputClicks = {
 		toggleShowPass1: () => {
@@ -95,7 +96,7 @@ export default function Login() {
 						const { name, family, mobile, password1, password2 } = data;
 						const sortedData = { name, family, mobile, password: password1 };
 						console.log(sortedData);
-						handleSubmit(sortedData, { dispatch });
+						handleSubmit(sortedData);
 					}}
 					validationSchema={registerSchema}
 				>
