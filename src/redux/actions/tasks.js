@@ -35,7 +35,7 @@ export const getOneAndOverwrite = payload => async (dispatch, getState) => {
 		const res = await _USE_API_({
 			isPrivetRoute: true,
 			pendingID: taskID,
-			describe: "getting one task with ID and over write it in store",
+			describe: "getting one task with ID and over write it in state",
 		}).Get({
 			url: "/tasks",
 			params: { id: taskID },

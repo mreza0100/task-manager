@@ -23,15 +23,18 @@ const AC /* as APIConfigs */ = {
 	req: null,
 	res: null,
 	isPrivetRoute: false,
-	pendingID: false,
 	ignoreStatuses: [],
+	pendingID: false,
 	kickOn401: true,
 	logError: true,
 	inBrowser: typeof window !== "undefined",
 	describe() {
 		for (let i = 0; i < 100; i++) console.error(`<<<<<<<<<<<API need a describe<<<<<<<<<<<${i}`);
-
 		throw Error("<<<<<<<<<<<API need a describe<<<<<<<<<<<");
+	},
+	inServerWithoNoReqOrRes() {
+		for (let i = 0; i < 100; i++) console.error(`<<<<<<<<<<<in server with no req or res<<<<<<<<<<<${i}`);
+		throw Error("<<<<<<<<<<<in server with no req or res<<<<<<<<<<<");
 	},
 };
 
@@ -47,8 +50,8 @@ class API {
 		isPrivetRoute,
 		configs,
 		pendingID,
-		describe,
 		ignoreStatuses,
+		describe,
 		kickOn401,
 		logError,
 	}) {
@@ -59,8 +62,8 @@ class API {
 		this.baseURL = baseURL ?? AC.baseURL;
 		this.inBrowser = process.browser ?? AC.inBrowser;
 		this.describe = describe ?? AC.describe();
-		this.isPrivetRoute /*need token*/ = isPrivetRoute ?? AC.isPrivetRoute;
 		this.ignoreStatuses = ignoreStatuses ?? AC.ignoreStatuses;
+		this.isPrivetRoute /*need token*/ = isPrivetRoute ?? AC.isPrivetRoute;
 		this.kickOn401 = kickOn401 ?? AC.kickOn401;
 		this.logError = logError ?? AC.logError;
 		this.pendingID = this.inBrowser ? pendingID ?? AC.pendingID : false;
@@ -68,6 +71,7 @@ class API {
 			baseURL: this.baseURL,
 			...configs,
 		});
+		if (!this.inBrowser && (!this.req || !this.res)) AC.inServerWithoNoReqOrRes();
 		// if (this.inBrowser) this.pendingID = pendingID ?? AC.pendingID;
 		// else this.pendingID = false;
 	}
@@ -178,8 +182,8 @@ class API {
 
 		if (!isUndefined(err.response)) {
 			const status = err.response.status;
+			if (status === 404 && this.inBrowser) return reloadRouter();
 			if (this.isPrivetRoute) {
-				if (status === 404 && this.inBrowser) return reloadRouter();
 				if (status === 401 && !this.kickOn401) return this._redirectToLogin();
 			}
 			// TODO: deleting token for 401 status
@@ -188,19 +192,20 @@ class API {
 		if (this.logError) console.dir(err);
 	}
 
-	_permissionDenied() {
-		console.warn("Permission Denied", pendingList);
+	_permissionDenied(why = "") {
+		console.warn("Permission Denied | pendingList: ", pendingList);
 		return new Promise((resolve, reject) => {
-			reject({ status: 0, msg: "in pendingList or token not received" });
+			// "in pendingList or token not received"
+			reject({ status: 0, msg: why });
 		});
 	}
 
 	_filterDataBeforSend(data) {
 		var token;
 		if (this.isPrivetRoute) token = this._getToken();
-		else return [data, false];
+		else return [data, null];
 		if (token) return [{ ...data, token }, false];
-		else return [null, true];
+		return [null, true];
 	}
 
 	_requestPermission() {
@@ -213,10 +218,11 @@ class API {
 
 	request({ url, params, data, callback } = {}, method) {
 		var error = null;
-		if (!this._requestPermission()) return this._permissionDenied();
+		if (!this._requestPermission()) return this._permissionDenied("in pendingList");
 		if (method === "get") [params, error] = this._filterDataBeforSend(params);
 		else [data, error] = this._filterDataBeforSend(data);
-		if (error) return this._permissionDenied();
+		if (error) return this._permissionDenied("token not received");
+
 		return new Promise((resolve, reject) => {
 			this.$XHR
 				.request({ method, url, params, data })
@@ -284,20 +290,15 @@ function _USE_API_({
 	});
 }
 
-class APITools {
+class APIUtils {
 	static checkInPendingList(pendingID) {
-		try {
-			if (pendingList.includes(pendingID)) {
-				console.warn(pendingList);
-				return false;
-			}
-			return true;
-		} catch (err) {
-			return true;
+		if (pendingList.includes(pendingID)) {
+			console.warn(pendingList);
+			return false;
 		}
+		return true;
 	}
 }
 
-// $>>> EXPORTS
-export { API };
-export { _USE_API_, APITools };
+export default API;
+export { _USE_API_, APIUtils };
