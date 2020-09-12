@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import { useMemo } from "react";
 import Link from "next/link";
-import { profile, index } from "../routes";
+import { profile, tasks } from "../routes";
 
 const menuData = [
 	{
@@ -18,7 +18,7 @@ const menuData = [
 	},
 	{
 		isComponent: false,
-		route: index,
+		route: tasks,
 		font: "icon-tasks",
 	},
 ];

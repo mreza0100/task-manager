@@ -1,7 +1,8 @@
 import { _USE_API_ } from "../../api/index.API";
-import { useRouter } from "next/router";
 import ColorPicker from "../ColorPicker";
+import { useRouter } from "next/router";
 import styled from "styled-components";
+import { tasks } from "../../routes";
 import CheckBox from "./CheckBox";
 import CopyBtn from "./CopyBtn";
 import Star from "./Star";
@@ -13,7 +14,7 @@ export default function Task({ taskData }) {
 	const selectedMe = routerID === taskID;
 	const checkPassQuery = ({ target }) => {
 		if (!target.classList.contains("open")) return;
-		if (selectedMe) return router.push("/", undefined, { shallow: true });
+		if (selectedMe) return router.push(tasks, undefined, { shallow: true });
 		router.push(`/?id=${taskID}`, undefined, { shallow: true });
 	};
 

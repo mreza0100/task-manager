@@ -34,6 +34,7 @@ class App extends NextApp {
 			},
 		};
 	}
+
 	render() {
 		const { Component, pageProps } = this.props;
 		pageProps.reload = () => this.setState({ mokeNumber: 10 });
