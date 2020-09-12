@@ -1,15 +1,31 @@
-import confirmSchema, { confirmInitialValues } from "../../schema/confirm";
-import { serverRedirect, getCookie, deleteCookie } from "../../helpers/exports";
+import { serverRedirect, getCookie, deleteCookie, reloadRouter } from "../../helpers/exports";
+import CodeInput from "../../components/CodeInput";
 import AuthLayout from "../../layout/Auth.layout";
+import { _USE_API_ } from "../../api/index.API";
 import showMsg from "../../helpers/alerts/msg";
-import { Formik, Form, Field } from "formik";
 import { register } from "../../routes";
-import { InputField } from "./login";
 import { Content } from "./login";
 import Link from "next/link";
-import { _USE_API_ } from "../../api/index.API";
+import { useEffect } from "react";
+
+const onResendCode = async ({ mobile }) => {
+	const data = { mobile };
+
+	try {
+		const res = await _USE_API_({
+			describe: "resend confirm account code",
+			kickOn401: false,
+			debug: true,
+		}).Post({ url: "resend_activation_code", data });
+		if (res.status === 200) reloadRouter();
+	} catch (err) {
+		Router.push(register);
+	}
+};
 
 async function handleSubmit(data) {
+	data = { code: data };
+	// data is "1234"
 	try {
 		const res = await _USE_API_({
 			describe: "confirm creating account",
@@ -25,66 +41,39 @@ async function handleSubmit(data) {
 		showMsg({ title: { text: "کد اشتباه است" } }, { status: "danger", time: 6 });
 	}
 }
-
-export default function Confirm({ mobile, reload }) {
-	const onResendCode = async () => {
-		const data = { mobile };
-
-		try {
-			const res = await _USE_API_({
-				describe: "resend confirm account code",
-				kickOn401: false,
-				debug: true,
-			}).Post({ url: "resend_activation_code", data });
-			if (res.status === 200) {
-				reload();
-			}
-		} catch (err) {
-			Router.push(register);
-		}
+var code;
+export default function Confirm({ mobile }) {
+	const onTypeCode = typedCode => {
+		code = typedCode;
 	};
+	const onSubmitClick = e => {
+		e.preventDefault();
+		if (code.length === 4) handleSubmit(code);
+	};
+	useEffect(() => () => {
+		code = null;
+	});
 
 	return (
 		<AuthLayout>
 			<Content>
 				<h1>تایید شماره همراه</h1>
-				<Formik
-					initialValues={confirmInitialValues}
-					validationSchema={confirmSchema}
-					onSubmit={data => {
-						const sortedData = { mobile, activation_code: data.code };
-						handleSubmit(sortedData);
-					}}
-				>
-					{({ errors, touched }) => {
-						const inputErr = touched["code"] && errors["code"];
-						return (
-							<Form>
-								<InputField hasErr={!!inputErr}>
-									<label>
-										کد ۴ رقمی که به شماره {mobile} ارسال شده را وارد نمایید
-									</label>
-									<div>
-										<Field type="text" name="code" />
-									</div>
-									<p>{inputErr || null}</p>
-								</InputField>
-								<a onClick={onResendCode}>ارسال مجدد کد تایید</a>
+				<form>
+					<CodeInput getCodesOnCompilate={handleSubmit} getCodes={onTypeCode} />
 
-								<div id="btns">
-									<Link href={register}>
-										<button type="button" id="first">
-											<a>تغییر شماره همراه</a>
-										</button>
-									</Link>
-									<button type="submit" id="second">
-										تایید و ورود
-									</button>
-								</div>
-							</Form>
-						);
-					}}
-				</Formik>
+					<a onClick={() => onResendCode({ mobile })}>ارسال مجدد کد تایید</a>
+
+					<div id="btns">
+						<Link href={register}>
+							<button type="button" id="first">
+								<a>تغییر شماره همراه</a>
+							</button>
+						</Link>
+						<button type="submit" id="second" onClick={onSubmitClick}>
+							تایید و ورود
+						</button>
+					</div>
+				</form>
 			</Content>
 		</AuthLayout>
 	);
