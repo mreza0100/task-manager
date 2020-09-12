@@ -10,6 +10,7 @@ import styled from "styled-components";
 import CheckBox from "./task/CheckBox";
 import CopyBtn from "./task/CopyBtn";
 import { Title } from "./task/Task";
+import { tasks } from "../routes";
 import Router from "next/router";
 import Star from "./task/Star";
 
@@ -21,7 +22,7 @@ async function handleDeleteTask(taskID) {
 			describe: "deleting a task",
 			debug: false,
 		}).Delete({ data, url: "/tasks" });
-		if (res.status === 200) Router.replace("/");
+		if (res.status === 200) Router.replace(tasks);
 	} catch (err) {}
 }
 

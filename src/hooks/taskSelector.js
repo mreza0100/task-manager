@@ -2,6 +2,7 @@ import showMsg from "../helpers/alerts/msg";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { tasks as tasksRoute } from "../routes";
 
 export default function useTaskSelectore({
 	tasks = null,
@@ -23,7 +24,7 @@ export default function useTaskSelectore({
 			if (taskID && !result) {
 				console.log(taskID);
 				// ! then its not found
-				if (redirectOnNotFound) router.push("/");
+				if (redirectOnNotFound) router.push(tasksRoute);
 				if (alertOnNotFound) {
 					showMsg(
 						{

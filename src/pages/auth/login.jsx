@@ -1,4 +1,4 @@
-import { registerForgotPassword, register } from "../../routes";
+import { registerForgotPassword, register, tasks } from "../../routes";
 import { isUndefined, setCookie } from "../../helpers/exports";
 import AuthLayout from "../../layout/Auth.layout";
 import { _USE_API_ } from "../../api/index.API";
@@ -18,7 +18,7 @@ async function handleSubmit(data) {
 		const token = res.data.token;
 		if (res.status === 200) {
 			setCookie({ key: "token", value: token });
-			Router.push("/");
+			Router.push(tasks);
 		}
 	} catch (err) {
 		if (!isUndefined(err.response) && err.response.status === 401) {

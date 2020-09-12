@@ -42,9 +42,20 @@ export default function $CASH(funcName, ...args) {
 }
 
 // !-- EXTERNAL
-export function $USE_CASH(func) {
-	const cache = {};
-	return (...args) => parse(cache[str(args)] || (cache[str(args)] = str(func(...args))));
+export function $USE_CASH(func, { getUtils } = {}) {
+	let cache = {};
+
+	return getUtils
+		? [
+				(...args) => parse(cache[str(args)] || (cache[str(args)] = str(func(...args)))),
+				{
+					deleteCache: () => (cache = null),
+					resetCache: () => (cache = {}),
+					getCache: () => cache,
+					changeCache: getNewCache => (cache = getNewCache(cache)),
+				},
+		  ]
+		: (...args) => parse(cache[str(args)] || (cache[str(args)] = str(func(...args))));
 }
 
 // ! external test
@@ -62,6 +73,35 @@ export function $USE_CASH(func) {
 // 		test(10, 10);
 // 		console.timeEnd();
 // 	}
+// })();
+
+// ! external test with getUtils
+// (function () {
+// 	if (!process.browser) return void 0;
+// 	const [test, { deleteCache, getCache, changeCache }] = $USE_CASH(
+// 		(a, b) => {
+// 			console.log("not cached!!");
+// 			var x = [];
+// 			for (let i = 0; i < 100; i++) x.push(a ** b);
+
+// 			return x;
+// 		},
+// 		{ getUtils: true }
+// 	);
+
+// 	for (let i = 0; i < 10; i++) {
+// 		changeCache(prev => {
+// 			const newCache = { ...prev };
+// 			newCache["x" + i] = ["1000" + 1];
+// 			return newCache;
+// 		});
+// 		console.log(getCache());
+// 		console.time();
+// 		test(10, 10);
+// 		console.timeEnd();
+// 	}
+// 	deleteCache();
+// 	console.log(getCache());
 // })();
 
 // ! internal test

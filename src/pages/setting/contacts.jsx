@@ -4,24 +4,17 @@ import {
 	addContacts,
 	getContacts,
 } from "../../redux/actions/contacts";
-
 import useFilteringContacts from "../../hooks/filteringContacts";
 import DropDownMenu from "../../components/DropDownMenu";
 import SettingLayout from "../../layout/Setting.layout";
 import { useDispatch, useSelector } from "react-redux";
-import { phoneRegExp } from "../../helpers/exports";
 import Contact from "../../components/Contact";
 import { Field, Form, Formik } from "formik";
 import { DropDownItem } from "../index";
 import styled from "styled-components";
 import { TopContents } from "../index";
 import { useState } from "react";
-import * as yup from "yup";
-
-const schema = yup.object({
-	name: yup.string().required().trim(),
-	mobile: yup.string().matches(phoneRegExp, "Phone number is not valid").trim().required(),
-});
+import contactsSchema, { contactsInitialValues } from "../../schema/contacts";
 
 function Contacts() {
 	const [searchText, setSearchText] = useState("");
@@ -62,8 +55,8 @@ function Contacts() {
 			</TopContents>
 			<AddContact>
 				<Formik
-					validationSchema={schema}
-					initialValues={{ name: "", mobile: "" }}
+					validationSchema={contactsSchema}
+					initialValues={contactsInitialValues}
 					onSubmit={(inputData, { resetForm }) => {
 						dispatch(addContacts({ inputData, resetForm }));
 					}}
@@ -145,12 +138,13 @@ const ContactsWrapper = styled.div(({ theme: { flex } }) => {
 	};
 });
 
-const AddContact = styled.div(({ theme: { flex, $bolderBlue, $white } }) => {
+const AddContact = styled.div(({ theme: { flex, resetInput, $bolderBlue, $white } }) => {
 	return {
 		...flex(),
 		width: "100%",
 		height: "50px",
 		form: {
+			...resetInput,
 			...flex(["justifyContent"]),
 			justifyContent: "space-between",
 			width: "100%",
@@ -162,10 +156,9 @@ const AddContact = styled.div(({ theme: { flex, $bolderBlue, $white } }) => {
 				borderRadius: "4px",
 				background: $white,
 				border: "1px solid #DADADA",
+				transition: "border 0.5s",
 				"&::placeholder": { fontSize: "14px" },
-				"&:focus": {
-					outline: "none",
-				},
+				"&:focus": { border: "1px solid #5460FE" },
 			},
 			button: {
 				...flex(["justifyContent"]),

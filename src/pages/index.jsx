@@ -1,3 +1,4 @@
+import DropDownMenu from "../components/DropDownMenu";
 import useFiltringTasks from "../hooks/filtringTasks";
 import useTaskSelectore from "../hooks/taskSelector";
 import PluseWindow from "../components/PluseWindow";
@@ -9,43 +10,6 @@ import Task from "../components/task/Task";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { useState } from "react";
-import DropDownMenu from "../components/DropDownMenu";
-
-const sortsData = (SA, sorts) => [
-	{
-		click: SA.isFavorites_top,
-		me: sorts.isFavorites_top,
-		label: "ستاره دار ها اول باشند",
-	},
-	{
-		click: SA.isDone_down,
-		me: sorts.isDone_down,
-		label: "تمام شده ها اخر باشند",
-	},
-	{
-		click: SA.reverse,
-		me: sorts.reverse,
-		label: "برعکس کردن همه",
-	},
-];
-
-// const filterData = (FA, filters) => [
-// 	{
-// 		click: FA.justUnfinished,
-// 		me: filters.justUnfinished,
-// 		label: "فقط تمام نشده ها را نشان بده",
-// 	},
-// 	{
-// 		click: FA.justfinished,
-// 		me: filters.justfinished,
-// 		label: "فقط تمام شده ها را نشان بده",
-// 	},
-// 	{
-// 		click: FA.justFavorites,
-// 		me: filters.justFavorites,
-// 		label: "فقط ستاره دارها را نشان بده",
-// 	},
-// ];
 
 export default function Index() {
 	const [filters, setFilters] = useState({
