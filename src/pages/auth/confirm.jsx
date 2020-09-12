@@ -8,7 +8,7 @@ import { Content } from "./login";
 import Link from "next/link";
 import { useEffect } from "react";
 
-const onResendCode = async ({ mobile }) => {
+const onResendCode = async mobile => {
 	const data = { mobile };
 
 	try {
@@ -23,33 +23,34 @@ const onResendCode = async ({ mobile }) => {
 	}
 };
 
-async function handleSubmit(data) {
-	data = { code: data };
-	// data is "1234"
-	try {
-		const res = await _USE_API_({
-			describe: "confirm creating account",
-			ignoreStatuses: [401],
-			kickOn401: false,
-			debug: true,
-		}).Post({ url: "active_account", data });
-		if (res.status === 200) {
-			deleteCookie("mobile");
-			Router.push(login);
-		}
-	} catch (err) {
-		showMsg({ title: { text: "کد اشتباه است" } }, { status: "danger", time: 6 });
-	}
-}
 var code;
 export default function Confirm({ mobile }) {
+	const handleSubmit = async ({ code, mobile }) => {
+		const data = { activation_code: code, mobile };
+		// data is "1234"
+		try {
+			const res = await _USE_API_({
+				describe: "confirm creating account",
+				ignoreStatuses: [401],
+				kickOn401: false,
+				debug: true,
+			}).Post({ url: "active_account", data });
+			if (res.status === 200) {
+				deleteCookie("mobile");
+				Router.push(login);
+			}
+		} catch (err) {
+			showMsg({ title: { text: "کد اشتباه است" } }, { status: "danger", time: 6 });
+		}
+	};
+
 	const onTypeCode = typedCode => {
 		code = typedCode;
 	};
-	const onSubmitClick = e => {
-		e.preventDefault();
-		if (code.length === 4) handleSubmit(code);
+	const onSubmitClick = () => {
+		if (code.length === 4) handleSubmit({ code, mobile });
 	};
+
 	useEffect(() => () => {
 		code = null;
 	});
@@ -59,9 +60,12 @@ export default function Confirm({ mobile }) {
 			<Content>
 				<h1>تایید شماره همراه</h1>
 				<form>
-					<CodeInput getCodesOnCompilate={handleSubmit} getCodes={onTypeCode} />
+					<CodeInput
+						getCodesOnCompilate={code => handleSubmit({ code, mobile })}
+						getCodes={onTypeCode}
+					/>
 
-					<a onClick={() => onResendCode({ mobile })}>ارسال مجدد کد تایید</a>
+					<a onClick={() => onResendCode(mobile)}>ارسال مجدد کد تایید</a>
 
 					<div id="btns">
 						<Link href={register}>
@@ -69,7 +73,7 @@ export default function Confirm({ mobile }) {
 								<a>تغییر شماره همراه</a>
 							</button>
 						</Link>
-						<button type="submit" id="second" onClick={onSubmitClick}>
+						<button type="button" id="second" onClick={onSubmitClick}>
 							تایید و ورود
 						</button>
 					</div>

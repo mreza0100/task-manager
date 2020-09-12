@@ -20,6 +20,7 @@ export default function CodeInput({
 	getCodes = () => {},
 	autoFocusOnMount = true,
 	fields = 4,
+	extraStyles = {},
 }) {
 	const [codes, setCodes] = useState(initialValues(fields));
 	const joinedCodes = Object.values(codes).join("");
@@ -82,7 +83,7 @@ export default function CodeInput({
 	}, []);
 
 	return (
-		<InputsWrapper>
+		<InputsWrapper extraStyles={extraStyles}>
 			{initialValues(fields, { getArray: true }).map(i => {
 				return (
 					<Fragment key={i}>
@@ -103,12 +104,13 @@ export default function CodeInput({
 	);
 }
 
-const InputsWrapper = styled.div(({ theme: { flex } }) => {
+const InputsWrapper = styled.div(({ theme: { flex }, extraStyles }) => {
 	return {
 		...flex(),
 		flexDirection: "row-reverse",
 		width: "100%",
 		height: "50px",
+		marginBottom: "10px",
 		border: "1px solid #DADADA",
 		borderRadius: "4px",
 		"> input": {
@@ -119,5 +121,6 @@ const InputsWrapper = styled.div(({ theme: { flex } }) => {
 			border: "none",
 			outline: "none",
 		},
+		...extraStyles,
 	};
 });
