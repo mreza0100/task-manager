@@ -7,8 +7,8 @@ const registerSchema = yup.object({
 	mobile: yup
 		.string()
 		.matches(phoneRegExp, "شماره تلفن وارد شده صحیح نمیباشد")
-		.min(11, "حداقل ۱۱ شماره")
-		.max(11, "حداکثر ۱۱ شماره")
+		.min(11, "حداقل ۱۱ رقم")
+		.max(11, "حداکثر ۱۱ رقم")
 		.trim()
 		.required("شماره تلفن الزامی میباشد"),
 	password1: yup.string().trim().min(8, "رمز عبور حداقل ۸ کاراکتر").required("رمز عبور الزامی میباشد"),

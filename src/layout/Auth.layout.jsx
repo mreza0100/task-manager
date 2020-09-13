@@ -35,7 +35,7 @@ const Main = styled.main(({ theme: { flex } }) => {
 	return {
 		...flex(),
 		wdith: "100%",
-		height: "100vh",
+		minHeight: "100vh",
 		backgroundColor: "#F5F6FA",
 	};
 });

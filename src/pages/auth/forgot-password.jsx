@@ -1,132 +1,215 @@
+import { login, registerForgotPassword } from "../../routes";
+import { step1, step2 } from "../../schema/reset-password";
+import { isUndefined } from "../../helpers/exports";
+import CodeInput from "../../components/CodeInput";
 import AuthLayout from "../../layout/Auth.layout";
-import styled from "styled-components";
+import { _USE_API_ } from "../../api/index.API";
+import showMsg from "../../helpers/alerts/msg";
+import { Formik, Form, Field } from "formik";
+import { InputField } from "./login";
 import { Content } from "./login";
-import { useState, Fragment } from "react";
+import { useState } from "react";
+import Link from "next/link";
 
-function ResetProgress({ currentStep }) {
-	return (
-		<ShowProgress>
-			{["۱", "۲", "۳"].map((i, idx) => {
-				idx++;
-				return (
-					<Fragment key={idx}>
-						<ProgressStep active={currentStep === idx} done={currentStep > idx}>
-							<span>{i}</span>
-							<i className="fa fa-check" />
-						</ProgressStep>
-						{idx !== 3 && <ProgressLine active={currentStep > idx} />}
-					</Fragment>
-				);
-			})}
-		</ShowProgress>
-	);
-}
-const ProgressLine = styled.span(({ active }) => {
-	return { border: `1px solid ${active ? "#6FA0F1" : "#DADADA"}`, flex: 1, margin: "0 10px" };
-});
+const step2inputs = ({ pass, confirm }) => [
+	{
+		name: "password",
+		type: pass,
+		label: "رمز عبور جدید",
+		font: "fa fa-eye",
+		onFontClick: "toggleShowPass",
+	},
+	{
+		name: "confirmPassword",
+		type: confirm,
+		label: "تکرار رمز عبور جدید",
+		font: "fa fa-eye",
+		onFontClick: "toggleShowConfirm",
+	},
+];
 
-const ProgressStep = styled.div(({ theme: { flex }, active, done }) => {
-	const general = {
-		...flex(),
-		background: "transparent",
-		height: "35px",
-		width: "35px",
-		borderRadius: "100%",
-		fontSize: "14px",
-	};
-
-	if (active) {
-		return {
-			...general,
-			color: "#6FA0F1",
-			border: "1px solid #6FA0F1",
-			"> span": { display: "block" },
-			"> i": { display: "none" },
-		};
+async function handleSubmitStep1(data, { setCurrentStep, setMobile }) {
+	try {
+		const res = await _USE_API_({
+			ignoreStatuses: [401],
+			describe: "reset password step 1",
+		}).Post({
+			url: "/forgot_password",
+			data,
+		});
+		if (res.status === 200) {
+			setCurrentStep(2);
+			setMobile(data.mobile);
+		}
+	} catch (err) {
+		if (!isUndefined(err.response) && err.response.status === 401)
+			showMsg({ title: { text: "این شماره در سیستم ثبت نشده است" } }, { time: 6, status: "warning" });
 	}
-	if (done) {
-		return {
-			...general,
-			background: "#6FA0F1",
-			border: "1px solid #6FA0F1",
-			"> span": { display: "none" },
-			"> i": { display: "block" },
-		};
-	}
-	return {
-		...general,
-		border: "1px solid #DADADA",
-		"> i": { display: "none" },
-	};
-});
-
-const ShowProgress = styled.div(({ theme: { flex } }) => {
-	return {
-		...flex(["justifyContent"]),
-		justifyContent: "space-between",
-		flexDirection: "row-reverse",
-		userSelect: "none",
-		width: "100%",
-		height: "30px",
-	};
-});
-
-function Step1Component() {
-	return null;
-	// return (
-	// 	<Formik
-	// 		initialValues={loginInitialValues}
-	// 		onSubmit={data => {
-	// 			const { mobile, password } = data;
-	// 			const sortedData = { mobile, password };
-	// 			console.log(sortedData);
-	// 			handleSubmit(sortedData);
-	// 		}}
-	// 		validationSchema={logInSchema}
-	// 	>
-	// 		{({ errors, touched }) => {
-	// 			const inputErr = touched[name] && errors[name];
-	// 			// if touched[name] was true inputErr will contains errors[name]
-	// 			return (
-	// 				<Form>
-	// 					<InputField key={idx} hasErr={!!inputErr}>
-	// 						<label>{label}</label>
-	// 						<div>
-	// 							<Field type={type} name={name} />
-	// 						</div>
-	// 						<p>{inputErr || null}</p>
-	// 					</InputField>
-	// 					<div id="btns">
-	// 						<Link href={register}>
-	// 							<button type="button" id="first">
-	// 								<a>ساخت حساب کاربری</a>
-	// 							</button>
-	// 						</Link>
-	// 						<button type="submit" id="second">
-	// 							ورود
-	// 						</button>
-	// 					</div>
-	// 				</Form>
-	// 			);
-	// 		}}
-	// 	</Formik>
-	// );
 }
 
+async function handleSubmitStep2(data) {
+	console.log(data);
+	const backToLogin = () => Router.push(login);
+
+	try {
+		const res = await _USE_API_({
+			describe: "reset password step 2",
+			ignoreStatuses: [401],
+			debug: true,
+		}).Post({ url: "/reset_password", data });
+		console.log(res);
+		if (res.status === 200) {
+			deleteCookie("token");
+			showMsg(
+				{
+					title: {
+						text: "گذرواژه شما با موفقیت عوض شد",
+					},
+					body: { text: "در حال برگشت به صفحه ورود" },
+				},
+				{ time: 3, status: "success" },
+				backToLogin
+			);
+		}
+	} catch (err) {
+		if (err.response.status === 401) {
+			showMsg(
+				{
+					title: { text: "کد یا شماره اشتباه است" },
+				},
+				{ time: 8, status: "warning" }
+			);
+		}
+	}
+}
+
+var code;
 export default function ForgotPassword() {
 	const [currentStep, setCurrentStep] = useState(1);
-	var Component;
+	const [passtypes, setPassTypes] = useState({ pass: "password", confirm: "password" });
+	const [mobile, setMobile] = useState(0);
 
-	if (currentStep === 1) {
-		Component = Step1Component;
-	}
+	const getCodes = typedCode => {
+		code = typedCode;
+	};
+
+	const inputClicks = {
+		toggleShowPass: () => {
+			setPassTypes({ ...passtypes, pass: passtypes.pass === "password" ? "text" : "password" });
+		},
+		toggleShowConfirm: () => {
+			setPassTypes({ ...passtypes, confirm: passtypes.confirm === "password" ? "text" : "password" });
+		},
+	};
 
 	return (
 		<AuthLayout>
 			<Content>
 				<h1>فراموشی رمز</h1>
-				<ResetProgress currentStep={currentStep} />
-				<Component />
+				{currentStep === 1 ? (
+					<Formik
+						enableReinitialize
+						initialValues={step1.intialValues}
+						validationSchema={step1.schema}
+						onSubmit={data => {
+							handleSubmitStep1(data, { setCurrentStep, setMobile });
+						}}
+					>
+						{({ errors, touched }) => {
+							const inputErr = touched["mobile"] && errors["mobile"];
+							// if touched[name] was true inputErr will contains errors[name]
+							return (
+								<Form>
+									<InputField hasErr={!!inputErr}>
+										<label>شماره همراه خود را وارد کنید</label>
+										<div>
+											<Field type="text" name="mobile" />
+										</div>
+										<p>{inputErr || null}</p>
+									</InputField>
+									<div id="btns">
+										<Link href={login}>
+											<button type="button" id="first">
+												<a>تغییر شماره همراه</a>
+											</button>
+										</Link>
+										<button type="submit" id="second">
+											ورود
+										</button>
+									</div>
+								</Form>
+							);
+						}}
+					</Formik>
+				) : (
+					<Formik
+						enableReinitialize
+						initialValues={step2.intialValues}
+						validationSchema={step2.schema}
+						onSubmit={data => {
+							const sortedData = {
+								new_password: data.password,
+								activation_code: code,
+								mobile,
+							};
+							handleSubmitStep2(sortedData);
+						}}
+					>
+						{({ errors, touched }) => {
+							return (
+								<Form>
+									<CodeInput
+										getCodes={getCodes}
+										title="کد 5 رقمی که به شماره 09369769022 ارسال شده را وارد نمایید"
+										// error="awd"
+									/>
+									{step2inputs(passtypes).map(
+										({ name, type, label, font, onFontClick }, idx) => {
+											const inputErr = touched[name] && errors[name];
+											// if touched[name] was true inputErr will contains errors[name]
+
+											return (
+												<InputField key={idx} hasErr={!!inputErr}>
+													<label>{label}</label>
+													<div>
+														<Field
+															type={type}
+															name={name}
+														/>
+														{font && (
+															<i
+																className={font}
+																onClick={
+																	inputClicks[
+																		onFontClick
+																	]
+																}
+															/>
+														)}
+													</div>
+													<p>{inputErr || null}</p>
+												</InputField>
+											);
+										}
+									)}
+									<Link href={registerForgotPassword}>
+										<a>ارسال مجدد کد تایید</a>
+									</Link>
+									<div id="btns">
+										<Link href={registerForgotPassword}>
+											<button type="button" id="first">
+												<a>تغییر شماره همراه</a>
+											</button>
+										</Link>
+										<button type="submit" id="second">
+											تایید و ورود
+										</button>
+									</div>
+								</Form>
+							);
+						}}
+					</Formik>
+				)}
 			</Content>
 		</AuthLayout>
 	);

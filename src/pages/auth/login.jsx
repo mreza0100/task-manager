@@ -131,6 +131,7 @@ export const InputField = styled.div(({ theme: { flex, resetInput }, extraStyles
 			"> input": {
 				background: "#FFFFFF",
 				transition: "border 0.5s",
+				color: "#B4BCCA !important",
 				padding: "15px",
 				border: `1px solid ${hasErr ? "#FF6672" : "#DADADA"}`,
 				borderRadius: "4px",
@@ -170,9 +171,10 @@ export const Content = styled.div(({ theme: { flex, $blue, $bolderBlue }, extraS
 		padding: "25px",
 		width: "100%",
 		height: "100%",
+		color: "#54698D",
 		"> h1": {
 			width: "100%",
-			fontSize: "22px",
+			fontSize: "32px",
 			fontStyle: "normal",
 			fontWeight: "500",
 			textAlign: "right",
@@ -216,7 +218,7 @@ export const Content = styled.div(({ theme: { flex, $blue, $bolderBlue }, extraS
 					fontSize: "14px",
 					"&#second": {
 						backgroundColor: $bolderBlue,
-						color: "#FFF",
+						color: "#FFFFFF",
 						borderRadius: "4px",
 						marginRight: "30px",
 					},

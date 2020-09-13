@@ -14,7 +14,7 @@ RUN npm run build
 
 EXPOSE 10000
 
-CMD [ "npm", "start" ]
+CMD [ "npm" , "start" ]
 # docker build -t task-manager .
 # docker run -ti -p 10000:10000 task-manager
 # you can register a account with phone number and... in http://localhost:10000/register-progress/register"

@@ -15,9 +15,11 @@ const [initialValues, { deleteCache }] = $USE_CASH(
 );
 
 export default function CodeInput({
+	title = "",
+	error = "",
 	getCodesOnCompilate = () => {},
-	inputProps = idx => ({}),
 	getCodes = () => {},
+	inputProps = idx => ({}),
 	autoFocusOnMount = true,
 	fields = 4,
 	extraStyles = {},
@@ -83,43 +85,72 @@ export default function CodeInput({
 	}, []);
 
 	return (
-		<InputsWrapper extraStyles={extraStyles}>
-			{initialValues(fields, { getArray: true }).map(i => {
-				return (
-					<Fragment key={i}>
-						<input
-							autoComplete="off"
-							{...inputProps(i)}
-							type="text"
-							name={`code-${i}`}
-							value={codes[i]}
-							onChange={onChange}
-							onKeyDown={checkChangeFocus}
-						/>
-						{i !== getLastArrayElem(initialValues(fields, { getArray: true })) && "-"}
-					</Fragment>
-				);
-			})}
-		</InputsWrapper>
+		<>
+			<InputsWrapper extraStyles={extraStyles}>
+				<label>{title}</label>
+				<div>
+					{initialValues(fields, { getArray: true }).map(i => {
+						return (
+							<Fragment key={i}>
+								<input
+									autoComplete="off"
+									{...inputProps(i)}
+									type="text"
+									name={`code-${i}`}
+									value={codes[i]}
+									onChange={onChange}
+									onKeyDown={checkChangeFocus}
+								/>
+								{i !==
+									getLastArrayElem(
+										initialValues(fields, { getArray: true })
+									) && "-"}
+							</Fragment>
+						);
+					})}
+				</div>
+				{error && <span className="error">{error}</span>}
+			</InputsWrapper>
+		</>
 	);
 }
 
 const InputsWrapper = styled.div(({ theme: { flex }, extraStyles }) => {
 	return {
 		...flex(),
-		flexDirection: "row-reverse",
-		width: "100%",
-		height: "50px",
-		marginBottom: "10px",
-		border: "1px solid #DADADA",
-		borderRadius: "4px",
-		"> input": {
-			width: "25%",
-			height: "100%",
-			textAlign: "center",
-			background: "transparent",
-			border: "none",
-			outline: "none",
+		flexDirection: "column",
+		textAlign: "right",
+		"> label": {
+			width: "100%",
+			padding: "0 15px",
+			fontStyle: "normal",
+			fontWeight: "500",
+			fontSize: "14px",
+			lineHeight: "23px",
+			color: "#54698D",
+		},
+		"> div": {
+			...flex(),
+			flexDirection: "row-reverse",
+			width: "100%",
+			height: "50px",
+			marginBottom: "10px",
+			border: "1px solid #DADADA",
+			borderRadius: "4px",
+			"> input": {
+				width: "25%",
+				height: "100%",
+				textAlign: "center",
+				background: "transparent",
+				border: "none",
+				outline: "none",
+			},
+		},
+		"> span.error": {
+			width: "100%",
+			color: "red",
+			textAlign: "right",
+			padding: "0 15px",
 		},
 		...extraStyles,
 	};
