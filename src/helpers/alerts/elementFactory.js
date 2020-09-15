@@ -1,9 +1,9 @@
 export default function create({
 	nodeName = "div",
 	styles = {},
+	props = {},
 	attrs = {},
 	childs = [],
-	props = {},
 	events = {},
 	text = "",
 } = {}) {
