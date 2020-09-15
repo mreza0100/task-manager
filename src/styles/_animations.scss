@@ -1,6 +1,6 @@
 @keyframes msg {
 	0% {
-		right: -30%;
+		right: -20%;
 	}
 	25% {
 		right: 6%;
@@ -9,6 +9,15 @@
 		right: 6%;
 	}
 	100% {
-		right: -30%;
+		right: -25%;
+	}
+}
+
+@keyframes msg-close {
+	0% {
+		right: 6%;
+	}
+	100% {
+		right: -25%;
 	}
 }

@@ -1,165 +1,197 @@
 import create from "./elementFactory";
 import { flex, defer } from "../exports";
 
-const wrapperStyles = ({ extraStyles }) => {
-	var width = window.innerWidth < 500 ? "90%" : "40%";
-	return {
-		width,
-		minHeight: "30vh",
-		// minHeight: "120px",
-		padding: "10px 0 10px 0",
-		opacity: 0,
-		position: "absolute",
-		top: "25%",
-		left: "50%",
-		marginLeft: "auto",
-		marginRight: "auto",
-		borderRadius: "5px",
-		transform: "translate(-50%, 0)",
-		transition: "all 0.5s",
-		...extraStyles,
-	};
+const parentAllStyles = {
+	position: "fixed",
+	top: 0,
+	bottom: 0,
+	left: 0,
+	right: 0,
+	opacity: 0,
+	backgroundColor: "rgb(0 0 0 / 53%)",
+	transition: "opacity 0.5s",
 };
-
-const btnWrapperStyles = {
-	...flex(["justifyContent"]),
-	justifyContent: "space-evenly",
-	width: "50%",
+const outerWrapperStyles = {
+	position: "fixed",
+	height: "250px",
+	width: "500px",
+	top: "25%",
+	left: "50%",
+	marginLeft: "auto",
+	marginRight: "auto",
+	transform: "translate(-50%, 0)",
+	background: "#FFFFFF",
+	boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+	borderRadius: "10px",
 };
-
-const innerStyles = {
-	...flex(["justifyContent"]),
-	justifyContent: "space-evenly",
-	flexDirection: "column",
+const innerWrapperStyles = {
+	...flex(),
+	position: "relative",
 	width: "100%",
 	height: "100%",
-	position: "relative",
 };
-
-const closeStyles = {
+const closeIStyles = {
 	position: "absolute",
-	right: "15px",
+	right: "10px",
 	top: "10px",
-	// padding: "8px",
 	cursor: "pointer",
+	padding: "10px",
+	color: "#DADADA",
+	fontSize: "12px",
+};
+const contentStyles = {
+	...flex(),
+	flexWrap: "wrap",
+	alignContent: "flex-start",
+	width: "270px",
+	height: "80%",
+};
+const titleStyles = {
+	margin: 0,
+	color: "#54698D",
+	width: "100%",
+	fontSize: "25px",
+	textAlign: "center",
+	whiteSpace: "pre",
+	paddingBottom: "10px",
+};
+const describeStyles = {
+	width: "100%",
+	color: "#54698D",
+	marginBottom: "28px",
+	fontSize: "14px",
+	textAlign: "center",
+};
+const btnRightStyles = {
+	width: "129px",
+	height: "50px",
+	color: "#FF6672",
+	backgroundColor: "transparent",
+	fontSize: "14px",
+	border: "1px solid #FF6672",
+	// marginLeft: "2.5px",
+	borderRadius: "4px",
+};
+const btnLeftStyles = {
+	width: "129px",
+	height: "50px",
+	color: "#FFF",
+	backgroundColor: "#2CDA9B",
+	fontSize: "14px",
+	border: "none",
+	marginRight: "auto",
+	borderRadius: "4px",
 };
 
 var isBusy;
-
 export default function ask(
 	{
-		title: {
-			text: tText,
-			attrs: tAttrs,
-			styles: tStyles,
-			childs: tChilds,
-			nodeName: tNodeName,
-			props: tProps,
-		},
-		btn1: {
-			text: b1Text,
-			attrs: b1attrs,
-			styles: b1Styles,
-			childs: b1Cilds,
-			props: b1Props,
-		} = {},
-		btn2: {
-			text: b2Text,
-			attrs: b2attrs,
-			styles: b2Styles,
-			childs: b2Cilds,
-			props: b2Props,
-		} = {},
-		html,
+		title: { text: tText, styles: tStyles, props: tProps } = {},
+		describe: { text: dText, styles: dStyles, props: dProps } = {},
+		btnRight: { text: bRText, styles: bRStyles, props: bRProps } = {},
+		btnLeft: { text: bLText, styles: bLStyles, props: bLProps } = {},
 	},
-	{ timeout, extraStyles = {}, mainAttrs, status } = {}
+	{ timeout, mainAttrs, status, extraStyles = {} } = {}
 ) {
 	return new Promise((resolve, reject) => {
 		if (!process.browser) return reject("inBrowser");
 		if (isBusy) return reject({ isBusy: true });
-		else isBusy = true;
-		const onClickWindow = ({ target }) => {
-			if (!askWindow.contains(target)) onRefuse();
-		};
-		const callback = () => {
-			askWindow.style.opacity = 0;
-			window.removeEventListener("click", onClickWindow);
+		isBusy = true;
+
+		const handleDelete = () => {
+			parentAll.style.opacity = 0;
 			setTimeout(() => {
-				document.body.removeChild(askWindow);
+				try {
+					document.body.removeChild(parentAll);
+					// some times its throwing error but its just fine to do this
+				} catch (err) {}
 				isBusy = false;
 			}, 500);
 		};
+		const refuseOnEscape = ({ which, keyCode }) => {
+			// 27 is for Escape
+			if ((which ?? keyCode) === 27) {
+				window.removeEventListener("keydown", refuseOnEscape);
+				onRefuse();
+			}
+		};
+		const onClickParentAll = ({ target }) => {
+			if (!outerWrapper.contains(target)) onRefuse();
+		};
+
 		const onAccept = () => {
 			resolve(true);
-			callback();
+			handleDelete();
 		};
 		const onRefuse = () => {
 			resolve(false);
-			callback();
+			handleDelete();
 		};
-		var title, btn1, btn2;
-		if (tText) {
-			title = create({
-				nodeName: tNodeName ?? "p",
-				attrs: tAttrs,
-				childs: tChilds,
-				props: tProps,
-				styles: tStyles,
-				text: tText,
-			});
-		}
-		btn1 = create({
+
+		var title, describe, btnRight, btnLeft, closeI, content, parentAll, outerWrapper, innerWrapper;
+		title = create({
+			nodeName: "h4",
+			styles: titleStyles,
+			props: tProps,
+			text: tText,
+		});
+		describe = create({
+			nodeName: "p",
+			styles: describeStyles,
+			text: dText,
+			props: dProps,
+		});
+		btnRight = create({
 			nodeName: "button",
-			text: b1Text ?? "بله",
-			attrs: { class: "btn btn-success pr-4 pl-4", ...b1attrs },
-			styles: b1Styles,
-			childs: b1Cilds,
-			props: { ...b1Props, onclick: onAccept },
+			styles: btnRightStyles,
+			text: bRText,
+			props: bRProps,
+			events: { click: onRefuse },
 		});
-
-		btn2 = create({
+		btnLeft = create({
 			nodeName: "button",
-			text: b2Text ?? "خیر",
-			attrs: { class: "btn btn-danger pr-4 pl-4", ...b2attrs },
-			styles: b2Styles,
-			childs: b2Cilds,
-			props: { ...b2Props, onclick: onRefuse },
+			styles: btnLeftStyles,
+			text: bLText,
+			props: bLProps,
+			events: { click: onAccept },
 		});
-
-		const btnWrapper = create({
-			childs: [btn1, btn2],
-			nodeName: "span",
-			styles: btnWrapperStyles,
+		content = create({
+			nodeName: "div",
+			styles: contentStyles,
+			childs: [title, describe, btnRight, btnLeft],
 		});
-
-		const close = create({
+		closeI = create({
 			nodeName: "i",
-			props: { onclick: onRefuse },
-			attrs: { class: "fa fa-times" },
-			styles: closeStyles,
+			styles: closeIStyles,
+			props: { className: "fa fa-times" },
+			events: { click: onRefuse },
+		});
+		innerWrapper = create({
+			nodeName: "div",
+			styles: innerWrapperStyles,
+			childs: [closeI, content],
+		});
+		outerWrapper = create({
+			nodeName: "div",
+			styles: outerWrapperStyles,
+			childs: innerWrapper,
+		});
+		parentAll = create({
+			nodeName: "div",
+			styles: parentAllStyles,
+			events: { click: onClickParentAll },
+			childs: outerWrapper,
 		});
 
-		const inner = create({
-			childs: [title, btnWrapper, close, ...(Array.isArray(html) ? html : [html])],
-			styles: innerStyles,
-		});
-
-		const askWindow = create({
-			styles: wrapperStyles({ ...extraStyles }),
-			attrs: mainAttrs,
-			childs: inner,
-		});
-		if (status !== "none") askWindow.classList.add(`bg-${status ?? "info"}`);
-		document.body.appendChild(askWindow);
+		document.body.appendChild(parentAll);
 		defer(() => {
-			// !!!!!!!!
-			askWindow.style.opacity = 1;
-			window.addEventListener("click", onClickWindow);
+			parentAll.style.opacity = 1;
+			window.addEventListener("keydown", refuseOnEscape);
 		});
-
-		if (timeout)
+		if (timeout) {
 			setTimeout(() => {
 				onRefuse();
 			}, timeout * 1000);
+		}
 	});
 }

@@ -3,7 +3,7 @@ import { getLastArrayElem } from "../helpers/exports";
 import { $USE_CASH } from "../helpers/cash";
 import styled from "styled-components";
 
-const [initialValues, { deleteCache }] = $USE_CASH(
+const [initialValues, { resetCache }] = $USE_CASH(
 	(fields, { getArray = false } = {}) => {
 		if (getArray) return new Array(fields).fill(0).map((_, idx) => idx + 1);
 
@@ -52,8 +52,7 @@ export default function CodeInput({
 			case 8:
 				if (!e.target.value) {
 					moveFocusTo(-1);
-					e.preventDefault();
-					// onChange will not called
+					e.preventDefault(/*onChange will not call*/);
 				}
 				break;
 			case 39:
@@ -81,7 +80,7 @@ export default function CodeInput({
 
 	useEffect(() => {
 		if (autoFocusOnMount) document.querySelector("input[name='code-1']").focus();
-		return deleteCache;
+		return resetCache;
 	}, []);
 
 	return (

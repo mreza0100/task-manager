@@ -1,8 +1,9 @@
 import { registerForgotPassword, register, tasks } from "../../routes";
 import { isUndefined, setCookie } from "../../helpers/exports";
+import logInSchema, { loginInitialValues } from "../../schema/login";
 import AuthLayout from "../../layout/Auth.layout";
 import { _USE_API_ } from "../../api/index.API";
-import logInSchema, { loginInitialValues } from "../../schema/login";
+import showMsg from "../../helpers/alerts/msg";
 import { Formik, Form, Field } from "formik";
 import styled from "styled-components";
 import Router from "next/router";
@@ -59,7 +60,6 @@ export default function Login() {
 					onSubmit={data => {
 						const { mobile, password } = data;
 						const sortedData = { mobile, password };
-						console.log(sortedData);
 						handleSubmit(sortedData);
 					}}
 					validationSchema={logInSchema}

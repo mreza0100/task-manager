@@ -6,7 +6,7 @@ function handleCopy(taskID) {
 	if (copyToClipboard(`${location.origin}/?id=${taskID}`)) {
 		showMsg(
 			{ title: { text: "با موفقیت کپی شد", nodeName: "h6" } },
-			{ time: 3, status: "success", pendingID: `copy-${taskID}` }
+			{ time: 6, status: "success", pendingID: `copy-${taskID}` }
 		);
 	} else showMsg({ title: { text: "مرورگر شما برای این کار قدیمی است" } }, { time: 5, status: "warning" });
 }

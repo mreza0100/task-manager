@@ -2,7 +2,7 @@ import { phoneRegExp } from "./regExp";
 import * as yup from "yup";
 
 export const step1 = {
-	intialValues: { mobile: "" },
+	intialValues: { password: "", confirmPassword: "", mobile: "" },
 	schema: yup.object({
 		mobile: yup
 			.string()
@@ -14,7 +14,7 @@ export const step1 = {
 	}),
 };
 export const step2 = {
-	intialValues: { password: "", confirmPassword: "" },
+	intialValues: { password: "", confirmPassword: "", mobile: "" },
 	schema: yup.object({
 		password: yup
 			.string()

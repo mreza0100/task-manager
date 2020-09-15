@@ -30,16 +30,14 @@ export default function Header() {
 		return (
 			<StyledHeader>
 				<StyledUl>
-					{menuData.map(
-						({ route, label, isComponent, id = null, font, className, jsx }, idx) => {
-							if (isComponent) return jsx();
-							return (
-								<Link href={route || currentRoute} key={idx}>
-									<StyledLi id={id}>{font && <i className={font} />}</StyledLi>
-								</Link>
-							);
-						}
-					)}
+					{menuData.map(({ route, isComponent, id = null, font, jsx }, idx) => {
+						if (isComponent) return jsx();
+						return (
+							<Link href={route || currentRoute} key={idx}>
+								<StyledLi id={id}>{font && <i className={font} />}</StyledLi>
+							</Link>
+						);
+					})}
 				</StyledUl>
 			</StyledHeader>
 		);

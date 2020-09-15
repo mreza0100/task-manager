@@ -1,6 +1,6 @@
+import { deleteCookie, isUndefined } from "../../helpers/exports";
 import { login, registerForgotPassword } from "../../routes";
 import { step1, step2 } from "../../schema/reset-password";
-import { isUndefined } from "../../helpers/exports";
 import CodeInput from "../../components/CodeInput";
 import AuthLayout from "../../layout/Auth.layout";
 import { _USE_API_ } from "../../api/index.API";
@@ -8,6 +8,7 @@ import showMsg from "../../helpers/alerts/msg";
 import { Formik, Form, Field } from "formik";
 import { InputField } from "./login";
 import { Content } from "./login";
+import Router from "next/router";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -28,7 +29,7 @@ const step2inputs = ({ pass, confirm }) => [
 	},
 ];
 
-async function handleSubmitStep1(data, { setCurrentStep, setMobile }) {
+async function handleSubmitStep1(data, { setCurrentStep, setMobile, handleReset }) {
 	try {
 		const res = await _USE_API_({
 			ignoreStatuses: [401],
@@ -40,6 +41,7 @@ async function handleSubmitStep1(data, { setCurrentStep, setMobile }) {
 		if (res.status === 200) {
 			setCurrentStep(2);
 			setMobile(data.mobile);
+			handleReset();
 		}
 	} catch (err) {
 		if (!isUndefined(err.response) && err.response.status === 401)
@@ -48,16 +50,14 @@ async function handleSubmitStep1(data, { setCurrentStep, setMobile }) {
 }
 
 async function handleSubmitStep2(data) {
-	console.log(data);
 	const backToLogin = () => Router.push(login);
 
 	try {
 		const res = await _USE_API_({
 			describe: "reset password step 2",
 			ignoreStatuses: [401],
-			debug: true,
+			debug: false,
 		}).Post({ url: "/reset_password", data });
-		console.log(res);
 		if (res.status === 200) {
 			deleteCookie("token");
 			showMsg(
@@ -111,11 +111,12 @@ export default function ForgotPassword() {
 						enableReinitialize
 						initialValues={step1.intialValues}
 						validationSchema={step1.schema}
-						onSubmit={data => {
-							handleSubmitStep1(data, { setCurrentStep, setMobile });
+						onSubmit={(data, { handleReset }) => {
+							console.log(data);
+							handleSubmitStep1(data, { setCurrentStep, setMobile, handleReset });
 						}}
 					>
-						{({ errors, touched }) => {
+						{({ errors, touched, handleReset }) => {
 							const inputErr = touched["mobile"] && errors["mobile"];
 							// if touched[name] was true inputErr will contains errors[name]
 							return (
@@ -130,11 +131,11 @@ export default function ForgotPassword() {
 									<div id="btns">
 										<Link href={login}>
 											<button type="button" id="first">
-												<a>تغییر شماره همراه</a>
+												<a>بازگشت به صفحه قبل</a>
 											</button>
 										</Link>
 										<button type="submit" id="second">
-											ورود
+											مرحله بعد
 										</button>
 									</div>
 								</Form>
@@ -155,12 +156,12 @@ export default function ForgotPassword() {
 							handleSubmitStep2(sortedData);
 						}}
 					>
-						{({ errors, touched }) => {
+						{({ errors, touched, handleReset }) => {
 							return (
 								<Form>
 									<CodeInput
 										getCodes={getCodes}
-										title="کد 5 رقمی که به شماره 09369769022 ارسال شده را وارد نمایید"
+										title={`کد 4 رقمی که به شماره ${mobile} ارسال شده را وارد نمایید`}
 										// error="awd"
 									/>
 									{step2inputs(passtypes).map(
@@ -193,11 +194,25 @@ export default function ForgotPassword() {
 										}
 									)}
 									<Link href={registerForgotPassword}>
-										<a>ارسال مجدد کد تایید</a>
+										<a
+											onClick={() => {
+												handleReset();
+												setCurrentStep(1);
+											}}
+										>
+											ارسال مجدد کد تایید
+										</a>
 									</Link>
 									<div id="btns">
 										<Link href={registerForgotPassword}>
-											<button type="button" id="first">
+											<button
+												type="button"
+												id="first"
+												onClick={() => {
+													handleReset();
+													setCurrentStep(1);
+												}}
+											>
 												<a>تغییر شماره همراه</a>
 											</button>
 										</Link>

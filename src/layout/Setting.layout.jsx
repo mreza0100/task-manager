@@ -15,8 +15,9 @@ export function handleLogout() {
 	ask(
 		{
 			title: { text: "آیا از خروج مطمعن هستید" },
-			btn1: { attrs: { class: "btn btn-warning pr-4 pl-4" } },
-			btn2: { attrs: { class: "btn btn-success pr-4 pl-4" } },
+			describe: { text: "آیا میخواهید از حساب کاربری خود خارج شوید؟" },
+			btnRight: { text: "انصراف" },
+			btnLeft: { text: "بله" },
 		},
 		{ status: "danger" }
 	)
@@ -29,7 +30,6 @@ export function handleLogout() {
 					{ time: 3, status: "warning" },
 					backToLogin
 				);
-			} else {
 			}
 		})
 		.catch(why => {

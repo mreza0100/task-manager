@@ -10,7 +10,7 @@ import "../styles/general.scss";
 import { ThemeProvider } from "styled-components";
 // style helpers in styled component props
 import styleHelpers from "../helpers/style-helpers";
-import { reloadRouter } from "../helpers/exports";
+import { defer, reloadRouter } from "../helpers/exports";
 
 Router.onRouteChangeStart = () => {
 	if (!Router.showNprogress) Router.showNprogress = true;
@@ -33,6 +33,14 @@ class App extends NextApp {
 				...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {}),
 			},
 		};
+	}
+	componentDidMount() {
+		const jssStyles = document.querySelector("#jss-server-side");
+		if (jssStyles && jssStyles.parentNode) jssStyles.parentNode.removeChild(jssStyles);
+		document.body.style.opacity = 0;
+		defer(() => {
+			document.body.style.opacity = 1;
+		});
 	}
 
 	render() {

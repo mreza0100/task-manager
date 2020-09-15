@@ -7,7 +7,7 @@ const { cashedData, functions } = (function init(functions, initialCash) {
 	});
 })(
 	{
-		/* <!><!><!><!><!><!><!><!> PURE functions <!><!><!><!><!><!><!><!>  */
+		/* <!><!><!><!><!><!><!><!> PURE FUNCTIONS <!><!><!><!><!><!><!><!>  */
 		flex(whatIDontWant) {
 			const s = { display: "flex", justifyContent: "center", alignItems: "center" };
 			for (const i of whatIDontWant) delete s[i];
@@ -49,7 +49,6 @@ export function $USE_CASH(func, { getUtils } = {}) {
 		? [
 				(...args) => parse(cache[str(args)] || (cache[str(args)] = str(func(...args)))),
 				{
-					deleteCache: () => (cache = null),
 					resetCache: () => (cache = {}),
 					getCache: () => cache,
 					changeCache: getNewCache => (cache = getNewCache(cache)),

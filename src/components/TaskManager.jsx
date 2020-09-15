@@ -281,7 +281,7 @@ const Item = styled.div(({ theme: { flex, $black } }) => {
 				textarea: {
 					width: "100%",
 					background: "rgba(218, 179, 44, 0.15)",
-					padding: "5px",
+					padding: "2px 15px",
 					maxWidth: "100%",
 					minWidth: "100%",
 					minHeight: "130px",
