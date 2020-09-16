@@ -37,7 +37,6 @@ class App extends NextApp {
 	componentDidMount() {
 		const jssStyles = document.querySelector("#jss-server-side");
 		if (jssStyles && jssStyles.parentNode) jssStyles.parentNode.removeChild(jssStyles);
-		document.body.style.opacity = 0;
 		defer(() => {
 			document.body.style.opacity = 1;
 		});

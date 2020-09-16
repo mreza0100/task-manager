@@ -1,7 +1,7 @@
-// ! from libs
+// ! libs
 @import "./bs4";
-@import "../../node_modules/nprogress/nprogress.css";
-@import "./react-tagsinput.scss";
+@import "../../node_modules/nprogress/nprogress";
+@import "./react-tagsinput";
 // ! internals
 @import "./animations";
 // @import "./css-reset";
@@ -21,7 +21,8 @@ body {
 	height: auto;
 	// background-color: #313131;
 	color: black;
-	transition: opacity 0.4s;
+	opacity: 0;
+	transition: opacity 0.8s;
 }
 
 #__next {

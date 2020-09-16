@@ -180,6 +180,20 @@ function getLastArrayElem(arr) {
 	return arr[arr.length - 1];
 }
 
+function pressKeyboardKey(type = "keydown", { key = "Enter", which = 13, keyCode = 13 } = {}) {
+	if (!process.browser) return;
+	// default is Enter key
+	const event = new KeyboardEvent(type, {
+		view: window,
+		bubbles: true,
+		cancelable: true,
+		key,
+		which,
+		keyCode,
+	});
+	document.dispatchEvent(event);
+}
+
 export {
 	$,
 	flex,
@@ -207,4 +221,5 @@ export {
 	isObject,
 	looseEqual,
 	getLastArrayElem,
+	pressKeyboardKey,
 };

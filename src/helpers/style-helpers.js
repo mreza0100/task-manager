@@ -2,14 +2,15 @@ import $CACH from "./cash";
 
 const resetInput = {
 	"input, textarea": {
-		// border: "none",
+		border: "1px solid transparent",
+		transition: "border 0.5s",
 		outline: "none",
 		"&::placeholder": {
 			color: "#B4BCCA",
 			opacity: "1",
 		},
 		"&:focus": {
-			// border: "none",
+			border: "1px solid #5460FE",
 			outline: "none",
 		},
 	},

@@ -1,42 +1,11 @@
 import { getCookie, reloadRouter, isUndefined, serverRedirect } from "../helpers/exports";
-import Router from "next/router";
-import Axios from "axios";
+import AC /*as APIConfigs*/, { consoleCss } from "./API.configs";
 import showMsg from "../helpers/alerts/msg";
 import { login } from "../routes";
-const dash = "-------";
-const consoleCss = [
-	"width: 400px",
-	"background: linear-gradient(#06d35b, #571402)",
-	"border: 1px solid #3E0E02",
-	"color: white",
-	"text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3)",
-	"line-height: 40px",
-	"font-weight: bold",
-].join(";");
+import Router from "next/router";
+import Axios from "axios";
 
-const AC /* as APIConfigs */ = {
-	baseURL: "http://5.63.9.74:7575/v1/",
-	dispatch: false,
-	getState: false,
-	debug: false,
-	details: false,
-	req: null,
-	res: null,
-	isPrivetRoute: false,
-	ignoreStatuses: [],
-	pendingID: false,
-	kickOn401: true,
-	logError: true,
-	inBrowser: typeof window !== "undefined",
-	describe() {
-		for (let i = 0; i < 100; i++) console.error(`<<<<<<<<<<<API need a describe<<<<<<<<<<<${i}`);
-		throw Error("<<<<<<<<<<<API need a describe<<<<<<<<<<<");
-	},
-	inServerWithoNoReqOrRes() {
-		for (let i = 0; i < 100; i++) console.error(`<<<<<<<<<<<in server with no req or res<<<<<<<<<<<${i}`);
-		throw Error("<<<<<<<<<<<in server with no req or res<<<<<<<<<<<");
-	},
-};
+const dash = "-------";
 
 var pendingList = [];
 

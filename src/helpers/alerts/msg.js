@@ -128,13 +128,19 @@ export default function showMsg(
 
 	document.body.appendChild(__MSG__);
 	var valTimeout = setTimeout(deleteMsg, time * 1000);
+	const closeOnEscape = e => {
+		if (e.key === "Escape") deleteMsg(true);
+	};
+	window.addEventListener("keydown", closeOnEscape);
 
 	function deleteMsg(e) {
 		inPlay--;
+		window.removeEventListener("keydown", closeOnEscape);
 		if (pendingID) pendingList = pendingList.filter(ID => ID !== pendingID);
 		if (callback) callback();
 		if (e) {
-			// if e was true it mean he clicked on closeIcon
+			// if e was true it mean he clicked on closeIcon of press Escape
+			// so timeout most stop and remove it in other way
 			clearTimeout(valTimeout);
 			__MSG__.style.animationName = "msg-close";
 			__MSG__.style.animationDuration = time / 4 + "s";

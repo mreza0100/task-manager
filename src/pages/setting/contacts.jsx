@@ -4,6 +4,7 @@ import {
 	addContacts,
 	getContacts,
 } from "../../redux/actions/contacts";
+import contactsSchema, { contactsInitialValues } from "../../schema/contacts";
 import useFilteringContacts from "../../hooks/filteringContacts";
 import DropDownMenu from "../../components/DropDownMenu";
 import SettingLayout from "../../layout/Setting.layout";
@@ -14,7 +15,6 @@ import { DropDownItem } from "../index";
 import styled from "styled-components";
 import { TopContents } from "../index";
 import { useState } from "react";
-import contactsSchema, { contactsInitialValues } from "../../schema/contacts";
 
 function Contacts() {
 	const [searchText, setSearchText] = useState("");
@@ -92,8 +92,8 @@ function Contacts() {
 
 /*
   ? im breaking this component to too pisces
-  ? so when you type in search box or select 
-  ? a contact the hole layout and header is not updating 
+  ? so when you type in search box or select
+  ? a contact the hole layout and header is not updating
 */
 
 export default function ContactsParent() {
@@ -158,7 +158,6 @@ const AddContact = styled.div(({ theme: { flex, resetInput, $bolderBlue, $white 
 				border: "1px solid #DADADA",
 				transition: "border 0.5s",
 				"&::placeholder": { fontSize: "14px" },
-				"&:focus": { border: "1px solid #5460FE" },
 			},
 			button: {
 				...flex(["justifyContent"]),

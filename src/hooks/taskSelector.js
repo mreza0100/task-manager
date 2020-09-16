@@ -22,7 +22,6 @@ export default function useTaskSelectore({
 
 		useEffect(() => {
 			if (taskID && !result) {
-				console.log(taskID);
 				// ! then its not found
 				if (redirectOnNotFound) router.push(tasksRoute);
 				if (alertOnNotFound) {

@@ -1,15 +1,24 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function DropDownMenu({ children, title, parentStyles, ulStyles }) {
 	const [open, setOpen] = useState(false);
+	const dropDownRef = useRef();
 
 	const onToggleOpen = () => {
 		setOpen(!open);
 	};
+	const closeDropDown = ({ target }) => {
+		if (!dropDownRef.current.contains(target)) setOpen(false);
+	};
+
+	useEffect(() => {
+		window.addEventListener("click", closeDropDown);
+		return () => window.removeEventListener("click", closeDropDown);
+	}, []);
 
 	return (
-		<DropDown parentStyles={parentStyles} open={open}>
+		<DropDown parentStyles={parentStyles} open={open} ref={dropDownRef}>
 			<span onClick={onToggleOpen}>
 				{title}
 				<i className="icon-drop-arrow" />

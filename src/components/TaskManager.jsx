@@ -88,129 +88,115 @@ export default function TaskManager() {
 	if (notFound) return noTask;
 	return (
 		<LeftAside extraStyles={{ height: "unset" }}>
-			<div style={{ width: "100%" }}>
-				<HeadManager>
-					<div>
-						<CheckBox isDone={is_done} taskID={taskID} />
-						<Title isDone={is_done}>{initialTitle}</Title>
-					</div>
-					<div>
-						<Star taskID={taskID} isFavorite={is_favorite} />
-						<CopyBtn taskID={taskID} />
-					</div>
-				</HeadManager>
-				<ManagerItems>
-					<Item>
-						<div className="font">
-							<i className="icon-bag" />
+			<WrapperAll>
+				<div style={{ width: "100%" }}>
+					<HeadManager>
+						<div>
+							<CheckBox isDone={is_done} taskID={taskID} />
+							<Title isDone={is_done}>{initialTitle}</Title>
 						</div>
-						<div className="content date">
-							<span>از</span>
-							<DatePicker
-								isGregorian={false}
-								value={fromDate}
-								onChange={d => setFromDate(d)}
-							/>
+						<div>
+							<Star taskID={taskID} isFavorite={is_favorite} />
+							<CopyBtn taskID={taskID} />
+							<i className="fa fa-trash" onClick={() => handleDeleteTask(taskID)} />
 						</div>
-					</Item>
-					<Item>
-						<div className="font">
-							<i className="icon-bag" />
-						</div>
-						<div className="content date">
-							<span>تا</span>
-							<DatePicker
-								isGregorian={false}
-								value={toDate}
-								onChange={d => setToDate(d)}
-							/>
-						</div>
-					</Item>
-					<Item>
-						<div className="font">
-							{/* TODO: remove tag img */}
-							<img src={require("../assets/svg/tag.svg")} />
-						</div>
-						<div className="content tags">
-							<TagsInput
-								value={tags}
-								onChange={handleChangeTag}
-								renderTag={tagJSX}
-								inputProps={{ placeholder: "اضافه کردن تگ" }}
-							/>
-						</div>
-					</Item>
-					<Item id="description">
-						<div className="font">
-							<i className="icon-pen" />
-						</div>
-						<div className="content">
-							<textarea
-								placeholder="افزودن متن"
-								value={description}
-								onChange={({ target }) => setDescription(target.value)}
-							/>
-						</div>
-					</Item>
-				</ManagerItems>
-			</div>
-			<Footer>
-				<Item>
-					<div className="font"></div>
-					<div className="content">
-						<button
-							className="btn"
-							onClick={() => {
-								handleSubmit(
-									{ id: taskID, toDate, fromDate, description, tags },
-									dispatch
-								);
-							}}
-						>
-							ثبت
-						</button>
-						<i className="fa fa-trash" onClick={() => handleDeleteTask(taskID)} />
-					</div>
-				</Item>
-			</Footer>
+					</HeadManager>
+					<ManagerItems>
+						<Item>
+							<div className="font">
+								<i className="icon-bag" />
+							</div>
+							<div className="content date">
+								<span>از تاریخ</span>
+								<DatePicker
+									isGregorian={false}
+									value={fromDate}
+									onChange={d => setFromDate(d)}
+								/>
+							</div>
+						</Item>
+						<Item>
+							<div className="font">
+								<i className="icon-bag" />
+							</div>
+							<div className="content date">
+								<span>تا تاریخ</span>
+								<DatePicker
+									isGregorian={false}
+									value={toDate}
+									onChange={d => setToDate(d)}
+								/>
+							</div>
+						</Item>
+						<Item>
+							<div className="font">
+								{/* TODO: remove tag img */}
+								<img src={require("../assets/svg/tag.svg")} />
+							</div>
+							<div className="content tags">
+								<TagsInput
+									value={tags}
+									onChange={handleChangeTag}
+									renderTag={tagJSX}
+									inputProps={{ placeholder: "اضافه کردن تگ" }}
+								/>
+							</div>
+						</Item>
+						<Item id="description">
+							<div className="font">
+								<i className="icon-pen" />
+							</div>
+							<div className="content">
+								<textarea
+									placeholder="افزودن متن"
+									value={description}
+									onChange={({ target }) => setDescription(target.value)}
+								/>
+							</div>
+						</Item>
+					</ManagerItems>
+				</div>
+				<Footer>
+					<button
+						className="btn"
+						onClick={() => {
+							handleSubmit(
+								{ id: taskID, toDate, fromDate, description, tags },
+								dispatch
+							);
+						}}
+					>
+						ثبت تغییرات
+					</button>
+				</Footer>
+			</WrapperAll>
 		</LeftAside>
 	);
 }
 
-const Footer = styled.div(({ theme: { flex, $bolderBlue } }) => {
+const WrapperAll = styled.div(({ theme: { flex } }) => {
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "space-between",
-		// margin: "auto auto 10px auto",
-		minHeight: "25px",
-		width: "90%",
-		height: "60px",
-		"> div": {
+		flexDirection: "column",
+		width: "400px",
+		height: "100vh",
+		position: "fixed",
+		left: 0,
+	};
+});
+
+const Footer = styled.div(({ theme: { flex } }) => {
+	return {
+		padding: "0 20px",
+		width: "100%",
+		"> button": {
 			width: "100%",
-		},
-		".font": { backgroundColor: "transparent !important" },
-		".content": {
-			...flex(["justifyContent"]),
-			justifyContent: "space-between",
-			width: "100%",
-			backgroundColor: "transparent !important",
-			cursor: "default",
-			"> button": {
-				...flex(),
-				backgroundColor: $bolderBlue,
-				height: "50%",
-				fontSize: "12px",
-				cursor: "pointer",
-			},
-			"> i": {
-				// padding: "8px",
-				fontSize: "20px",
-				cursor: "pointer",
-				transition: "color 0.3s",
-				"&:hover": {
-					color: "red",
-				},
-			},
+			height: "50px",
+			color: "#FFF",
+			background: "#5460FE",
+			borderRadius: "4px",
+			marginBottom: "20px",
 		},
 	};
 });
@@ -320,6 +306,15 @@ const HeadManager = styled.div(({ theme: { flex, $black } }) => {
 			"> span": { color: $black, fontSize: "16px" },
 			"> * ": {
 				margin: "0 7px",
+			},
+		},
+		"i.fa.fa-trash": {
+			color: "#6FA0F1",
+			fontSize: "18px",
+			cursor: "pointer",
+			transition: "color 0.3s",
+			"&:hover": {
+				color: "red",
 			},
 		},
 	};

@@ -1,152 +1,76 @@
-import { useState, useEffect, Fragment } from "react";
-import { getLastArrayElem } from "../helpers/exports";
-import { $USE_CASH } from "../helpers/cash";
+import { useRef, useState } from "react";
 import styled from "styled-components";
 
-const [initialValues, { deleteCache }] = $USE_CASH(
-	(fields, { getArray = false } = {}) => {
-		if (getArray) return new Array(fields).fill(0).map((_, idx) => idx + 1);
+function TagInput({ tags = [], setTagState, placeholder = "اضافه کردن تگ" }) {
+	const inputRef = useRef();
 
-		var initialValues = {};
-		for (let i = 1; i < fields + 1; i++) initialValues[i] = "";
-		return initialValues;
-	},
-	{ getUtils: true }
-);
-
-function CodeInput({
-	getCodesOnCompilate = () => {},
-	inputProps = idx => ({}),
-	getCodes = () => {},
-	autoFocusOnMount = true,
-	fields = 4,
-}) {
-	const [codes, setCodes] = useState(initialValues(fields));
-	const joinedCodes = Object.values(codes).join("");
-
-	getCodes(joinedCodes);
-	if (joinedCodes.length === fields) getCodesOnCompilate(joinedCodes);
-
-	const changeFocus = inputNumber => {
-		if (!codes.hasOwnProperty(inputNumber)) return;
-		// out of range
-		document.querySelector(`input[name='code-${inputNumber}']`).focus();
+	const handleAddTag = () => {
+		const value = inputRef.current.value;
+		inputRef.current.value = "";
+		setTagState(prevTags => [...prevTags, value]);
 	};
-
-	const moveFocusTo = moveTo => {
-		const currentFocus = document.querySelector(`input:focus`);
-		if (currentFocus.name.slice(0, 5) !== "code-") return;
-		const currentFocusNumber = Number(currentFocus.name.split("-")[1]);
-		const targetFocusNumber = currentFocusNumber + moveTo;
-		changeFocus(targetFocusNumber);
+	const handleDeleteTag = idx => {
+		const value = inputRef.current.value;
+		inputRef.current.value = "";
+		setTagState(prevTags => {
+			const newTags = prevTags.filter((tag, everyTagIdx) => everyTagIdx !== idx);
+			return newTags;
+		});
 	};
-
-	const checkChangeFocus = e => {
-		// 8  is for backspace   <--
-		// 39 is for right arror ->
-		// 37 is for left  arrow <-
-		switch (e.which ?? e.keyCode) {
-			case 8:
-				if (!e.target.value) {
-					moveFocusTo(-1);
-					e.preventDefault();
-					// onChange will not called
-				}
-				break;
-			case 39:
-				moveFocusTo(1);
-				break;
-			case 37:
-				moveFocusTo(-1);
-				break;
-		}
-	};
-
-	const onChange = ({ target }) => {
-		const inputNumber = target.name.split("-")[1];
-		const newCodes = { ...codes };
-		const value = target.value;
-
-		if (isNaN(Number(value)) || value.length > 1) return;
-		// its not a number or more then 1 char
-
-		newCodes[inputNumber] = value;
-		setCodes(newCodes);
-
-		if (value) moveFocusTo(1);
-	};
-
-	useEffect(() => {
-		if (autoFocusOnMount) document.querySelector("input[name='code-1']").focus();
-		return deleteCache;
-	}, []);
 
 	return (
-		<X>
-			<InputsWrapper>
-				<div>
-					{initialValues(fields, { getArray: true }).map(i => {
-						return (
-							<Fragment key={i}>
-								<input
-									autoComplete="off"
-									{...inputProps(i)}
-									type="text"
-									name={`code-${i}`}
-									value={codes[i]}
-									onChange={onChange}
-									onKeyDown={checkChangeFocus}
-								/>
-								{i !==
-									getLastArrayElem(
-										initialValues(fields, { getArray: true })
-									) && "-"}
-							</Fragment>
-						);
-					})}
-				</div>
-			</InputsWrapper>
-		</X>
+		<Wrapper>
+			<InputWrapper>
+				<input
+					type="text"
+					ref={inputRef}
+					onKeyDown={e => {
+						if (e.key === "Enter") handleAddTag();
+					}}
+				/>
+				<buttom>awd</buttom>
+			</InputWrapper>
+			<TagsWrapper>
+				{tags.map((tag, idx) => (
+					<span key={idx} onClick={() => handleDeleteTag(idx)}>
+						#{tag}
+					</span>
+				))}
+			</TagsWrapper>
+		</Wrapper>
 	);
 }
 
-export default function Test() {
-	const getCodesOnCompilate = x => {
-		console.log(x);
-	};
-
-	return <CodeInput getCodesOnCompilate={getCodesOnCompilate} fields={20}></CodeInput>;
-}
-
-const InputsWrapper = styled.div(({ theme: { flex } }) => {
+const InputWrapper = styled.div(({ theme: { resetInput } }) => {
 	return {
-		...flex(),
-		width: "50%",
-		height: "50%",
+		...resetInput,
+		position: "relative",
+		height: "50px",
+		input: { background: "#F6F9FE", border: "1px solid #F6F9FE", borderRadius: "4px" },
+	};
+});
+
+const TagsWrapper = styled.div(props => {
+	return {
+		width: "100%",
+		height: "100px",
+	};
+});
+
+const Wrapper = styled.div(props => {
+	return {
+		width: "500px",
+		height: "250px",
+		margin: "50px auto",
 		border: "1px solid red",
-		"> div": {
-			...flex(),
-			flexDirection: "row-reverse",
-			border: "1px solid #DADADA",
-			borderRadius: "4px",
-			width: "50%",
-			height: "50px",
-			"> input": {
-				width: "25%",
-				height: "100%",
-				textAlign: "center",
-				background: "transparent",
-				border: "none",
-				outline: "none",
-			},
+		input: {
+			width: "100%",
 		},
 	};
 });
 
-const X = styled.main(({ theme: { flex } }) => {
-	return {
-		...flex(),
-		width: "100%",
-		height: "60vh",
-	};
-});
+export default function Test() {
+	const [tags, setTags] = useState(["awd"]);
+
+	return <TagInput tags={tags} setTagState={setTags} />;
+}

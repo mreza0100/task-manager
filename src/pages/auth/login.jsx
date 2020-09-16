@@ -1,5 +1,5 @@
+import { deleteCookie, isUndefined, setCookie } from "../../helpers/exports";
 import { registerForgotPassword, register, tasks } from "../../routes";
-import { isUndefined, setCookie } from "../../helpers/exports";
 import logInSchema, { loginInitialValues } from "../../schema/login";
 import AuthLayout from "../../layout/Auth.layout";
 import { _USE_API_ } from "../../api/index.API";
@@ -19,6 +19,7 @@ async function handleSubmit(data) {
 		const token = res.data.token;
 		if (res.status === 200) {
 			setCookie({ key: "token", value: token });
+			deleteCookie("mobile");
 			Router.push(tasks);
 		}
 	} catch (err) {

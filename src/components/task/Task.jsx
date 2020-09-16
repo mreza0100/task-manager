@@ -8,7 +8,7 @@ import CopyBtn from "./CopyBtn";
 import Star from "./Star";
 
 export default function Task({ taskData }) {
-	const { id: taskID, title, color, is_done, is_favorite, tags } = taskData;
+	const { id: taskID, title, color, is_done, is_favorite, tags = [] } = taskData;
 	const router = useRouter();
 	const routerID = router.query.id;
 	const selectedMe = routerID === taskID;

@@ -3,11 +3,9 @@ import useFiltringTasks from "../hooks/filtringTasks";
 import useTaskSelectore from "../hooks/taskSelector";
 import PluseWindow from "../components/PluseWindow";
 import TaskManager from "../components/TaskManager";
-import { togglePlus } from "../redux/actions/plus";
 import { getTasks } from "../redux/actions/tasks";
 import MainLayout from "../layout/Main.lauout";
 import Task from "../components/task/Task";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { useState } from "react";
 
@@ -18,8 +16,8 @@ export default function Index() {
 		justfinished: false,
 	});
 	const [sorts, setSorts] = useState({ isFavorites_top: false, isDone_down: false, reverse: false });
+	const [isPluseMode, setPluseMode] = useState(false);
 
-	const dispatch = useDispatch();
 	const filtredTasks = useFiltringTasks({ filters, sorts });
 
 	useTaskSelectore({ tasks: filtredTasks, alertOnNotFound: false });
@@ -27,29 +25,17 @@ export default function Index() {
 	const FA = [
 		// FA for filterActions
 		{
-			onClick: function justUnfinished() {
-				const newFilters = { ...filters };
-				newFilters.justUnfinished = !newFilters.justUnfinished;
-				setFilters(newFilters);
-			},
+			onClick: () => setFilters({ ...filters, justUnfinished: !filters.justUnfinished }),
 			isSelectedMe: filters.justUnfinished,
 			label: "فقط تمام نشده ها را نشان بده",
 		},
 		{
-			onClick: function justfinished() {
-				const newFilters = { ...filters };
-				newFilters.justfinished = !newFilters.justfinished;
-				setFilters(newFilters);
-			},
+			onClick: () => setFilters({ ...filters, justfinished: !filters.justfinished }),
 			isSelectedMe: filters.justfinished,
 			label: "فقط تمام شده ها را نشان بده",
 		},
 		{
-			onClick: function justFavorites() {
-				const newFilters = { ...filters };
-				newFilters.justFavorites = !newFilters.justFavorites;
-				setFilters(newFilters);
-			},
+			onClick: () => setFilters({ ...filters, justFavorites: !filters.justFavorites }),
 			isSelectedMe: filters.justFavorites,
 			label: "فقط ستاره دارها را نشان بده",
 		},
@@ -57,29 +43,17 @@ export default function Index() {
 	const SA = [
 		// SA for sortActions
 		{
-			onClick: function isFavorites_top() {
-				const newSorts = { ...sorts };
-				newSorts.isFavorites_top = !newSorts.isFavorites_top;
-				setSorts(newSorts);
-			},
+			onClick: () => setSorts({ ...sorts, isFavorites_top: !sorts.isFavorites_top }),
 			isSelectedMe: sorts.isFavorites_top,
 			label: "ستاره دار ها اول باشند",
 		},
 		{
-			onClick: function isDone_down() {
-				const newSorts = { ...sorts };
-				newSorts.isDone_down = !newSorts.isDone_down;
-				setSorts(newSorts);
-			},
+			onClick: () => setSorts({ ...sorts, isDone_down: !sorts.isDone_down }),
 			isSelectedMe: sorts.isDone_down,
 			label: "تمام شده ها اخر باشند",
 		},
 		{
-			onClick: function reverse() {
-				const newSorts = { ...sorts };
-				newSorts.reverse = !newSorts.reverse;
-				setSorts(newSorts);
-			},
+			onClick: () => setSorts({ ...sorts, reverse: !sorts.reverse }),
 			isSelectedMe: sorts.reverse,
 			label: "برعکس کردن همه",
 		},
@@ -121,7 +95,11 @@ export default function Index() {
 					</TopContents>
 				</Section>
 				<Section>
-					<PlusTaskBtn onClick={() => dispatch(togglePlus())}>
+					<PlusTaskBtn
+						onClick={() => {
+							setPluseMode(!isPluseMode);
+						}}
+					>
 						<i className="icon-plus" />
 						<h4>افزودن تسک ...</h4>
 					</PlusTaskBtn>
@@ -135,7 +113,7 @@ export default function Index() {
 				</Section>
 			</Main>
 			<TaskManager />
-			<PluseWindow />
+			<PluseWindow isPluseMode={isPluseMode} setPluseMode={setPluseMode} />
 		</MainLayout>
 	);
 }

@@ -28,6 +28,7 @@ async function handleSubmit(data) {
 	} catch (err) {
 		if (!isUndefined(err.response)) {
 			if (err.response.status === 401) {
+				// im deleting this cookie on login
 				setCookie({ key: "mobile", value: data.mobile, days: 10 });
 
 				const callback = () => {
