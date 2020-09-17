@@ -126,6 +126,6 @@
 // 	};
 // });
 
-export default function () {
+export default function ResetPassword() {
 	return null;
 }

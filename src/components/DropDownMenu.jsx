@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
+import styled from "styled-components";
 
 export default function DropDownMenu({ children, title, parentStyles, ulStyles }) {
 	const [open, setOpen] = useState(false);

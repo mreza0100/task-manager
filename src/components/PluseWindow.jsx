@@ -128,7 +128,17 @@ export default function PluseWindow({ isPluseMode, setPluseMode }) {
 							</div>
 						</div>
 					</div>
-					<TagInput tags={tags} setTagState={setTags} limit={5} />
+					<TagInput
+						tags={tags}
+						setTagState={setTags}
+						limit={5}
+						BtnContent={
+							<>
+								<span>+</span>
+								<span>افزودن</span>
+							</>
+						}
+					/>
 					<div id="colors">
 						<span>انتخاب رنگ:</span>
 						<div>
@@ -160,7 +170,7 @@ const Color = styled.button(({ color, isSelected }) => {
 		padding: 0,
 		color: "#B4BCCA",
 		background: color,
-		border: `1px solid ${isSelected ? "red" : "transparent"}`,
+		border: `2px solid ${isSelected ? "black" : "transparent"}`,
 		borderRadius: "4px",
 		marginRight: "10px",
 		outline: "none",
@@ -190,6 +200,12 @@ const Content = styled.div(({ theme: { flex, resetInput } }) => {
 			padding: "10px",
 			cursor: "pointer",
 			fontSize: "12px",
+			borderRadius: "100px",
+			transition: "background-color, color 0.4s",
+			"&:hover": {
+				backgroundColor: "#F6F9FE",
+				color: "red",
+			},
 		},
 		"> #title": {
 			width: "100%",
@@ -271,18 +287,14 @@ const Content = styled.div(({ theme: { flex, resetInput } }) => {
 
 const Wrapper = styled.div(({ show }) => {
 	return {
-		position: "absolute",
-		top: "10%",
-		left: "50%",
-		width: show ? "600px" : "0px",
-		transition: "width 0.5s",
+		margin: "5% auto 0 auto",
+		maxWidth: "600px",
+		width: "600px",
+		transition: "all 0.5s",
 		minHeight: "610px",
 		background: "#FFFFFF",
 		boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
 		borderRadius: "10px",
-		marginLeft: "auto",
-		marginRight: "auto",
-		transform: "translate(-50%, 0)",
 	};
 });
 
@@ -296,6 +308,6 @@ const Background = styled.div(({ show }) => {
 		backgroundColor: "rgb(0 0 0 / 53%)",
 		height: show ? "100vh" : "0vh",
 		transition: "height 0.5s",
-		overflow: "hidden",
+		overflow: show ? "auto" : "hidden",
 	};
 });

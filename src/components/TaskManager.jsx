@@ -5,7 +5,6 @@ import { _USE_API_ } from "../api/index.API";
 import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker2";
 import { useDispatch } from "react-redux";
-import TagsInput from "react-tagsinput";
 import styled from "styled-components";
 import CheckBox from "./task/CheckBox";
 import CopyBtn from "./task/CopyBtn";
@@ -13,6 +12,7 @@ import { Title } from "./task/Task";
 import { tasks } from "../routes";
 import Router from "next/router";
 import Star from "./task/Star";
+import TagInput from "./TagInput";
 
 async function handleDeleteTask(taskID) {
 	try {
@@ -74,95 +74,90 @@ export default function TaskManager() {
 		setTags(initalTags);
 	}, [taskID]);
 
-	const handleChangeTag = newTags => setTags(newTags);
-	const tagJSX = props => {
-		const { tag, key, onRemove, className, getTagDisplayValue } = props;
-		return (
-			<span key={key} className={className} onClick={e => onRemove(key)}>
-				{getTagDisplayValue(tag)}
-				<i>×</i>
-			</span>
-		);
-	};
-
 	if (notFound) return noTask;
 	return (
-		<LeftAside extraStyles={{ height: "unset" }}>
+		<LeftAside>
 			<WrapperAll>
-				<div style={{ width: "100%" }}>
-					<HeadManager>
-						<div>
-							<CheckBox isDone={is_done} taskID={taskID} />
-							<Title isDone={is_done}>{initialTitle}</Title>
+				<HeadManager>
+					<div>
+						<CheckBox isDone={is_done} taskID={taskID} />
+						<Title isDone={is_done}>{initialTitle}</Title>
+					</div>
+					<div>
+						<Star taskID={taskID} isFavorite={is_favorite} />
+						<CopyBtn taskID={taskID} />
+						<i className="fa fa-trash" onClick={() => handleDeleteTask(taskID)} />
+					</div>
+				</HeadManager>
+				<ManagerItems>
+					<Item>
+						<div className="font">
+							<i className="icon-bag" />
 						</div>
-						<div>
-							<Star taskID={taskID} isFavorite={is_favorite} />
-							<CopyBtn taskID={taskID} />
-							<i className="fa fa-trash" onClick={() => handleDeleteTask(taskID)} />
+						<div className="content date">
+							<span>از تاریخ</span>
+							<DatePicker
+								isGregorian={false}
+								value={fromDate}
+								onChange={d => setFromDate(d)}
+							/>
 						</div>
-					</HeadManager>
-					<ManagerItems>
-						<Item>
-							<div className="font">
-								<i className="icon-bag" />
-							</div>
-							<div className="content date">
-								<span>از تاریخ</span>
-								<DatePicker
-									isGregorian={false}
-									value={fromDate}
-									onChange={d => setFromDate(d)}
-								/>
-							</div>
-						</Item>
-						<Item>
-							<div className="font">
-								<i className="icon-bag" />
-							</div>
-							<div className="content date">
-								<span>تا تاریخ</span>
-								<DatePicker
-									isGregorian={false}
-									value={toDate}
-									onChange={d => setToDate(d)}
-								/>
-							</div>
-						</Item>
-						<Item>
-							<div className="font">
-								{/* TODO: remove tag img */}
-								<img src={require("../assets/svg/tag.svg")} />
-							</div>
-							<div className="content tags">
-								<TagsInput
-									value={tags}
-									onChange={handleChangeTag}
-									renderTag={tagJSX}
-									inputProps={{ placeholder: "اضافه کردن تگ" }}
-								/>
-							</div>
-						</Item>
-						<Item id="description">
-							<div className="font">
-								<i className="icon-pen" />
-							</div>
-							<div className="content">
-								<textarea
-									placeholder="افزودن متن"
-									value={description}
-									onChange={({ target }) => setDescription(target.value)}
-								/>
-							</div>
-						</Item>
-					</ManagerItems>
-				</div>
+					</Item>
+					<Item>
+						<div className="font">
+							<i className="icon-bag" />
+						</div>
+						<div className="content date">
+							<span>تا تاریخ</span>
+							<DatePicker
+								isGregorian={false}
+								value={toDate}
+								onChange={d => setToDate(d)}
+							/>
+						</div>
+					</Item>
+					<Item>
+						<div className="font">
+							{/* TODO: remove tag img */}
+							<img src={require("../assets/svg/tag.svg")} />
+						</div>
+						<div className="content tags">
+							<TagInput
+								BtnContent={"+"}
+								tags={tags}
+								setTagState={setTags}
+								btnExtraStyles={{
+									width: "unset",
+									justifyContent: "center",
+									background: "transparent",
+									color: "black",
+									fontSize: "15px",
+									border: "none",
+								}}
+								tagExtraStyles={{}}
+							/>
+						</div>
+					</Item>
+					<Item id="description">
+						<div className="font">
+							<i className="icon-pen" />
+						</div>
+						<div className="content">
+							<textarea
+								placeholder="افزودن متن"
+								value={description}
+								onChange={({ target }) => setDescription(target.value)}
+							/>
+						</div>
+					</Item>
+				</ManagerItems>
 				<Footer>
 					<button
 						className="btn"
 						onClick={() => {
 							handleSubmit(
 								{ id: taskID, toDate, fromDate, description, tags },
-								dispatch
+								{ dispatch }
 							);
 						}}
 					>
@@ -177,19 +172,20 @@ export default function TaskManager() {
 const WrapperAll = styled.div(({ theme: { flex } }) => {
 	return {
 		...flex(["justifyContent"]),
-		justifyContent: "space-between",
+		justifyContent: "flex-start",
 		flexDirection: "column",
-		width: "inherit",
-		height: "100vh",
 		position: "fixed",
 		left: 0,
+		width: "inherit",
+		height: "100vh",
 	};
 });
 
-const Footer = styled.div(({ theme: { flex } }) => {
+const Footer = styled.div(({}) => {
 	return {
-		padding: "0 20px",
 		width: "100%",
+		padding: "0 20px",
+		marginTop: "auto",
 		"> button": {
 			width: "100%",
 			height: "50px",
@@ -197,6 +193,9 @@ const Footer = styled.div(({ theme: { flex } }) => {
 			background: "#5460FE",
 			borderRadius: "4px",
 			marginBottom: "20px",
+			"&:hover": {
+				color: "#FFF",
+			},
 		},
 	};
 });
@@ -247,15 +246,24 @@ const Item = styled.div(({ theme: { flex, $black } }) => {
 			},
 		},
 		"> .tags": {
+			backgroundColor: "transparent",
 			input: {
 				border: "none",
 				outline: "none",
-				padding: 0,
-				backgroundColor: "transparent",
+				backgroundColor: "#F7F9FE",
 				marginRight: "5px",
 				"&::placeholder": {
 					textAlign: "right",
 				},
+				"&:focus": {
+					border: "none",
+				},
+			},
+			".tags-wrapper": {
+				overflowX: "auto",
+				overflowY: "hidden",
+				backgroundColor: "transparent",
+				cursor: "default",
 			},
 		},
 		"&#description": {
@@ -289,6 +297,8 @@ const ManagerItems = styled.div(({ theme: { flex } }) => {
 		height: "auto",
 		padding: "0 20px",
 		marginBottom: "10px",
+		overflowX: "hidden",
+		overflowY: "auto",
 	};
 });
 
@@ -320,7 +330,7 @@ const HeadManager = styled.div(({ theme: { flex, $black } }) => {
 	};
 });
 
-export const LeftAside = styled.aside(({ theme: { flex, $white }, extraStyles }) => {
+export const LeftAside = styled.aside(({ theme: { flex, $white }, extraStyles = {} }) => {
 	return {
 		...flex(["justifyContent"]),
 		justifyContent: "space-between",

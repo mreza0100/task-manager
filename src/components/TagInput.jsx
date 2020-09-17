@@ -1,7 +1,15 @@
 import styled from "styled-components";
 import { useRef } from "react";
 
-export default function TagInput({ tags = [], setTagState, placeholder = "اضافه کردن تگ", limit = 10 }) {
+export default function TagInput({
+	tags = [],
+	setTagState,
+	placeholder = "اضافه کردن تگ",
+	limit = Infinity,
+	BtnContent,
+	btnExtraStyles,
+	tagExtraStyles,
+}) {
 	const inputRef = useRef();
 
 	const handleAddTag = () => {
@@ -19,7 +27,7 @@ export default function TagInput({ tags = [], setTagState, placeholder = "اضا
 
 	return (
 		<StyledTagInput>
-			<InputWrapper>
+			<InputWrapper extraStyles={btnExtraStyles}>
 				<input
 					type="text"
 					ref={inputRef}
@@ -28,22 +36,21 @@ export default function TagInput({ tags = [], setTagState, placeholder = "اضا
 						if (e.key === "Enter") handleAddTag();
 					}}
 				/>
-				<button onClick={handleAddTag}>
-					<span>+</span> <span>افزودن</span>
-				</button>
+				<button onClick={handleAddTag}>{BtnContent}</button>
 			</InputWrapper>
-			<TagsWrapper>
+			<TagsWrapper className="tags-wrapper" extraStyles={tagExtraStyles}>
 				{tags.map((tag, idx) => (
-					<span key={idx} onClick={() => handleDeleteTag(idx)}>
-						# {tag}
-					</span>
+					<div key={idx}>
+						<i className="fa fa-times" onClick={() => handleDeleteTag(idx)} />{" "}
+						<span>#{tag}</span>
+					</div>
 				))}
 			</TagsWrapper>
 		</StyledTagInput>
 	);
 }
 
-const TagsWrapper = styled.div(({ theme: { flex } }) => {
+const TagsWrapper = styled.div(({ theme: { flex }, extraStyles }) => {
 	return {
 		...flex(["justifyContent", "alignItems"]),
 		flexWrap: "wrap",
@@ -52,23 +59,33 @@ const TagsWrapper = styled.div(({ theme: { flex } }) => {
 		width: "100%",
 		height: "auto",
 		minHeight: "30px",
-		"> span": {
+		"> div": {
 			...flex(),
-			height: "30px",
+			minHeight: "30px",
 			minWidth: "20px",
-			cursor: "pointer",
+			fontSize: "12px",
 			padding: "0 10px",
 			marginLeft: "5px",
+			marginTop: "5px",
 			color: "#6FA0F1",
+			cursor: "pointer",
 			background: "rgba(111, 160, 241, 0.05)",
 			border: "1px solid rgba(111, 160, 241, 0.05)",
 			borderRadius: "4px",
+			"> i": {
+				padding: "5px",
+				transition: "color 0.3s",
+				marginLeft: "5px",
+				"&:hover": { color: "red" },
+			},
+			...extraStyles,
 		},
 	};
 });
 
-const InputWrapper = styled.div(({ theme: { flex, resetInput } }) => {
+const InputWrapper = styled.div(({ theme: { flex, resetInput }, extraStyles }) => {
 	return {
+		...resetInput,
 		position: "relative",
 		width: "100%",
 		height: "50px",
@@ -91,9 +108,9 @@ const InputWrapper = styled.div(({ theme: { flex, resetInput } }) => {
 			fontSize: "12px",
 			lineHeight: "20px",
 			"&:focus": {
-				border: "none",
 				outline: "none",
 			},
+			...extraStyles,
 		},
 		input: {
 			width: "100%",
@@ -104,7 +121,6 @@ const InputWrapper = styled.div(({ theme: { flex, resetInput } }) => {
 			borderRadius: "4px",
 			"&::placeholder": { fontSize: "14px" },
 			"&:focus": {
-				border: "1px solid transparent !important",
 				outline: "none",
 			},
 		},

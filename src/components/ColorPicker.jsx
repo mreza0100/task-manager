@@ -1,12 +1,13 @@
 import { _USE_API_ } from "../api/index.API";
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 async function handleSubmit(color, taskID) {
 	try {
 		await _USE_API_({
 			isPrivetRoute: true,
 			describe: "change task color",
+			debug: false,
 		}).Put({
 			data: { color, id: taskID },
 			url: "/tasks",
@@ -17,9 +18,12 @@ async function handleSubmit(color, taskID) {
 var timeoutVals = {};
 export default function ColorPicker({ color: initialColor = "#d0c3c3", taskID }) {
 	const [color, setColor] = useState(initialColor);
+	useEffect(() => () => {
+		timeoutVals = {};
+	});
 
-	const onChange = e => {
-		setColor(e.target.value);
+	const onChange = ({ target }) => {
+		setColor(target.value);
 		clearTimeout(timeoutVals[taskID]);
 		timeoutVals[taskID] = setTimeout(() => {
 			delete timeoutVals[taskID];

@@ -128,9 +128,10 @@ function isEmptyObjOrArr(obj_arr) {
 function trimObj(obj, { removeNull = true, removeEmptyArr = false, removeFalseyValues = false } = {}) {
 	const _obj = { ...obj };
 	for (const key in _obj) {
-		if (removeNull && _obj[key] === null) delete _obj[key];
-		if (removeEmptyArr && Array.isArray(_obj[key])) if (isEmptyObjOrArr) delete _obj[key];
-		if (removeFalseyValues && !_obj[key]) delete _obj[key];
+		const value = _obj[key];
+		if (removeNull && value === null) delete _obj[key];
+		if (removeEmptyArr && Array.isArray(value) && isEmptyObjOrArr(value)) delete _obj[key];
+		if (removeFalseyValues && !value) delete _obj[key];
 	}
 	return _obj;
 }

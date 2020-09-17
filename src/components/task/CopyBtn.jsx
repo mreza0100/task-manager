@@ -6,10 +6,11 @@ function handleCopy(taskID) {
 	if (copyToClipboard(`${location.origin}/?id=${taskID}`)) {
 		showMsg(
 			{ title: { text: "با موفقیت کپی شد", nodeName: "h6" } },
-			{ time: 6, status: "success", pendingID: `copy-${taskID}` }
+			{ time: 3, status: "success", pendingID: `copy-${taskID}` }
 		);
 	} else showMsg({ title: { text: "مرورگر شما برای این کار قدیمی است" } }, { time: 5, status: "warning" });
 }
+
 export default function CopyBtn({ taskID }) {
 	return <CopyI className="icon-copy" onClick={() => handleCopy(taskID)} title="کپی URL تسک" />;
 }
