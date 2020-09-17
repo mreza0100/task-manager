@@ -14,6 +14,7 @@ const [initialValues, { resetCache }] = $USE_CASH(
 	{ getUtils: true }
 );
 
+export { initialValues };
 export default function CodeInput({
 	title = "",
 	error = "",
@@ -23,8 +24,9 @@ export default function CodeInput({
 	autoFocusOnMount = true,
 	fields = 4,
 	extraStyles = {},
+	codes,
+	setCodes,
 }) {
-	const [codes, setCodes] = useState(initialValues(fields));
 	const joinedCodes = Object.values(codes).join("");
 
 	getCodes(joinedCodes);
@@ -80,6 +82,7 @@ export default function CodeInput({
 
 	useEffect(() => {
 		if (autoFocusOnMount) document.querySelector("input[name='code-1']").focus();
+		setCodes(initialValues(fields));
 		return resetCache;
 	}, []);
 
@@ -96,7 +99,7 @@ export default function CodeInput({
 									{...inputProps(i)}
 									type="text"
 									name={`code-${i}`}
-									value={codes[i]}
+									value={codes[i] || ""}
 									onChange={onChange}
 									onKeyDown={checkChangeFocus}
 								/>

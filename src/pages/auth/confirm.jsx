@@ -5,8 +5,8 @@ import { _USE_API_ } from "../../api/index.API";
 import showMsg from "../../helpers/alerts/msg";
 import { register } from "../../routes";
 import { Content } from "./login";
+import { useState } from "react";
 import Link from "next/link";
-import { useEffect } from "react";
 
 const onResendCode = async mobile => {
 	const data = { mobile };
@@ -23,37 +23,31 @@ const onResendCode = async mobile => {
 	}
 };
 
-var code;
-export default function Confirm({ mobile }) {
-	const handleSubmit = async ({ code, mobile }) => {
-		const data = { activation_code: code, mobile };
-		// data is "1234"
-		try {
-			const res = await _USE_API_({
-				describe: "confirm creating account",
-				ignoreStatuses: [401],
-				kickOn401: false,
-				debug: true,
-			}).Post({ url: "active_account", data });
-			if (res.status === 200) {
-				deleteCookie("mobile");
-				Router.push(login);
-			}
-		} catch (err) {
-			showMsg({ title: { text: "کد اشتباه است" } }, { status: "danger", time: 6 });
+const handleSubmit = async ({ code, mobile }) => {
+	const data = { activation_code: code, mobile };
+	// data is "1234"
+	try {
+		const res = await _USE_API_({
+			describe: "confirm creating account",
+			ignoreStatuses: [401],
+			kickOn401: false,
+			debug: true,
+		}).Post({ url: "active_account", data });
+		if (res.status === 200) {
+			deleteCookie("mobile");
+			Router.push(login);
 		}
-	};
+	} catch (err) {
+		showMsg({ title: { text: "کد اشتباه است" } }, { status: "danger", time: 6 });
+	}
+};
 
-	const onTypeCode = typedCode => {
-		code = typedCode;
-	};
+export default function Confirm({ mobile }) {
+	const [codes, setCodes] = useState({});
+
 	const onSubmitClick = () => {
-		if (code.length === 4) handleSubmit({ code, mobile });
+		if (codes.length === 4) handleSubmit({ code: codes, mobile });
 	};
-
-	useEffect(() => () => {
-		code = null;
-	});
 
 	return (
 		<AuthLayout>
@@ -61,8 +55,12 @@ export default function Confirm({ mobile }) {
 				<h1>تایید شماره همراه</h1>
 				<form>
 					<CodeInput
-						getCodesOnCompilate={code => handleSubmit({ code, mobile })}
-						getCodes={onTypeCode}
+						getCodesOnCompilate={code => {
+							console.log(codes);
+							handleSubmit({ code, mobile });
+						}}
+						codes={codes}
+						setCodes={setCodes}
 					/>
 
 					<a onClick={() => onResendCode(mobile)}>ارسال مجدد کد تایید</a>

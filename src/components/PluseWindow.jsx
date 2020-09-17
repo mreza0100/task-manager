@@ -79,12 +79,12 @@ export default function PluseWindow({ isPluseMode, setPluseMode }) {
 	if (!isPluseMode)
 		return (
 			<Background show={false}>
-				<Wrapper />
+				<Wrapper show={false} />
 			</Background>
 		);
 	return (
 		<Background show={true}>
-			<Wrapper>
+			<Wrapper show={true}>
 				<Content>
 					<i className="fa fa-times" onClick={closePluseMode} />
 					<input
@@ -273,9 +273,9 @@ const Wrapper = styled.div(({ show }) => {
 	return {
 		position: "absolute",
 		top: "10%",
-		transition: "top 2s",
 		left: "50%",
-		width: "600px",
+		width: show ? "600px" : "0px",
+		transition: "width 0.5s",
 		minHeight: "610px",
 		background: "#FFFFFF",
 		boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",

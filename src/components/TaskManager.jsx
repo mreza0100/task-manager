@@ -67,7 +67,7 @@ export default function TaskManager() {
 	const [tags, setTags] = useState(initalTags);
 
 	useEffect(() => {
-		if (!taskID) return undefined;
+		if (!taskID) return;
 		setFromDate(parseDateFromServer(initaialFromDate));
 		setToDate(parseDateFromServer(initaialToDate));
 		setDescription(initialDescription);
@@ -179,7 +179,7 @@ const WrapperAll = styled.div(({ theme: { flex } }) => {
 		...flex(["justifyContent"]),
 		justifyContent: "space-between",
 		flexDirection: "column",
-		width: "400px",
+		width: "inherit",
 		height: "100vh",
 		position: "fixed",
 		left: 0,
@@ -271,7 +271,7 @@ const Item = styled.div(({ theme: { flex, $black } }) => {
 					maxWidth: "100%",
 					minWidth: "100%",
 					minHeight: "130px",
-					maxHeight: "400px",
+					maxHeight: "300px",
 					outline: "none",
 					border: "none",
 					"&::placeholder": {
