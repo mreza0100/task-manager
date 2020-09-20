@@ -68,12 +68,12 @@ const TagsWrapper = styled.div(({ theme: { flex }, extraStyles }) => {
 			marginLeft: "5px",
 			marginTop: "5px",
 			color: "#6FA0F1",
-			cursor: "pointer",
 			background: "rgba(111, 160, 241, 0.05)",
 			border: "1px solid rgba(111, 160, 241, 0.05)",
 			borderRadius: "4px",
 			"> i": {
 				padding: "5px",
+				cursor: "pointer",
 				transition: "color 0.3s",
 				marginLeft: "5px",
 				"&:hover": { color: "red" },

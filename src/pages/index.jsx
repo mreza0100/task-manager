@@ -244,5 +244,6 @@ const Main = styled.main(({ theme: { flex } }) => {
 		flex: 1,
 		padding: "0 20px",
 		backgroundColor: "#F5F6FA",
+		overflow: "hidden",
 	};
 });

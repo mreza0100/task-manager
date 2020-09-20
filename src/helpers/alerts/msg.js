@@ -1,52 +1,52 @@
 import { flex } from "../exports";
 import create from "./elementFactory";
 
-const wrapperStyles = ({ time, mainColor, top, extraStyles = {} }) => ({
-	...flex(["justifyContent"]),
-	justifyContent: "flex-start",
-	minWidth: "300px",
-	height: "auto",
-	padding: "15px",
-	margin: 0,
-	fontSize: "12px",
-	color: "#54698D",
-	position: "fixed",
-	top,
-	right: "-20%",
-	animationName: "msg",
-	animationDuration: time,
-	animationIterationCount: 1,
-	animationTimingFunction: "ease-in-out",
-	animationFillMode: "forwards",
-	animationDirection: "forward",
-	animationDelay: 0,
-	transition: "all 4s",
-	userSelect: "none",
-	boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-	borderRadius: "4px 4px 3px 3px",
-	backgroundColor: "#FFF",
-	borderBottom: `2px solid ${mainColor}`,
-	...extraStyles,
+const getStyles = () => ({
+	wrapperStyles: ({ time, mainColor, top, extraStyles = {} }) => ({
+		...flex(["justifyContent"]),
+		justifyContent: "flex-start",
+		minWidth: "300px",
+		height: "auto",
+		padding: "15px",
+		margin: 0,
+		fontSize: "12px",
+		color: "#54698D",
+		position: "fixed",
+		top,
+		right: "-20%",
+		animationName: "msg",
+		animationDuration: time,
+		animationIterationCount: 1,
+		animationTimingFunction: "ease-in-out",
+		animationFillMode: "forwards",
+		animationDirection: "forward",
+		animationDelay: 0,
+		transition: "all 4s",
+		userSelect: "none",
+		boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+		borderRadius: "4px 4px 3px 3px",
+		backgroundColor: "#FFF",
+		borderBottom: `2px solid ${mainColor}`,
+		...extraStyles,
+	}),
+	statusIconStyles: ({ mainColor }) => ({
+		...flex(),
+		width: "25px",
+		height: "25px",
+		color: "#FFF",
+		marginLeft: "15px",
+		backgroundColor: mainColor,
+		borderRadius: "100%",
+	}),
+	closeIconStyles: {
+		width: "15px",
+		height: "15px",
+		color: "#DADADA",
+		padding: "5px",
+		marginRight: "auto",
+		cursor: "pointer",
+	},
 });
-
-const statusIconStyles = ({ mainColor }) => ({
-	...flex(),
-	width: "25px",
-	height: "25px",
-	color: "#FFF",
-	marginLeft: "15px",
-	backgroundColor: mainColor,
-	borderRadius: "100%",
-});
-
-const closeIconStyles = {
-	width: "15px",
-	height: "15px",
-	color: "#DADADA",
-	padding: "5px",
-	marginRight: "auto",
-	cursor: "pointer",
-};
 
 var pendingList = [];
 var inPlay = 0;
@@ -85,6 +85,7 @@ export default function showMsg(
 	const mainColor =
 		status === "success" ? "#2CDA9B" : status === "danger" ? "#FF6672" : "warning" ? "#FFD100" : "";
 
+	const { wrapperStyles, closeIconStyles, statusIconStyles } = getStyles();
 	var title, body, closeIcon, statusIcon;
 	if (tText) {
 		title = create({

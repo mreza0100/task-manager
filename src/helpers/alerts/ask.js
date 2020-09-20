@@ -1,87 +1,89 @@
 import create from "./elementFactory";
 import { flex, defer } from "../exports";
 
-const parentAllStyles = {
-	position: "fixed",
-	top: 0,
-	bottom: 0,
-	left: 0,
-	right: 0,
-	opacity: 0,
-	backgroundColor: "rgb(0 0 0 / 53%)",
-	transition: "opacity 0.5s",
-};
-const outerWrapperStyles = {
-	position: "fixed",
-	height: "250px",
-	width: "500px",
-	top: "25%",
-	left: "50%",
-	marginLeft: "auto",
-	marginRight: "auto",
-	transform: "translate(-50%, 0)",
-	background: "#FFFFFF",
-	boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
-	borderRadius: "10px",
-};
-const innerWrapperStyles = {
-	...flex(),
-	position: "relative",
-	width: "100%",
-	height: "100%",
-};
-const closeIStyles = {
-	position: "absolute",
-	right: "10px",
-	top: "10px",
-	cursor: "pointer",
-	padding: "10px",
-	color: "#DADADA",
-	fontSize: "12px",
-};
-const contentStyles = {
-	...flex(),
-	flexWrap: "wrap",
-	alignContent: "flex-start",
-	width: "270px",
-	height: "80%",
-};
-const titleStyles = {
-	margin: 0,
-	color: "#54698D",
-	width: "100%",
-	fontSize: "25px",
-	textAlign: "center",
-	whiteSpace: "pre",
-	paddingBottom: "10px",
-};
-const describeStyles = {
-	width: "100%",
-	color: "#54698D",
-	marginBottom: "28px",
-	fontSize: "14px",
-	textAlign: "center",
-};
-const btnRightStyles = {
-	width: "129px",
-	height: "50px",
-	color: "#FF6672",
-	backgroundColor: "transparent",
-	fontSize: "14px",
-	border: "1px solid #FF6672",
-	// marginLeft: "2.5px",
-	borderRadius: "4px",
-};
-const btnLeftStyles = {
-	width: "129px",
-	height: "50px",
-	color: "#FFF",
-	backgroundColor: "#2CDA9B",
-	fontSize: "14px",
-	border: "none",
-	marginRight: "auto",
-	borderRadius: "4px",
-};
+const getStyles = () => ({
+	parentAllStyles: {
+		position: "fixed",
+		top: 0,
+		bottom: 0,
+		left: 0,
+		right: 0,
+		opacity: 0,
+		backgroundColor: "rgb(0 0 0 / 53%)",
+		transition: "opacity 0.5s",
+	},
+	outerWrapperStyles: {
+		position: "fixed",
+		height: "250px",
+		width: "500px",
+		top: "25%",
+		left: "50%",
+		marginLeft: "auto",
+		marginRight: "auto",
+		transform: "translate(-50%, 0)",
+		background: "#FFFFFF",
+		boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+		borderRadius: "10px",
+	},
+	innerWrapperStyles: {
+		...flex(),
+		position: "relative",
+		width: "100%",
+		height: "100%",
+	},
+	closeIStyles: {
+		position: "absolute",
+		right: "10px",
+		top: "10px",
+		cursor: "pointer",
+		padding: "10px",
+		color: "#DADADA",
+		fontSize: "12px",
+	},
+	contentStyles: {
+		...flex(),
+		flexWrap: "wrap",
+		alignContent: "flex-start",
+		width: "270px",
+		height: "80%",
+	},
+	titleStyles: {
+		margin: 0,
+		color: "#54698D",
+		width: "100%",
+		fontSize: "25px",
+		textAlign: "center",
+		whiteSpace: "pre",
+		paddingBottom: "10px",
+	},
+	describeStyles: {
+		width: "100%",
+		color: "#54698D",
+		marginBottom: "28px",
+		fontSize: "14px",
+		textAlign: "center",
+	},
+	btnRightStyles: {
+		width: "129px",
+		height: "50px",
+		color: "#FF6672",
+		backgroundColor: "transparent",
+		fontSize: "14px",
+		border: "1px solid #FF6672",
+		// marginLeft: "2.5px",
+		borderRadius: "4px",
+	},
+	btnLeftStyles: {
+		width: "129px",
+		height: "50px",
+		color: "#FFF",
+		backgroundColor: "#2CDA9B",
+		fontSize: "14px",
+		border: "none",
+		marginRight: "auto",
+		borderRadius: "4px",
+	},
+});
 
 var isBusy;
 export default function ask(
@@ -129,6 +131,17 @@ export default function ask(
 		};
 
 		var title, describe, btnRight, btnLeft, closeI, content, parentAll, outerWrapper, innerWrapper;
+		const {
+			btnLeftStyles,
+			btnRightStyles,
+			closeIStyles,
+			contentStyles,
+			describeStyles,
+			innerWrapperStyles,
+			outerWrapperStyles,
+			parentAllStyles,
+			titleStyles,
+		} = getStyles();
 		title = create({
 			nodeName: "h4",
 			styles: titleStyles,

@@ -40,7 +40,7 @@ async function handleSubmit(data, { dispatch }) {
 		const res = await _USE_API_({
 			isPrivetRoute: true,
 			describe: "saving Task-manager changes",
-			debug: false,
+			debug: true,
 		}).Put({ url: "/tasks", data });
 		if (res.status === 200) dispatch(getOneAndOverwrite({ taskID }));
 	} catch (err) {

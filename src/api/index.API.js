@@ -1,11 +1,9 @@
 import { getCookie, reloadRouter, isUndefined, serverRedirect } from "../helpers/exports";
-import AC /*as APIConfigs*/, { consoleCss } from "./API.configs";
+import AC /*as APIConfigs*/, { axiosConfigs, consoleCss } from "./API.configs";
 import showMsg from "../helpers/alerts/msg";
 import { login } from "../routes";
 import Router from "next/router";
 import Axios from "axios";
-
-const dash = "-------";
 
 var pendingList = [];
 
@@ -17,7 +15,7 @@ class API {
 		req,
 		res,
 		isPrivetRoute,
-		configs,
+		axiosCustomConfigs,
 		pendingID,
 		ignoreStatuses,
 		describe,
@@ -30,22 +28,22 @@ class API {
 		this.details = details ?? AC.details;
 		this.baseURL = baseURL ?? AC.baseURL;
 		this.inBrowser = process.browser ?? AC.inBrowser;
-		this.describe = describe ?? AC.describe();
+		this.describe = describe ?? AC.describeError();
 		this.ignoreStatuses = ignoreStatuses ?? AC.ignoreStatuses;
 		this.isPrivetRoute /*need token*/ = isPrivetRoute ?? AC.isPrivetRoute;
 		this.kickOn401 = kickOn401 ?? AC.kickOn401;
 		this.logError = logError ?? AC.logError;
 		this.pendingID = this.inBrowser ? pendingID ?? AC.pendingID : false;
+		if (!this.inBrowser && (!this.req || !this.res)) AC.inServerWithNoReqOrRes();
 		this.$XHR = Axios.create({
 			baseURL: this.baseURL,
-			...configs,
+			...axiosConfigs,
+			...axiosCustomConfigs,
 		});
-		if (!this.inBrowser && (!this.req || !this.res)) AC.inServerWithoNoReqOrRes();
-		// if (this.inBrowser) this.pendingID = pendingID ?? AC.pendingID;
-		// else this.pendingID = false;
 	}
 
 	_debugCenter = ({ res, url, params, data, callback }) => {
+		const dash = "-------";
 		try {
 			const { warn, log, group, groupEnd, dir } = console;
 			const msg = `%c${dash}MSG from debug center->debug : [[${this.debug}]] detailes : [[${this.details}]]${dash}`;
@@ -96,7 +94,7 @@ class API {
 	}
 
 	_handleRes = ({ res, url, params, data, callback }) => {
-		if (this.debug)
+		if (this.debug) {
 			this._debugCenter({
 				res,
 				url,
@@ -104,6 +102,8 @@ class API {
 				data,
 				callback,
 			});
+		}
+		return res;
 	};
 
 	_handleErr({ err, url, params, data, callback }) {
@@ -140,7 +140,7 @@ class API {
 				this.res.end();
 			}
 		}
-		if (this.debug)
+		if (this.debug) {
 			this._debugCenter({
 				res: err,
 				url,
@@ -148,6 +148,7 @@ class API {
 				data,
 				callback,
 			});
+		}
 
 		if (!isUndefined(err.response)) {
 			const status = err.response.status;
@@ -159,22 +160,27 @@ class API {
 		}
 
 		if (this.logError) console.dir(err);
+		if (!err.response) {
+			// its happens when connection was disconnect
+			const extend = {
+				response: {
+					status: 0,
+					data: {},
+				},
+			};
+			return { ...err, extend };
+		}
+
+		return err;
 	}
 
 	_permissionDenied(why = "") {
 		console.warn("Permission Denied | pendingList: ", pendingList);
+		console.warn("why: ", why);
 		return new Promise((resolve, reject) => {
-			// "in pendingList or token not received"
+			// in pendingList or token not received
 			reject({ status: 0, msg: why });
 		});
-	}
-
-	_filterDataBeforSend(data) {
-		var token;
-		if (this.isPrivetRoute) token = this._getToken();
-		else return [data, null];
-		if (token) return [{ ...data, token }, false];
-		return [null, true];
 	}
 
 	_requestPermission() {
@@ -185,77 +191,89 @@ class API {
 		return true;
 	}
 
-	request({ url, params, data, callback } = {}, method) {
+	_filterDataBeforSend({ params, data }) {
+		var token, error;
+		if (this.isPrivetRoute) {
+			token = this._getToken();
+			if (!token) error = "token not received";
+		}
+
+		if (token) {
+			params = { ...params, token };
+			data = { ...data, token };
+			return [{ params, data }, error];
+		}
+		return [{ params, data }, error];
+	}
+
+	REQUEST({ url, params, data, callback } = {}, method) {
 		var error = null;
 		if (!this._requestPermission()) return this._permissionDenied("in pendingList");
-		if (method === "get") [params, error] = this._filterDataBeforSend(params);
-		else [data, error] = this._filterDataBeforSend(data);
-		if (error) return this._permissionDenied("token not received");
+		[{ params, data }, error] = this._filterDataBeforSend({ params, data });
+		if (error) return this._permissionDenied(error);
 
 		return new Promise((resolve, reject) => {
 			this.$XHR
-				.request({ method, url, params, data })
+				.request({ params, data, url, method })
 				.then(res => {
 					this._afterGetResponse();
-					this._handleRes({
+					const filtredRes = this._handleRes({
 						res,
 						url,
 						params,
 						data,
 						callback,
 					});
-					resolve(res);
+					resolve(filtredRes);
 				})
 				.catch(err => {
 					this._afterGetResponse();
-					this._handleErr({
+					const filtredErr = this._handleErr({
 						err,
 						url,
 						params,
 						data,
 						callback,
 					});
-					reject(err);
+					reject(filtredErr);
 				})
 				.finally(callback);
 		});
 	}
 
-	Get = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "get");
-	Post = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "post");
-	Put = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "put");
-	Delete = ({ url, params, data, callback } = {}) => this.request({ url, params, data, callback }, "delete");
+	Get = ({ url, params, data, callback } = {}) => this.REQUEST({ url, params, data, callback }, "GET");
+	Post = ({ url, params, data, callback } = {}) => this.REQUEST({ url, params, data, callback }, "POST");
+	Put = ({ url, params, data, callback } = {}) => this.REQUEST({ url, params, data, callback }, "PUT");
+	Delete = ({ url, params, data, callback } = {}) => this.REQUEST({ url, params, data, callback }, "DELETE");
 }
 
 function _USE_API_({
 	baseURL,
 	debug,
 	details,
-	headers,
 	res,
 	req,
 	isPrivetRoute,
-	axiosConfigs,
 	pendingID,
 	describe,
 	ignoreStatuses,
 	kickOn401,
 	logError,
+	axiosCustomConfigs,
 } = {}) {
 	return new API({
 		baseURL,
 		debug,
 		details,
-		headers,
 		res,
 		req,
 		isPrivetRoute,
-		axiosConfigs,
 		pendingID,
 		describe,
 		ignoreStatuses,
 		kickOn401,
 		logError,
+		axiosCustomConfigs,
 	});
 }
 

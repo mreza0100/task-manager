@@ -306,7 +306,7 @@ const Background = styled.div(({ show }) => {
 		left: 0,
 		right: 0,
 		backgroundColor: "rgb(0 0 0 / 53%)",
-		height: show ? "100vh" : "0vh",
+		height: show ? "100%" : "0%",
 		transition: "height 0.5s",
 		overflow: show ? "auto" : "hidden",
 	};

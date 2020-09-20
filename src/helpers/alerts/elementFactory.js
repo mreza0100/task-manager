@@ -7,7 +7,7 @@ export default function create({
 	events = {},
 	text = "",
 } = {}) {
-	if (!process.browser) return void 0;
+	if (!process.browser) return;
 	childs = Array.isArray(childs) ? childs : [childs];
 	let style, attr, child, prop, e;
 	const node = document.createElement(nodeName);

@@ -56,7 +56,15 @@ const TaskWrapper = styled.li(({ theme: { flex, $blue, $white }, selectedMe }) =
 			height: "100%",
 			...flex(["justifyContent"]),
 			justifyContent: "space-between",
-			"> p": { color: $blue, padding: "0 15px", overflow: "hidden", width: "70px", height: "50%" },
+			"> p": {
+				width: "70px",
+				height: "50%",
+				color: $blue,
+				padding: "0 15px",
+				overflow: "hidden",
+				textOverflow: "ellipsis",
+				whiteSpace: "nowrap",
+			},
 		},
 		"> div.left-hand": {
 			height: "100%",
