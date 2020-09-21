@@ -191,7 +191,7 @@ class API {
 		return true;
 	}
 
-	_filterDataBeforSend({ params, data }) {
+	_filterDataBeforSend({ params, data }, { method }) {
 		var token, error;
 		if (this.isPrivetRoute) {
 			token = this._getToken();
@@ -199,8 +199,8 @@ class API {
 		}
 
 		if (token) {
-			params = { ...params, token };
-			data = { ...data, token };
+			params = method === "GET" ? { ...params, token } : null;
+			data = method !== "GET" ? { ...data, token } : null;
 			return [{ params, data }, error];
 		}
 		return [{ params, data }, error];
@@ -209,7 +209,7 @@ class API {
 	REQUEST({ url, params, data, callback } = {}, method) {
 		var error = null;
 		if (!this._requestPermission()) return this._permissionDenied("in pendingList");
-		[{ params, data }, error] = this._filterDataBeforSend({ params, data });
+		[{ params, data }, error] = this._filterDataBeforSend({ params, data }, { method });
 		if (error) return this._permissionDenied(error);
 
 		return new Promise((resolve, reject) => {

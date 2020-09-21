@@ -83,17 +83,20 @@ export const deleteContact = payload => async (dispatch, getState) => {
 };
 
 export const editContact = payload => async (dispatch, getState) => {
-	const data = payload;
+	const { data, closeEdutMode } = payload;
 	try {
 		const res = await _USE_API_({
-			describe: "deleting a contact",
+			describe: "editing a contact",
 			isPrivetRoute: true,
-			debug: false,
+			debug: true,
 		}).Put({
 			url: "/people",
 			data,
 		});
-		if (res.status === 200) reloadRouter();
+		if (res.status === 200) {
+			closeEdutMode();
+			reloadRouter();
+		}
 	} catch (err) {}
 };
 

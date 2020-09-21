@@ -1,7 +1,7 @@
 import DropDownMenu from "../components/DropDownMenu";
 import useFiltringTasks from "../hooks/filtringTasks";
 import useTaskSelectore from "../hooks/taskSelector";
-import PluseWindow from "../components/PluseWindow";
+import PlusWindow from "../components/PlusWindow";
 import TaskManager from "../components/TaskManager";
 import { getTasks } from "../redux/actions/tasks";
 import MainLayout from "../layout/Main.lauout";
@@ -16,7 +16,7 @@ export default function Index() {
 		justfinished: false,
 	});
 	const [sorts, setSorts] = useState({ isFavorites_top: false, isDone_down: false, reverse: false });
-	const [isPluseMode, setPluseMode] = useState(false);
+	const [isPlusMode, setPlusMode] = useState(false);
 
 	const filtredTasks = useFiltringTasks({ filters, sorts });
 
@@ -97,7 +97,7 @@ export default function Index() {
 				<Section>
 					<PlusTaskBtn
 						onClick={() => {
-							setPluseMode(!isPluseMode);
+							setPlusMode(!isPlusMode);
 						}}
 					>
 						<i className="icon-plus" />
@@ -113,7 +113,7 @@ export default function Index() {
 				</Section>
 			</Main>
 			<TaskManager />
-			<PluseWindow isPluseMode={isPluseMode} setPluseMode={setPluseMode} />
+			<PlusWindow isPlusMode={isPlusMode} setPlusMode={setPlusMode} />
 		</MainLayout>
 	);
 }

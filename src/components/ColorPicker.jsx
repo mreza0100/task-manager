@@ -1,6 +1,6 @@
 import { _USE_API_ } from "../api/index.API";
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 async function handleSubmit(color, taskID) {
 	try {
@@ -16,15 +16,12 @@ async function handleSubmit(color, taskID) {
 }
 
 var timeoutVals = {};
-export default function ColorPicker({ color: initialColor = "#d0c3c3", taskID }) {
+export default function ColorPicker({ color: initialColor, taskID }) {
 	const [color, setColor] = useState(initialColor);
-	useEffect(() => () => {
-		timeoutVals = {};
-	});
 
 	const onChange = ({ target }) => {
 		setColor(target.value);
-		clearTimeout(timeoutVals[taskID]);
+		clearTimeout(timeoutVals[taskID] || null);
 		timeoutVals[taskID] = setTimeout(() => {
 			delete timeoutVals[taskID];
 			handleSubmit(color, taskID);

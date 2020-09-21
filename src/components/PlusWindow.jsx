@@ -1,6 +1,5 @@
 import { stringfyDateForServer, trimObj } from "../helpers/exports";
 import { getOneTask } from "../redux/actions/tasks";
-import TagInput from "../components/TagInput";
 import { _USE_API_ } from "../api/index.API";
 import { useEffect, useState } from "react";
 import showMsg from "../helpers/alerts/msg";
@@ -8,8 +7,9 @@ import DatePicker from "react-datepicker2";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import moment from "moment-jalaali";
+import TagInput from "./TagInput";
 
-async function handleSubmit(data, { dispatch, closePluseMode }) {
+async function handleSubmit(data, { dispatch, closePlusMode }) {
 	data = trimObj(data, { removeEmptyArr: true });
 	try {
 		const res = await _USE_API_({
@@ -23,7 +23,7 @@ async function handleSubmit(data, { dispatch, closePluseMode }) {
 		const taskID = res.data.data.item.id;
 		if (taskID) {
 			dispatch(getOneTask({ taskID }));
-			closePluseMode(false);
+			closePlusMode(false);
 		}
 	} catch (err) {}
 }
@@ -41,7 +41,7 @@ const defaultColors = [
 	"#C6FF00",
 ];
 
-export default function PluseWindow({ isPluseMode, setPluseMode }) {
+export default function PlusWindow({ isPlusMode, setPlusMode }) {
 	const [selectedColor, setSelectedColor] = useState("#2CDA9B");
 	const [fromDate, setFromDate] = useState(moment());
 	const [description, setDescription] = useState("");
@@ -49,11 +49,11 @@ export default function PluseWindow({ isPluseMode, setPluseMode }) {
 	const [title, setTitle] = useState("");
 	const [tags, setTags] = useState([]);
 
-	const closePluseMode = () => {
-		setPluseMode(false);
+	const closePlusMode = () => {
+		setPlusMode(false);
 	};
 	const closeOnEscape = ({ key }) => {
-		if (key === "Escape") closePluseMode();
+		if (key === "Escape") closePlusMode();
 	};
 
 	useEffect(() => {
@@ -73,10 +73,10 @@ export default function PluseWindow({ isPluseMode, setPluseMode }) {
 			to_date: stringfyDateForServer(toDate),
 			color: selectedColor,
 		};
-		handleSubmit(sortedData, { dispatch, closePluseMode });
+		handleSubmit(sortedData, { dispatch, closePlusMode });
 	};
 
-	if (!isPluseMode)
+	if (!isPlusMode)
 		return (
 			<Background show={false}>
 				<Wrapper show={false} />
@@ -86,7 +86,7 @@ export default function PluseWindow({ isPluseMode, setPluseMode }) {
 		<Background show={true}>
 			<Wrapper show={true}>
 				<Content>
-					<i className="fa fa-times" onClick={closePluseMode} />
+					<i className="fa fa-times" onClick={closePlusMode} />
 					<input
 						type="text"
 						autoComplete="off"
