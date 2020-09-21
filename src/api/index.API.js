@@ -127,7 +127,7 @@ class API {
 						title: { text: "مشکل شبکه " },
 						body: { text: "احتمالا اتصال شما مشکل دارد" },
 					},
-					{ status: "danger" }
+					{ status: "danger", time: 8 }
 				);
 			} else {
 				const msg = `

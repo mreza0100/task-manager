@@ -34,6 +34,7 @@ async function handleSubmitStep1(data, { setCurrentStep, setMobile, handleReset 
 		const res = await _USE_API_({
 			ignoreStatuses: [401],
 			describe: "reset password step 1",
+			debug: true,
 		}).Post({
 			url: "/forgot_password",
 			data,
@@ -112,8 +113,12 @@ export default function ForgotPassword() {
 						initialValues={step1.intialValues}
 						validationSchema={step1.schema}
 						onSubmit={(data, { handleReset }) => {
-							console.log(data);
-							handleSubmitStep1(data, { setCurrentStep, setMobile, handleReset });
+							const sortedData = { mobile: data.mobile };
+							handleSubmitStep1(sortedData, {
+								setCurrentStep,
+								setMobile,
+								handleReset,
+							});
 						}}
 					>
 						{({ errors, touched, handleReset }) => {

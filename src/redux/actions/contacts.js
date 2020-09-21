@@ -88,7 +88,7 @@ export const editContact = payload => async (dispatch, getState) => {
 		const res = await _USE_API_({
 			describe: "editing a contact",
 			isPrivetRoute: true,
-			debug: true,
+			debug: false,
 		}).Put({
 			url: "/people",
 			data,

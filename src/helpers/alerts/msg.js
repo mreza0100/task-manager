@@ -34,7 +34,8 @@ const getStyles = () => ({
 		width: "25px",
 		height: "25px",
 		color: "#FFF",
-		marginLeft: "15px",
+		padding: 0,
+		margin: "0 0 0 15px",
 		backgroundColor: mainColor,
 		borderRadius: "100%",
 	}),
@@ -43,8 +44,11 @@ const getStyles = () => ({
 		height: "15px",
 		color: "#DADADA",
 		padding: "5px",
-		marginRight: "auto",
+		margin: "0 auto 0 0",
 		cursor: "pointer",
+	},
+	bodyStyles: {
+		margin: 0,
 	},
 });
 
@@ -85,13 +89,13 @@ export default function showMsg(
 	const mainColor =
 		status === "success" ? "#2CDA9B" : status === "danger" ? "#FF6672" : "warning" ? "#FFD100" : "";
 
-	const { wrapperStyles, closeIconStyles, statusIconStyles } = getStyles();
+	const { wrapperStyles, closeIconStyles, statusIconStyles, bodyStyles } = getStyles();
 	var title, body, closeIcon, statusIcon;
 	if (tText) {
 		title = create({
 			nodeName: tNodeName ?? "h3",
 			attrs: { class: "msg-title", ...tAttrs },
-			text: tText,
+			text: "  " + tText + "  ",
 			styles: { ...tStyles, ...{ margin: 0 } },
 			childs: tChilds,
 			props: tProps,
@@ -102,7 +106,7 @@ export default function showMsg(
 			nodeName: bNodeName ?? "h6",
 			attrs: { class: "msg-body", ...bAttrs },
 			text: bText,
-			styles: bStyles,
+			styles: { ...bodyStyles, ...bStyles },
 			childs: bChilds,
 			props: bProps,
 		});

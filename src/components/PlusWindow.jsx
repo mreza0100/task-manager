@@ -1,7 +1,7 @@
 import { stringfyDateForServer, trimObj } from "../helpers/exports";
 import { getOneTask } from "../redux/actions/tasks";
+import { useEffect, useRef, useState } from "react";
 import { _USE_API_ } from "../api/index.API";
-import { useEffect, useState } from "react";
 import showMsg from "../helpers/alerts/msg";
 import DatePicker from "react-datepicker2";
 import { useDispatch } from "react-redux";
@@ -48,6 +48,8 @@ export default function PlusWindow({ isPlusMode, setPlusMode }) {
 	const [toDate, setToDate] = useState(moment());
 	const [title, setTitle] = useState("");
 	const [tags, setTags] = useState([]);
+	const dispatch = useDispatch();
+	const wrapperRef = useRef();
 
 	const closePlusMode = () => {
 		setPlusMode(false);
@@ -55,13 +57,18 @@ export default function PlusWindow({ isPlusMode, setPlusMode }) {
 	const closeOnEscape = ({ key }) => {
 		if (key === "Escape") closePlusMode();
 	};
+	const closeOnOutClick = ({ target }) => {
+		if (target.contains(wrapperRef.current)) closePlusMode();
+	};
 
 	useEffect(() => {
 		window.addEventListener("keydown", closeOnEscape);
-		return () => window.removeEventListener("keydown", closeOnEscape);
+		window.addEventListener("click", closeOnOutClick);
+		return () => {
+			window.removeEventListener("keydown", closeOnEscape);
+			window.removeEventListener("click", closeOnOutClick);
+		};
 	}, []);
-
-	const dispatch = useDispatch();
 
 	const onSubmit = () => {
 		if (!title) return showMsg({ title: { text: "تسک به یک عنوان نیاز دارد" } }, { status: "warning" });
@@ -84,7 +91,7 @@ export default function PlusWindow({ isPlusMode, setPlusMode }) {
 		);
 	return (
 		<Background show={true}>
-			<Wrapper show={true}>
+			<Wrapper show={true} ref={wrapperRef}>
 				<Content>
 					<i className="fa fa-times" onClick={closePlusMode} />
 					<input

@@ -21,6 +21,9 @@ export default function ContactComponent({ data, selected }) {
 	useEffect(() => {
 		if (isEditMode) window.addEventListener("keydown", closeOnEscape);
 		else window.removeEventListener("keydown", closeOnEscape);
+		return () => {
+			window.removeEventListener("keydown", closeOnEscape);
+		};
 	}, [isEditMode]);
 
 	if (isEditMode) {
@@ -174,7 +177,7 @@ const Contact = styled.div(({ theme: { flex, $white, $blueTxt, resetInput } }) =
 			"> div.edit-btns": {
 				height: "65%",
 				...flex(["justifyContent"]),
-				justifyContent: "space-between",
+				justifyContent: "flex-end",
 				paddingRight: "10px",
 				flex: "0.2",
 				"> button": {
@@ -189,7 +192,11 @@ const Contact = styled.div(({ theme: { flex, $white, $blueTxt, resetInput } }) =
 					outline: "none",
 					lineHeight: "19.83px",
 					weight: "500",
-					"&.cancel": { background: "rgba(255, 102, 114, 0.05)", color: "#FF6672" },
+					"&.cancel": {
+						background: "rgba(255, 102, 114, 0.05)",
+						color: "#FF6672",
+						marginLeft: "10px",
+					},
 					"&.submit": { background: "rgba(44, 218, 155, 0.15)", color: "#2CDA9B" },
 				},
 			},
